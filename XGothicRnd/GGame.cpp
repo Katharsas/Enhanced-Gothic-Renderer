@@ -34,6 +34,7 @@ GGame::GGame(void)
 {
 	m_ActiveWorld = nullptr;
 	m_MainResources = new GMainResources();
+	
 }
 
 
