@@ -1,0 +1,381 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Ressourcendateien">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Base">
+      <UniqueIdentifier>{f0eaa826-b2ee-4fde-982c-b90145cc67e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Renderer">
+      <UniqueIdentifier>{c6354ebf-33a2-4cad-b1cd-c4f1dcc9beb6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Renderer\Textures">
+      <UniqueIdentifier>{fcc47b06-b61c-41a8-a1de-3e95151c14de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Renderer\Device">
+      <UniqueIdentifier>{e1b742aa-bb8c-47fe-bfde-6e84adfc0d7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Renderer\Buffer">
+      <UniqueIdentifier>{4817353a-54ca-47cb-a5f9-7d205cc03664}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lib">
+      <UniqueIdentifier>{60d8c5ce-1de8-497f-bc2b-ec350488f5f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Renderer\Shaders">
+      <UniqueIdentifier>{ead24b76-7f9c-4287-a1fe-75edce836893}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Renderer\InputLayout">
+      <UniqueIdentifier>{cfcdb79e-f32c-4149-92d5-0a92fb738ec8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Renderer\Cache">
+      <UniqueIdentifier>{2bcac5ab-73f2-4da5-a71e-960cfddb673b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Renderer\Base">
+      <UniqueIdentifier>{878cf71a-4a7c-4ca2-830e-7a8f2c257d10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Renderer\States">
+      <UniqueIdentifier>{5917ff86-d755-4b9d-8364-0033c338dd0f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Renderer\States\DepthStencil">
+      <UniqueIdentifier>{4da5b2c6-75ef-4088-bd1f-261f81346820}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Renderer\States\Rasterizer">
+      <UniqueIdentifier>{f53cdd37-52da-49e7-9dc5-75eac81e334a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Renderer\States\Sampler">
+      <UniqueIdentifier>{94de8c0d-945e-4ede-bd2f-b9814bbbc43c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Renderer\States\Blend">
+      <UniqueIdentifier>{fc7264aa-2083-4c87-836c-1a00c4950be6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Renderer\States\Viewport">
+      <UniqueIdentifier>{10056e69-5c84-4e3a-b099-723edb14f3b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Wrappers">
+      <UniqueIdentifier>{991c1e6a-638e-4358-9e89-4ffd62522c84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Renderer\CommandList">
+      <UniqueIdentifier>{237ee50a-dbfe-4b0e-aaa4-d7dd4e4caef1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="targetver.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="RBaseTexture.h">
+      <Filter>Renderer\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="RD3D11Texture.h">
+      <Filter>Renderer\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="RTexture.h">
+      <Filter>Renderer\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="RBaseDevice.h">
+      <Filter>Renderer\Device</Filter>
+    </ClInclude>
+    <ClInclude Include="RD3D11Device.h">
+      <Filter>Renderer\Device</Filter>
+    </ClInclude>
+    <ClInclude Include="RDevice.h">
+      <Filter>Renderer\Device</Filter>
+    </ClInclude>
+    <ClInclude Include="REngine.h">
+      <Filter>Renderer\Device</Filter>
+    </ClInclude>
+    <ClInclude Include="RD3D11Buffer.h">
+      <Filter>Renderer\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="RBaseBuffer.h">
+      <Filter>Renderer\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="RBuffer.h">
+      <Filter>Renderer\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Shared\SimpleMath.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Shared\Toolbox.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="RPixelShader.h">
+      <Filter>Renderer\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="RVertexShader.h">
+      <Filter>Renderer\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="RD3D11VertexShader.h">
+      <Filter>Renderer\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Shared\Types.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="RBaseShader.h">
+      <Filter>Renderer\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="RD3D11Shader.h">
+      <Filter>Renderer\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="RD3D11PixelShader.h">
+      <Filter>Renderer\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="RBaseInputLayout.h">
+      <Filter>Renderer\InputLayout</Filter>
+    </ClInclude>
+    <ClInclude Include="RD3D11InputLayout.h">
+      <Filter>Renderer\InputLayout</Filter>
+    </ClInclude>
+    <ClInclude Include="RInputLayout.h">
+      <Filter>Renderer\InputLayout</Filter>
+    </ClInclude>
+    <ClInclude Include="RResourceCache.h">
+      <Filter>Renderer\Cache</Filter>
+    </ClInclude>
+    <ClInclude Include="RResource.h">
+      <Filter>Renderer\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="RDepthStencilState.h">
+      <Filter>Renderer\States\DepthStencil</Filter>
+    </ClInclude>
+    <ClInclude Include="RBaseDepthStencilState.h">
+      <Filter>Renderer\States\DepthStencil</Filter>
+    </ClInclude>
+    <ClInclude Include="RD3D11DepthStencilState.h">
+      <Filter>Renderer\States\DepthStencil</Filter>
+    </ClInclude>
+    <ClInclude Include="RRasterizerState.h">
+      <Filter>Renderer\States\Rasterizer</Filter>
+    </ClInclude>
+    <ClInclude Include="RBaseRasterizerState.h">
+      <Filter>Renderer\States\Rasterizer</Filter>
+    </ClInclude>
+    <ClInclude Include="RD3D11RasterizerState.h">
+      <Filter>Renderer\States\Rasterizer</Filter>
+    </ClInclude>
+    <ClInclude Include="RSamplerState.h">
+      <Filter>Renderer\States\Sampler</Filter>
+    </ClInclude>
+    <ClInclude Include="RBaseSamplerState.h">
+      <Filter>Renderer\States\Sampler</Filter>
+    </ClInclude>
+    <ClInclude Include="RD3D11SamplerState.h">
+      <Filter>Renderer\States\Sampler</Filter>
+    </ClInclude>
+    <ClInclude Include="RD3D11BlendState.h">
+      <Filter>Renderer\States\Blend</Filter>
+    </ClInclude>
+    <ClInclude Include="RBaseBlendState.h">
+      <Filter>Renderer\States\Blend</Filter>
+    </ClInclude>
+    <ClInclude Include="RBlendState.h">
+      <Filter>Renderer\States\Blend</Filter>
+    </ClInclude>
+    <ClInclude Include="RStateMachine.h">
+      <Filter>Renderer\States</Filter>
+    </ClInclude>
+    <ClInclude Include="RPipelineState.h">
+      <Filter>Renderer\States</Filter>
+    </ClInclude>
+    <ClInclude Include="RDynamicBufferCache.h">
+      <Filter>Renderer\Cache</Filter>
+    </ClInclude>
+    <ClInclude Include="RViewport.h">
+      <Filter>Renderer\States\Viewport</Filter>
+    </ClInclude>
+    <ClInclude Include="RBaseViewport.h">
+      <Filter>Renderer\States\Viewport</Filter>
+    </ClInclude>
+    <ClInclude Include="RD3D11Viewport.h">
+      <Filter>Renderer\States\Viewport</Filter>
+    </ClInclude>
+    <ClInclude Include="RBufferCollection.h">
+      <Filter>Renderer\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="RTools.h">
+      <Filter>Wrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="RPagedBuffer.h">
+      <Filter>Renderer\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="RObservable.h">
+      <Filter>Renderer\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="IObserver.h">
+      <Filter>Renderer\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="RBaseCommandList.h">
+      <Filter>Renderer\CommandList</Filter>
+    </ClInclude>
+    <ClInclude Include="RCommandList.h">
+      <Filter>Renderer\CommandList</Filter>
+    </ClInclude>
+    <ClInclude Include="RD3D11CommandList.h">
+      <Filter>Renderer\CommandList</Filter>
+    </ClInclude>
+    <ClInclude Include="RThreadPool.h">
+      <Filter>Wrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="RProdConsBuffer.h">
+      <Filter>Wrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="RSemaphore.h">
+      <Filter>Wrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="readerwriterqueue.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="atomicops.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
+    <ClCompile Include="RBaseTexture.cpp">
+      <Filter>Renderer\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="RD3D11Texture.cpp">
+      <Filter>Renderer\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="RTexture.cpp">
+      <Filter>Renderer\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="RBaseDevice.cpp">
+      <Filter>Renderer\Device</Filter>
+    </ClCompile>
+    <ClCompile Include="RD3D11Device.cpp">
+      <Filter>Renderer\Device</Filter>
+    </ClCompile>
+    <ClCompile Include="RDevice.cpp">
+      <Filter>Renderer\Device</Filter>
+    </ClCompile>
+    <ClCompile Include="RBaseBuffer.cpp">
+      <Filter>Renderer\Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="RBuffer.cpp">
+      <Filter>Renderer\Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="RD3D11Buffer.cpp">
+      <Filter>Renderer\Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Shared\SimpleMath.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Shared\Toolbox.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="RPixelShader.cpp">
+      <Filter>Renderer\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="RVertexShader.cpp">
+      <Filter>Renderer\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="RD3D11VertexShader.cpp">
+      <Filter>Renderer\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="RBaseShader.cpp">
+      <Filter>Renderer\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="RD3D11Shader.cpp">
+      <Filter>Renderer\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="RD3D11PixelShader.cpp">
+      <Filter>Renderer\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="RBaseInputLayout.cpp">
+      <Filter>Renderer\InputLayout</Filter>
+    </ClCompile>
+    <ClCompile Include="RD3D11InputLayout.cpp">
+      <Filter>Renderer\InputLayout</Filter>
+    </ClCompile>
+    <ClCompile Include="RInputLayout.cpp">
+      <Filter>Renderer\InputLayout</Filter>
+    </ClCompile>
+    <ClCompile Include="RResourceCache.cpp">
+      <Filter>Renderer\Cache</Filter>
+    </ClCompile>
+    <ClCompile Include="RResource.cpp">
+      <Filter>Renderer\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="RBaseDepthStencilState.cpp">
+      <Filter>Renderer\States\DepthStencil</Filter>
+    </ClCompile>
+    <ClCompile Include="RD3D11DepthStencilState.cpp">
+      <Filter>Renderer\States\DepthStencil</Filter>
+    </ClCompile>
+    <ClCompile Include="RDepthStencilState.cpp">
+      <Filter>Renderer\States\DepthStencil</Filter>
+    </ClCompile>
+    <ClCompile Include="RBaseRasterizerState.cpp">
+      <Filter>Renderer\States\Rasterizer</Filter>
+    </ClCompile>
+    <ClCompile Include="RD3D11RasterizerState.cpp">
+      <Filter>Renderer\States\Rasterizer</Filter>
+    </ClCompile>
+    <ClCompile Include="RRasterizerState.cpp">
+      <Filter>Renderer\States\Rasterizer</Filter>
+    </ClCompile>
+    <ClCompile Include="RBaseSamplerState.cpp">
+      <Filter>Renderer\States\Sampler</Filter>
+    </ClCompile>
+    <ClCompile Include="RD3D11SamplerState.cpp">
+      <Filter>Renderer\States\Sampler</Filter>
+    </ClCompile>
+    <ClCompile Include="RSamplerState.cpp">
+      <Filter>Renderer\States\Sampler</Filter>
+    </ClCompile>
+    <ClCompile Include="RBaseBlendState.cpp">
+      <Filter>Renderer\States\Blend</Filter>
+    </ClCompile>
+    <ClCompile Include="RBlendState.cpp">
+      <Filter>Renderer\States\Blend</Filter>
+    </ClCompile>
+    <ClCompile Include="RD3D11BlendState.cpp">
+      <Filter>Renderer\States\Blend</Filter>
+    </ClCompile>
+    <ClCompile Include="RStateMachine.cpp">
+      <Filter>Renderer\States</Filter>
+    </ClCompile>
+    <ClCompile Include="REngine.cpp">
+      <Filter>Renderer\Device</Filter>
+    </ClCompile>
+    <ClCompile Include="RDynamicBufferCache.cpp">
+      <Filter>Renderer\Cache</Filter>
+    </ClCompile>
+    <ClCompile Include="RViewport.cpp">
+      <Filter>Renderer\States\Viewport</Filter>
+    </ClCompile>
+    <ClCompile Include="RBaseViewport.cpp">
+      <Filter>Renderer\States\Viewport</Filter>
+    </ClCompile>
+    <ClCompile Include="RD3D11Viewport.cpp">
+      <Filter>Renderer\States\Viewport</Filter>
+    </ClCompile>
+    <ClCompile Include="RTools.cpp">
+      <Filter>Wrappers</Filter>
+    </ClCompile>
+    <ClCompile Include="RBaseCommandList.cpp">
+      <Filter>Renderer\CommandList</Filter>
+    </ClCompile>
+    <ClCompile Include="RCommandList.cpp">
+      <Filter>Renderer\CommandList</Filter>
+    </ClCompile>
+    <ClCompile Include="RD3D11CommandList.cpp">
+      <Filter>Renderer\CommandList</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Shared\SimpleMath.inl">
+      <Filter>Lib</Filter>
+    </None>
+  </ItemGroup>
+</Project>

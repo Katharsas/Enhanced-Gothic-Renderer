@@ -1,0 +1,426 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Ressourcendateien">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="D3D7">
+      <UniqueIdentifier>{43da2530-d8b7-4429-a2f8-3befa287753f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base">
+      <UniqueIdentifier>{36018f50-8cb7-4904-af7d-d75cfb6f6efa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Hooks">
+      <UniqueIdentifier>{f4dc52e1-f129-4890-ac06-7b2f00b7bf3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zEngineHooks">
+      <UniqueIdentifier>{6605dee3-78e7-4f92-97ad-d1f8985f1473}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zEngine">
+      <UniqueIdentifier>{d4278a84-911c-4ba9-b784-6980fd563961}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="World">
+      <UniqueIdentifier>{7b597310-1edf-4b61-ba9a-6acef166ef5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Wrappers">
+      <UniqueIdentifier>{b5bd2b0b-83d7-4d22-b880-dcaeacd88b66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Wrappers\Visuals">
+      <UniqueIdentifier>{8a6e8b27-6136-4086-81da-7794eba6876c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="D3D7\MyDirectDrawSurface7.cpp">
+      <Filter>D3D7</Filter>
+    </ClCompile>
+    <ClCompile Include="D3D7\FakeDirectDrawSurface7.cpp">
+      <Filter>D3D7</Filter>
+    </ClCompile>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Hooks.cpp">
+      <Filter>Hooks</Filter>
+    </ClCompile>
+    <ClCompile Include="zCWorldHk.cpp">
+      <Filter>zEngineHooks</Filter>
+    </ClCompile>
+    <ClCompile Include="zCBspTreeHk.cpp">
+      <Filter>zEngineHooks</Filter>
+    </ClCompile>
+    <ClCompile Include="GBspNode.cpp">
+      <Filter>Wrappers</Filter>
+    </ClCompile>
+    <ClCompile Include="GBspTree.cpp">
+      <Filter>Wrappers</Filter>
+    </ClCompile>
+    <ClCompile Include="GGame.cpp">
+      <Filter>Wrappers</Filter>
+    </ClCompile>
+    <ClCompile Include="GMaterial.cpp">
+      <Filter>Wrappers</Filter>
+    </ClCompile>
+    <ClCompile Include="GMeshIndexed.cpp">
+      <Filter>Wrappers</Filter>
+    </ClCompile>
+    <ClCompile Include="GWorld.cpp">
+      <Filter>Wrappers</Filter>
+    </ClCompile>
+    <ClCompile Include="GzObjectExtension.cpp">
+      <Filter>Wrappers</Filter>
+    </ClCompile>
+    <ClCompile Include="GCamera.cpp">
+      <Filter>Wrappers</Filter>
+    </ClCompile>
+    <ClCompile Include="GTexture.cpp">
+      <Filter>Wrappers</Filter>
+    </ClCompile>
+    <ClCompile Include="zCCameraHk.cpp">
+      <Filter>zEngineHooks</Filter>
+    </ClCompile>
+    <ClCompile Include="zCOptionHk.cpp">
+      <Filter>zEngineHooks</Filter>
+    </ClCompile>
+    <ClCompile Include="zCTextureHk.cpp">
+      <Filter>zEngineHooks</Filter>
+    </ClCompile>
+    <ClCompile Include="GVobObject.cpp">
+      <Filter>Wrappers</Filter>
+    </ClCompile>
+    <ClCompile Include="GBaseDrawable.cpp">
+      <Filter>Wrappers\Visuals</Filter>
+    </ClCompile>
+    <ClCompile Include="GStaticMeshDrawable.cpp">
+      <Filter>Wrappers\Visuals</Filter>
+    </ClCompile>
+    <ClCompile Include="GVisual.cpp">
+      <Filter>Wrappers\Visuals</Filter>
+    </ClCompile>
+    <ClCompile Include="GStaticMeshVisual.cpp">
+      <Filter>Wrappers\Visuals</Filter>
+    </ClCompile>
+    <ClCompile Include="GMainResources.cpp">
+      <Filter>Wrappers</Filter>
+    </ClCompile>
+    <ClCompile Include="zCVisualHk.cpp">
+      <Filter>zEngineHooks</Filter>
+    </ClCompile>
+    <ClCompile Include="GModelVisual.cpp">
+      <Filter>Wrappers\Visuals</Filter>
+    </ClCompile>
+    <ClCompile Include="GMeshSoftSkin.cpp">
+      <Filter>Wrappers\Visuals</Filter>
+    </ClCompile>
+    <ClCompile Include="GMeshSoftSkinDrawable.cpp">
+      <Filter>Wrappers\Visuals</Filter>
+    </ClCompile>
+    <ClCompile Include="zCVobHk.cpp">
+      <Filter>zEngineHooks</Filter>
+    </ClCompile>
+    <ClCompile Include="GModelDrawable.cpp">
+      <Filter>Wrappers\Visuals</Filter>
+    </ClCompile>
+    <ClCompile Include="zGlobalHk.cpp">
+      <Filter>zEngineHooks</Filter>
+    </ClCompile>
+    <ClCompile Include="oCNpcHk.cpp">
+      <Filter>zEngineHooks</Filter>
+    </ClCompile>
+    <ClCompile Include="zCModelMeshLibHk.cpp">
+      <Filter>zEngineHooks</Filter>
+    </ClCompile>
+    <ClCompile Include="SmartHeap.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
+    <ClCompile Include="zCObjectHk.cpp">
+      <Filter>zEngineHooks</Filter>
+    </ClCompile>
+    <ClCompile Include="GMorphMesh.cpp">
+      <Filter>Wrappers\Visuals</Filter>
+    </ClCompile>
+    <ClCompile Include="GMorphMeshDrawable.cpp">
+      <Filter>Wrappers\Visuals</Filter>
+    </ClCompile>
+    <ClCompile Include="GParticleFXDrawable.cpp">
+      <Filter>Wrappers\Visuals</Filter>
+    </ClCompile>
+    <ClCompile Include="GParticleFXVisual.cpp">
+      <Filter>Wrappers\Visuals</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D3D7\MyDirectDrawSurface7.h">
+      <Filter>D3D7</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D7\MyDirectDraw.h">
+      <Filter>D3D7</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D7\MyDirect3DVertexBuffer7.h">
+      <Filter>D3D7</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D7\MyDirect3DDevice7.h">
+      <Filter>D3D7</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D7\MyDirect3D7.h">
+      <Filter>D3D7</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D7\MyClipper.h">
+      <Filter>D3D7</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D7\FakeDirectDrawSurface7.h">
+      <Filter>D3D7</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="FixedFunctionState.h">
+      <Filter>D3D7</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexTypes.h">
+      <Filter>D3D7</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D7\MyDynamicDirect3DVertexBuffer7.h">
+      <Filter>D3D7</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="zCWorldHk.h">
+      <Filter>zEngineHooks</Filter>
+    </ClInclude>
+    <ClInclude Include="zEngineFunctions.h">
+      <Filter>zEngineHooks</Filter>
+    </ClInclude>
+    <ClInclude Include="Hooks.h">
+      <Filter>Hooks</Filter>
+    </ClInclude>
+    <ClInclude Include="IHookable.h">
+      <Filter>Hooks</Filter>
+    </ClInclude>
+    <ClInclude Include="zSTRING.h">
+      <Filter>zEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="zEngineHooks.h">
+      <Filter>zEngineHooks</Filter>
+    </ClInclude>
+    <ClInclude Include="MemoryLocations.h">
+      <Filter>zEngineHooks</Filter>
+    </ClInclude>
+    <ClInclude Include="zCBspTreeHk.h">
+      <Filter>zEngineHooks</Filter>
+    </ClInclude>
+    <ClInclude Include="zCObject.h">
+      <Filter>zEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="zCBspTree.h">
+      <Filter>zEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="zCPolygon.h">
+      <Filter>zEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="GBspNode.h">
+      <Filter>Wrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="GBspTree.h">
+      <Filter>Wrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="GGame.h">
+      <Filter>Wrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="GMaterial.h">
+      <Filter>Wrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="GMeshIndexed.h">
+      <Filter>Wrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="GWorld.h">
+      <Filter>Wrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="zCArray.h">
+      <Filter>zEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="zDefinitions.h">
+      <Filter>zEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="GConstants.h">
+      <Filter>Wrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="GzObjectExtension.h">
+      <Filter>Wrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="GCamera.h">
+      <Filter>Wrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="GTexture.h">
+      <Filter>Wrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="zCCamera.h">
+      <Filter>zEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="zCMatrixStack.h">
+      <Filter>zEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="GConstantBuffers.h">
+      <Filter>Wrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="zCWorld.h">
+      <Filter>zEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="oCGame.h">
+      <Filter>zEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="MemoryOffsets_2_6fix.h">
+      <Filter>zEngineHooks</Filter>
+    </ClInclude>
+    <ClInclude Include="zCViewProgressBar.h">
+      <Filter>zEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="CGameManager.h">
+      <Filter>zEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="BasicTimer.h">
+      <Filter>Wrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="zCOptionHk.h">
+      <Filter>zEngineHooks</Filter>
+    </ClInclude>
+    <ClInclude Include="zCCameraHk.h">
+      <Filter>zEngineHooks</Filter>
+    </ClInclude>
+    <ClInclude Include="zCTexture.h">
+      <Filter>zEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="zCTextureHk.h">
+      <Filter>zEngineHooks</Filter>
+    </ClInclude>
+    <ClInclude Include="zCResource.h">
+      <Filter>zEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="zCResourceManager.h">
+      <Filter>zEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="zCMaterial.h">
+      <Filter>zEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="zCVob.h">
+      <Filter>zEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="GVobObject.h">
+      <Filter>Wrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="GStaticMeshDrawable.h">
+      <Filter>Wrappers\Visuals</Filter>
+    </ClInclude>
+    <ClInclude Include="GBaseDrawable.h">
+      <Filter>Wrappers\Visuals</Filter>
+    </ClInclude>
+    <ClInclude Include="GVisual.h">
+      <Filter>Wrappers\Visuals</Filter>
+    </ClInclude>
+    <ClInclude Include="GStaticMeshVisual.h">
+      <Filter>Wrappers\Visuals</Filter>
+    </ClInclude>
+    <ClInclude Include="zCVisual.h">
+      <Filter>zEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="zCProgMeshProto.h">
+      <Filter>zEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="GMainResources.h">
+      <Filter>Wrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RenderingAPI\IVisualChangedObserver.h">
+      <Filter>Wrappers\Visuals</Filter>
+    </ClInclude>
+    <ClInclude Include="zCVisualHk.h">
+      <Filter>zEngineHooks</Filter>
+    </ClInclude>
+    <ClInclude Include="zCView.h">
+      <Filter>zEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="zCInput.h">
+      <Filter>zEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="GModelVisual.h">
+      <Filter>Wrappers\Visuals</Filter>
+    </ClInclude>
+    <ClInclude Include="zCModelMeshLib.h">
+      <Filter>zEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="zCMeshSoftSkin.h">
+      <Filter>zEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="zCModel.h">
+      <Filter>zEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="GMeshSoftSkin.h">
+      <Filter>Wrappers\Visuals</Filter>
+    </ClInclude>
+    <ClInclude Include="GMeshSoftSkinDrawable.h">
+      <Filter>Wrappers\Visuals</Filter>
+    </ClInclude>
+    <ClInclude Include="zCVobHk.h">
+      <Filter>zEngineHooks</Filter>
+    </ClInclude>
+    <ClInclude Include="GModelDrawable.h">
+      <Filter>Wrappers\Visuals</Filter>
+    </ClInclude>
+    <ClInclude Include="zGlobalHk.h">
+      <Filter>zEngineHooks</Filter>
+    </ClInclude>
+    <ClInclude Include="oCNpcHk.h">
+      <Filter>zEngineHooks</Filter>
+    </ClInclude>
+    <ClInclude Include="oCNpc.h">
+      <Filter>zEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="zClassDef.h">
+      <Filter>zEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="zCModelMeshLibHk.h">
+      <Filter>zEngineHooks</Filter>
+    </ClInclude>
+    <ClInclude Include="SmartHeap.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="zCMorphMesh.h">
+      <Filter>zEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="zCObjectHk.h">
+      <Filter>zEngineHooks</Filter>
+    </ClInclude>
+    <ClInclude Include="GMorphMesh.h">
+      <Filter>Wrappers\Visuals</Filter>
+    </ClInclude>
+    <ClInclude Include="GMorphMeshDrawable.h">
+      <Filter>Wrappers\Visuals</Filter>
+    </ClInclude>
+    <ClInclude Include="GParticleFXDrawable.h">
+      <Filter>Wrappers\Visuals</Filter>
+    </ClInclude>
+    <ClInclude Include="GParticleFXVisual.h">
+      <Filter>Wrappers\Visuals</Filter>
+    </ClInclude>
+    <ClInclude Include="zCParticleFX.h">
+      <Filter>zEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="zCTimer.h">
+      <Filter>zEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="zCSkyController.h">
+      <Filter>zEngine</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ddraw.def">
+      <Filter>Base</Filter>
+    </None>
+  </ItemGroup>
+</Project>
