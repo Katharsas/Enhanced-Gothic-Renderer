@@ -35,5 +35,10 @@ public:
 	zTResourceCacheState CacheIn(bool threaded=true);
 private:
 	RTexture* m_Texture;
+
+	// Pointer to the surface that is currently representing this texture
+	// Note: Can be also retrieved through zCTexture, but it seems that pointer
+	// can be nulled before deleting the actual surface
+	MyDirectDrawSurface7* m_CurrentSurface;
 };
 

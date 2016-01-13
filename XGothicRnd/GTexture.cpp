@@ -10,13 +10,14 @@ int g_TotalSize = 0;
 GTexture::GTexture(zCTexture* sourceObject) : GzObjectExtension<zCTexture, GTexture>(sourceObject)	
 {
 	m_Texture = REngine::ResourceCache->CreateResource<RTexture>();
+	m_CurrentSurface = nullptr;
 }
 
 
 GTexture::~GTexture(void)
 {
 	// Remove the pointer to this from the surface
-	if(m_SourceObject->GetSurface())
+	if(m_CurrentSurface)
 		m_SourceObject->GetSurface()->SetExternalEngineTexture(nullptr);
 
 	if(!m_Texture)
@@ -45,6 +46,8 @@ void GTexture::OnSurfaceDeleted()
 	// Game cached the texture out, deallocate...
 	//LogInfo() << "Deallocating texture: " << m_SourceObject->GetObjectName();
 	m_Texture->Deallocate();
+
+	m_CurrentSurface = nullptr;
 }
 
 /** Called when the connected surface was unlocked, giving a pointer to the memory
@@ -52,9 +55,9 @@ void GTexture::OnSurfaceDeleted()
 void GTexture::OnSurfaceUnlocked(void* imageData, unsigned int sizeInBytes, std::vector<void*> mipData)
 {
 	// If this is called, it is save that we have a surface
-	MyDirectDrawSurface7* srf = GetSurface();
+	m_CurrentSurface = GetSurface();
 	DDSURFACEDESC2 ddsd;
-	srf->GetSurfaceDesc(&ddsd);
+	m_CurrentSurface->GetSurfaceDesc(&ddsd);
 
 	g_TotalSize += sizeInBytes;
 	LogInfo() << "Initializing texture: " << m_SourceObject->GetObjectName() << " (" << sizeInBytes << " bytes)"
@@ -68,7 +71,7 @@ void GTexture::OnSurfaceUnlocked(void* imageData, unsigned int sizeInBytes, std:
 		sizeInBytes, 
 		INT2(ddsd.dwWidth, ddsd.dwHeight), 
 		ddsd.dwMipMapCount,
-		srf->GetInternalTextureFormat(),
+		m_CurrentSurface->GetInternalTextureFormat(),
 		B_SHADER_RESOURCE,
 		U_DEFAULT,
 		1,
@@ -79,7 +82,7 @@ void GTexture::OnSurfaceUnlocked(void* imageData, unsigned int sizeInBytes, std:
 	only if the texture is currently cached in */
 MyDirectDrawSurface7* GTexture::GetSurface()
 {
-	return m_SourceObject->GetSurface();
+	return m_CurrentSurface;
 }
 
 /** Returns whether the underlaying texture-object is fully initialized */
