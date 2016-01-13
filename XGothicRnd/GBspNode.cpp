@@ -441,6 +441,7 @@ void GBspNode::AddVisibleIndoorVobs(const float3& cameraPosition, std::vector<GV
 {
 	for (zCPolygon* p: m_PortalList)
 	{
+		// check if we are looking at the front of a portal with no front sector
 		if (!p->IsBackfacing(cameraPosition) && !p->GetMaterial()->GetSectorFront())
 		{
 			zCBspSector* sector = p->GetMaterial()->GetSectorBack();
