@@ -156,6 +156,7 @@ public:
 	/**
 	 * Sets the values from a pipeline-state-object to the current state
 	 */
+	// TODO: RENAME THIS OR MAKE PRIVATE. Very confusing with SetFromPipelineState.
 	void AssignPipelineStateValues(RPipelineState* state);
 
 	/**

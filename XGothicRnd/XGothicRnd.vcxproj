@@ -488,6 +488,8 @@ copy "$(G2_SYSTEM_PATH)\ShW32_nop.dll" "$(G2_SYSTEM_PATH)\ShW32.dll"</Command>
     <ClInclude Include="zSTRING.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\RenderingAPI\PatchSmartheap.bat" />
+    <None Include="..\RenderingAPI\UnPatchSmartheap.bat" />
     <None Include="ddraw.def" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
