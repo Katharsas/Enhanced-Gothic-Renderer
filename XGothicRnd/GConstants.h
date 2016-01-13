@@ -6,6 +6,7 @@ namespace GConstants
 	{
 		static const char* BPS_WORLDMESH = "__BPS_WORLDMESH";
 		static const char* BPS_INSTANCED_VOB = "__BPS_INSTANCED_VOB";
+		static const char* BPS_INSTANCED_VOB_INVENTORY = "__BPS_INSTANCED_VOB_INVENTORY";
 		static const char* BPS_PARTICLES = "__BPS_PARTICLES";
 		static const char* BPS_SKEL_MESH = "__BPS_SKEL_MESH";
 	};
@@ -26,6 +27,7 @@ namespace GConstants
 	{
 		RS_WORLD,
 		RS_SHADOW_SUN,
+		RS_INVENTORY,
 		RS_NUM_STAGES,
 		RS_UNDEFINED // Special stage, which is never rendered, but causes all other stages to be updated for example
 	};

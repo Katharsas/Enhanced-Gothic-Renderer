@@ -10,7 +10,7 @@ public:
 	/**
 	 * Called every frame on rendertime
 	 */
-	static void zCBspTree__Render(zCBspTree* thisptr, void* edx);
+	static void __fastcall zCBspTree__Render(zCBspTree* thisptr, void* edx);
 
 private:
 	zEngine::zCBspTree__Render m_Render;

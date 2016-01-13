@@ -69,7 +69,7 @@ GVisual::StateCache* GMorphMesh::UpdatePipelineStatesFor(GBaseDrawable* drawable
 	RStateMachine& sm = REngine::RenderingDevice->GetStateMachine();
 	RBuffer* instanceBuffer = Engine::Game->GetMainResources()->GetVobInstanceBuffer();
 
-	sm.SetFromPipelineState(*defState);
+	sm.SetFromPipelineState(defState);
 
 	// Set the paged buffers to the state machine
 	sm.SetVertexBuffer(0, m_VertexBuffer);
@@ -153,7 +153,7 @@ void GMorphMesh::UpdateTextures()
 			}else if(stored != actual)
 			{
 				RStateMachine& sm = REngine::RenderingDevice->GetStateMachine();
-				sm.SetFromPipelineState(*s);
+				sm.SetFromPipelineState(s);
 
 				// Assign textures
 				m.m_Material->ApplyStates();

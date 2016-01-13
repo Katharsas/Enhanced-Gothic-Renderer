@@ -89,7 +89,7 @@ GVisual::StateCache* GMeshSoftSkin::UpdatePipelineStatesFor(GBaseDrawable* drawa
 	RPagedBuffer<unsigned int>* pagedIB = Engine::Game->GetMainResources()->GetExSkelPagedIndexBuffer();
 	RBuffer* instanceBuffer = Engine::Game->GetMainResources()->GetVobInstanceBuffer();
 
-	sm.SetFromPipelineState(*defState);
+	sm.SetFromPipelineState(defState);
 
 	// Set the paged buffers to the state machine
 	sm.SetVertexBuffer(0, pagedVB->GetBuffer());
@@ -166,7 +166,7 @@ void GMeshSoftSkin::UpdateTextures()
 			}else if(stored != actual)
 			{
 				RStateMachine& sm = REngine::RenderingDevice->GetStateMachine();
-				sm.SetFromPipelineState(*s);
+				sm.SetFromPipelineState(s);
 
 				// Assign textures
 				m.m_Material->ApplyStates();

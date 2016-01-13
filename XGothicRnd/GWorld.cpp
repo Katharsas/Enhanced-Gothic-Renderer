@@ -15,6 +15,8 @@
 #include "zCSkyController.h"
 #include "zCCamera.h"
 #include <RTools.h>
+#include <RDynamicBufferCache.h>
+#include "D3D7\MyDirect3DDevice7.h"
 
 GWorld::GWorld(zCWorld* sourceObject) : GzObjectExtension<zCWorld, GWorld>(sourceObject)
 {
@@ -39,7 +41,8 @@ void GWorld::OnWorldLoaded(zTWorldLoadMode mode)
 	LogInfo() << "Initialiting BSP-Tree";
 
 	// Get data from bsp-tree
-	m_BspTree = new GBspTree(m_SourceObject->GetBspTree());
+	m_BspTree = GBspTree::GetFromSource(m_SourceObject->GetBspTree());
+	m_BspTree->SetContainedWorld(this);
 
 	LogInfo() << "BSP-Tree initialization complete!";
 }
@@ -260,4 +263,61 @@ bool GWorld::RemoveVob(zCVob* vob)
 unsigned int GWorld::GetNumRegisteredVobs()
 {
 	return m_VobSet.size();
+}
+
+/**
+* The inventory-cells are actually consisting out of a lot of tiny world-objects with only
+* one vob. This is a special render-call for these kinds of worlds, which acts according to
+* the inventory-grid */
+void GWorld::RenderInventoryCell()
+{
+	GASSERT(m_SourceObject->IsInventoryWorld(), "RenderInventoryCell() can only be used on inventory worlds!");
+
+	// We should only have one vob in these worlds
+	GASSERT(m_VobSet.size() == 1, "InventoryWorld contains a different number of vobs than 1!");
+
+	// Queue for this single vob
+	RRenderQueueID queue = REngine::RenderingDevice->AcquireRenderQueue();
+
+	// Dynamic buffer for the frame information of this vob
+	RCachedDynamicBuffer frameBuffer = REngine::DynamicBufferCache->GetDataBuffer(EBindFlags::B_CONSTANTBUFFER, sizeof(ConstantBuffers::PerFrameConstantBuffer), sizeof(ConstantBuffers::PerFrameConstantBuffer));
+	
+	ConstantBuffers::PerFrameConstantBuffer pfcb;
+	pfcb.M_View = zCCamera::GetActiveCamera()->GetViewMatrix();
+	pfcb.M_InverseView = pfcb.M_View.Invert();
+	pfcb.M_Proj = zCCamera::GetActiveCamera()->GetProjectionMatrix().Transpose();
+	pfcb.M_ViewProj = (pfcb.M_Proj * pfcb.M_View);
+
+	// Push to GPU
+	frameBuffer.Buffer->UpdateData(&pfcb);
+
+	// Modify default pipeline-state for this vob
+	RStateMachine& sm = REngine::RenderingDevice->GetStateMachine();
+	RPipelineState* state = REngine::ResourceCache->GetCachedObject<RPipelineState>(GConstants::PipelineStates::BPS_INSTANCED_VOB_INVENTORY);
+	
+	sm.SetFromPipelineState(state);
+
+	// The game sets the rendering-viewport to the FF-Pipe, get it.
+	// TODO: Get this from the zCView itself?
+	sm.SetViewport(MyDirect3DDevice7::GetActiveDevice()->GetViewport());
+
+	// Update the state
+	REngine::ResourceCache->RemoveFromCache<RPipelineState>(GConstants::PipelineStates::BPS_INSTANCED_VOB_INVENTORY);
+	state = sm.MakeDrawCall(0,0);
+	REngine::ResourceCache->AddToCache<RPipelineState>(GConstants::PipelineStates::BPS_INSTANCED_VOB_INVENTORY, state);
+
+	// Just draw everything in this world, it should only be one vob anyways!
+	for(GVobObject* vob : m_VobSet)
+	{
+		std::vector<RenderInstance> instances;
+		vob->MakeRenderInstances(instances, GConstants::RS_INVENTORY);
+
+		for(RenderInstance& inst : instances)
+		{
+			inst.m_Drawable->PushRenderStateCache(GConstants::RS_INVENTORY, queue, 0, 0);
+		}
+	}
+
+	// Mark as free for next frame
+	REngine::DynamicBufferCache->DoneWith(frameBuffer);
 }

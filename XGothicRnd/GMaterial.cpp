@@ -112,6 +112,7 @@ RPixelShader* GMaterial::GetMaterialPixelShader(GConstants::ERenderStage stage)
 	{
 	case RS_WORLD:
 	case RS_SHADOW_SUN:
+	case RS_INVENTORY:
 		if(!IsMaterialUsingAlphaTest())
 			return REngine::ResourceCache->GetCachedObject<RPixelShader>(ShaderAliases::PS_DEFAULT_WORLD);
 		else

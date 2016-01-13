@@ -18,7 +18,7 @@ GTexture::~GTexture(void)
 {
 	// Remove the pointer to this from the surface
 	if(m_CurrentSurface)
-		m_SourceObject->GetSurface()->SetExternalEngineTexture(nullptr);
+		m_CurrentSurface->SetExternalEngineTexture(nullptr);
 
 	if(!m_Texture)
 	{
@@ -82,7 +82,7 @@ void GTexture::OnSurfaceUnlocked(void* imageData, unsigned int sizeInBytes, std:
 	only if the texture is currently cached in */
 MyDirectDrawSurface7* GTexture::GetSurface()
 {
-	return m_CurrentSurface;
+	return m_CurrentSurface ? m_CurrentSurface : m_SourceObject->GetSurface();
 }
 
 /** Returns whether the underlaying texture-object is fully initialized */

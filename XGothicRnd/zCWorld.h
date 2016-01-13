@@ -2,6 +2,7 @@
 #include "zEngineFunctions.h"
 #include "MemoryLocations.h"
 #include "zCObject.h"
+#include "oCGame.h"
 
 class zCWorld : public zCObject
 {
@@ -18,7 +19,7 @@ public:
 		them for each one. This flag indicates if this world is being used for the inventory. */
 	bool IsInventoryWorld()
 	{
-		return m_IsInventoryWorld == TRUE;
+		return oCGame::GetGame()->GetWorld() != this;
 	}
 private:
 
@@ -30,6 +31,8 @@ private:
 	zBOOL m_Compiled;
 	zBOOL m_CompiledEditorMode;
 	zBOOL m_TraceRayIgnoreVobFlag;
+
+	// This flag is not actually working
 	zBOOL m_IsInventoryWorld;
 };
 

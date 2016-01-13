@@ -115,7 +115,7 @@ bool RDevice::Present()
  */
 bool RDevice::DrawPipelineState(const struct RPipelineState& state)
 {
-	StateMachine.SetFromPipelineState(state);
+	StateMachine.SetFromPipelineState(&state);
 	bool r = DrawPipelineStateAPI(state, StateMachine.GetChanges(), StateMachine);
 
 	StateMachine.ResetChanges();
@@ -340,7 +340,7 @@ void RDevice::ProcessRenderQueue(RRenderQueueID queue)
 			for(unsigned int i=0;i<q1.Queue.size();i++)
 			{
 				// Enter our states and get the changes out
-				sm.SetFromPipelineState(*q1.Queue[i]);
+				sm.SetFromPipelineState(q1.Queue[i]);
 				q1.Changes[i] = sm.GetChanges();
 
 				// Bound everything, reset changes

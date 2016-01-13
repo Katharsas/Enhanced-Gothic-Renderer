@@ -8,7 +8,6 @@ class MyDynamicDirect3DVertexBuffer7 : public MyDirect3DVertexBuffer7
 public:
 	MyDynamicDirect3DVertexBuffer7(const D3DVERTEXBUFFERDESC& originalDesc) : MyDirect3DVertexBuffer7(originalDesc)
 	{
-		DynamicBuffer = nullptr;
 	}
 
 	HRESULT STDMETHODCALLTYPE Lock(DWORD dwFlags, LPVOID* lplpData, LPDWORD lpdwSize) 
@@ -17,21 +16,19 @@ public:
 		auto newBuffer = REngine::DynamicBufferCache->GetDataBuffer(EBindFlags::B_VERTEXBUFFER, ComputeFVFSize(OriginalDesc.dwFVF) * OriginalDesc.dwNumVertices, ComputeFVFSize(OriginalDesc.dwFVF));
 
 		// Give back the old buffer
-		if(DynamicBuffer)
-			REngine::DynamicBufferCache->DoneWith(DynamicBuffer, DynamicBufferFrame, EBindFlags::B_VERTEXBUFFER);
+		if(DynamicBuffer.Buffer)
+			REngine::DynamicBufferCache->DoneWith(DynamicBuffer);
 
-		// Overwrite old buffer
-		DynamicBufferFrame = newBuffer.first;
-		DynamicBuffer = newBuffer.second;
+		DynamicBuffer = newBuffer;
 
-		if(!DynamicBuffer)
+		if(!DynamicBuffer.Buffer)
 		{
 			LogError() << "Failed to get dynamic vertexbuffer from cache!";
 			return E_FAIL;
 		}
 
 		// Now we can lock it
-		DynamicBuffer->Map(lplpData);
+		DynamicBuffer.Buffer->Map(lplpData);
 		
 		if(lpdwSize)
 			*lpdwSize = OriginalDesc.dwSize;
@@ -41,13 +38,13 @@ public:
 
 	HRESULT STDMETHODCALLTYPE Unlock() 
 	{
-		if(!DynamicBuffer)
+		if(!DynamicBuffer.Buffer)
 		{
 			LogWarn() << "Unlock called on corrupted dynamic vertexbuffer!";
 			return E_FAIL;
 		}
 
-		DynamicBuffer->Unmap();
+		DynamicBuffer.Buffer->Unmap();
 
         return S_OK;
     }
@@ -55,11 +52,10 @@ public:
 	/** Returns the real engine-buffer */
 	RBuffer* GetEngineBuffer()
 	{
-		return DynamicBuffer;
+		return DynamicBuffer.Buffer;
 	}
 
 private:
 	/** Current dynamic buffer. This is managed by the dynamic buffer-cache. */
-	RBuffer* DynamicBuffer;
-	unsigned int DynamicBufferFrame;
+	RCachedDynamicBuffer DynamicBuffer;
 };

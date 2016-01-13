@@ -111,16 +111,13 @@ void GVobObject::UpdateVob()
 }
 
 /** Makes a new renderinstances and puts it into the given vector */
-void GVobObject::MakeRenderInstances(std::vector<RenderInstance>& instances)
+void GVobObject::MakeRenderInstances(std::vector<RenderInstance>& instances, GConstants::ERenderStage stage)
 {
 	// Use everything from the cache we can
 	for (unsigned int i = 0; i < std::min(m_Drawables.size(), RENDERINSTANCECACHE_SIZE); i++)
 	{
-		auto& inst = m_RenderInstanceCache[GConstants::RS_WORLD][i];
+		auto& inst = m_RenderInstanceCache[stage][i];
 		instances.push_back(inst.second);
-
-		if(inst.second.m_Instance->m_InstanceColor == 0xcdcdcdcd)
-			sinf(1.0f);
 
 		// Only follow the pointer if the cache says we have to
 		if (inst.first)
@@ -146,7 +143,7 @@ void GVobObject::MakeRenderInstances(std::vector<RenderInstance>& instances)
 	for (unsigned int i = RENDERINSTANCECACHE_SIZE; i<m_Drawables.size(); i++)
 	{
 		GBaseDrawable* d = m_Drawables[i];
-		if (d->HasStatesForStage(GConstants::ERenderStage::RS_WORLD))
+		if (d->HasStatesForStage(stage))
 		{
 			instances.push_back(RenderInstance((uint32_t)d->GetVisual(), &d->GetInstanceInfo(), d, this));
 			d->OnDrawn();
@@ -180,10 +177,13 @@ void GVobObject::UpdateRenderInstanceCache()
 	for (unsigned int i = 0; i < std::min(m_Drawables.size(), RENDERINSTANCECACHE_SIZE); i++)
 	{
 		GBaseDrawable* d = m_Drawables[i];
-		if (d->HasStatesForStage(GConstants::ERenderStage::RS_WORLD))
+		for(int s = 0; s < GConstants::ERenderStage::RS_NUM_STAGES; s++)
 		{
-			m_RenderInstanceCache[GConstants::ERenderStage::RS_WORLD][i].second = (RenderInstance((uint32_t)d->GetVisual(), &d->GetInstanceInfo(), d, this));
-			m_RenderInstanceCache[GConstants::ERenderStage::RS_WORLD][i].first = d->ShouldInformVisual();
+			if(d->HasStatesForStage((GConstants::ERenderStage)s))
+			{
+				m_RenderInstanceCache[(GConstants::ERenderStage)s][i].second = (RenderInstance((uint32_t)d->GetVisual(), &d->GetInstanceInfo(), d, this));
+				m_RenderInstanceCache[(GConstants::ERenderStage)s][i].first = d->ShouldInformVisual();
+			}
 		}
 	}
 }

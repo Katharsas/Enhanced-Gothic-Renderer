@@ -149,15 +149,9 @@ public:
 	/**
 	 * Collects all resources from the small state and sets them to the current full state
 	 */
-	void SetFromPipelineState(const struct RPipelineState& state);
-	void SetFromPipelineState(const struct RPipelineState& state, const ChangesStruct& changes);
+	void SetFromPipelineState(const struct RPipelineState* state);
+	void SetFromPipelineState(const struct RPipelineState* state, const ChangesStruct& changes);
 
-
-	/**
-	 * Sets the values from a pipeline-state-object to the current state
-	 */
-	// TODO: RENAME THIS OR MAKE PRIVATE. Very confusing with SetFromPipelineState.
-	void AssignPipelineStateValues(RPipelineState* state);
 
 	/**
 	 * Makes a drawcall-state. Unregister in Resource-Cache when done!
@@ -215,8 +209,15 @@ public:
 
 	void SetViewport(class RViewport* viewport);
 
+	/**
+	* Sets the values from a pipeline-state-object to the current state
+	*/
+	void AssignPipelineStateValues(RPipelineState* state);
+
 private:
 	
+
+
 	/**
 	 * Figures out where the state belongs to in the current draw order
 	 */

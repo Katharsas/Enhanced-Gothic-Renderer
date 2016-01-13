@@ -7,7 +7,7 @@
 #include <RBufferCollection.h>
 #include "zCCamera.h"
 
-GBspTree::GBspTree(zCBspTree* sourceTree)
+GBspTree::GBspTree(zCBspTree* sourceTree) : GzObjectExtension<zCBspTree, GBspTree>(sourceTree)
 {
 	m_SourceTree = sourceTree;
 

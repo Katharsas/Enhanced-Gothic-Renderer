@@ -21,6 +21,12 @@ public:
 	 */
 	void Render();
 
+	/**
+	 * The inventory-cells are actually consisting out of a lot of tiny world-objects with only
+	 * one vob. This is a special render-call for these kinds of worlds, which acts according to
+	 * the inventory-grid */
+	void RenderInventoryCell();
+
 	/** Registers a zCVob into the world */
 	void AddVob(zCVob* vob);
 

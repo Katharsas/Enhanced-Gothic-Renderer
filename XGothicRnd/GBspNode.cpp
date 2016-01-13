@@ -270,7 +270,7 @@ void  GBspNode::UpdateMeshPartPipelineState(WorldMeshPart& part)
 	RStateMachine& sm = REngine::RenderingDevice->GetStateMachine();
 
 	// Assign default values
-	sm.SetFromPipelineState(*defState);
+	sm.SetFromPipelineState(defState);
 
 	// Now ours...
 	GMeshIndexed* msh = part.m_Mesh;

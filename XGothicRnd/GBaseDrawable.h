@@ -44,7 +44,7 @@ public:
 	virtual ~GBaseDrawable(void);
 
 	/** Queries the visual for new pipeline states */
-	void ReaquireStateCache();
+	void ReaquireStateCache(GConstants::ERenderStage stage = GConstants::RS_UNDEFINED);
 
 	/** Called when a cached state got reaquired from the visual. Use this
 		method to fill in custom values like constant-buffers */

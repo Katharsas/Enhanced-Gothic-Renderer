@@ -25,7 +25,9 @@
 #include "../Engine.h"
 #include "../GTexture.h"
 
-
+// Currently active device
+class MyDirect3DDevice7;
+__declspec(selectany) MyDirect3DDevice7* s_ActiveDevice;
 
 const int DRAW_PRIM_INDEX_BUFFER_SIZE = 4096 * sizeof(VERTEX_INDEX);
 const int DRAW_PRIM_VERTEX_BUFFER_SIZE = 4096 * GOTHIC_FVF_XYZRHW_DIF_T1_SIZE;
@@ -35,6 +37,10 @@ public:
     MyDirect3DDevice7(IDirect3D7* direct3D7, IDirect3DDevice7* direct3DDevice7){
 
 		RefCount = 1;
+
+		// The game initializes a couple of them, but keeps the first one working
+		// Save this here for better accessability
+		s_ActiveDevice = this;
 
 		// Load the caps we created the "device" with
 		FILE* f = fopen("system\\GD3D11\\data\\DeviceEnum.bin", "rb");
@@ -56,6 +62,8 @@ public:
 		memset(BoundSurfaces, 0, sizeof(BoundSurfaces));
 
 		InitFixedFunctionEmulator();
+
+		
     }
 
 	~MyDirect3DDevice7()
@@ -725,17 +733,17 @@ public:
 			LastBoundFFStateHash = ffStateHash;
 
 			// Update data for FF-Emulator if needed
-			if(FFConstantBuffer.second)
-				REngine::DynamicBufferCache->DoneWith(FFConstantBuffer.second, FFConstantBuffer.first, EBindFlags::B_CONSTANTBUFFER);
+			if(FFConstantBuffer.Buffer)
+				REngine::DynamicBufferCache->DoneWith(FFConstantBuffer);
 
 			// Get us a new buffer
 			FFConstantBuffer = REngine::DynamicBufferCache->GetDataBuffer(EBindFlags::B_CONSTANTBUFFER, sizeof(FixedFunctionGraphicsState), sizeof(FixedFunctionGraphicsState));
-			FFConstantBuffer.second->UpdateData(&FixedFunctionStageInfo);
+			FFConstantBuffer.Buffer->UpdateData(&FixedFunctionStageInfo);
 		}
 
 		// Set FF-State
-		sm.SetConstantBuffer(0, FFConstantBuffer.second, EShaderType::ST_VERTEX);
-		sm.SetConstantBuffer(0, FFConstantBuffer.second, EShaderType::ST_PIXEL);
+		sm.SetConstantBuffer(0, FFConstantBuffer.Buffer, EShaderType::ST_VERTEX);
+		sm.SetConstantBuffer(0, FFConstantBuffer.Buffer, EShaderType::ST_PIXEL);
 
 		sm.SetPixelShader(PS_FixedFunctionEmulator);
 
@@ -811,7 +819,7 @@ public:
 		REngine::ResourceCache->DeleteResource(VS_XYZ_DIF_T1);
 		REngine::ResourceCache->DeleteResource(VS_XYZ_NRM_T1);
 
-		REngine::DynamicBufferCache->DoneWith(FFConstantBuffer.second, FFConstantBuffer.first, EBindFlags::B_CONSTANTBUFFER);
+		REngine::DynamicBufferCache->DoneWith(FFConstantBuffer);
 		REngine::ResourceCache->DeleteResource(PS_FixedFunctionEmulator);
 	}
 
@@ -830,7 +838,20 @@ public:
 		return collection.AddData(&list[0], list.size());
 	}
 
+	/** Returns the active viewport, set in the FF-Pipe */
+	RViewport* GetViewport()
+	{
+		return Viewport;
+	}
+
+	/** Singleton-like accessor to the currently active fake-device */
+	static MyDirect3DDevice7* GetActiveDevice()
+	{
+		return s_ActiveDevice;
+	}
+
 private:
+	
 	D3DDEVICEDESC7 FakeDeviceDesc;
 	int RefCount;
 
@@ -843,7 +864,7 @@ private:
 	size_t LastBoundFFStateHash;
 	RViewport* Viewport;
 	MyDirectDrawSurface7* BoundSurfaces[8];
-	std::pair<unsigned int, RBuffer*> FFConstantBuffer;
+	RCachedDynamicBuffer FFConstantBuffer;
 	RInputLayout* InputLayout_XYZ_DIF_T1;
 	RInputLayout* InputLayout_XYZRHW_DIF_T1;
 	RInputLayout* InputLayout_XYZRHW_DIF_SPEC_T1;

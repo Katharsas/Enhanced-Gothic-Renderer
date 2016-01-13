@@ -5,6 +5,30 @@
 const unsigned int NUM_BUFFERCACHE_FRAME_STORAGES = 1;
 
 class RBuffer;
+struct RCachedDynamicBuffer
+{
+	RCachedDynamicBuffer()
+	{
+		Buffer = nullptr;
+		Frame = 0;
+	}
+
+	RCachedDynamicBuffer(unsigned int frame, RBuffer* buffer)
+	{
+		Frame = frame;
+		Buffer = buffer;
+	}
+
+	std::pair<unsigned int, RBuffer*> Pair()
+	{
+		return std::make_pair(Frame, Buffer);
+	}
+
+	unsigned int Frame;
+	RBuffer* Buffer;
+};
+
+
 class RDynamicBufferCache
 {
 public:
@@ -14,11 +38,11 @@ public:
 	/** Request a dynamic buffer from the stash. This buffer will
 		get invalid after the frame ended.
 		Returns the current frame-number and the buffer. */
-	std::pair<unsigned int, RBuffer*> GetDataBuffer(EBindFlags bindFlags, unsigned int size, unsigned int stride);
+	RCachedDynamicBuffer GetDataBuffer(EBindFlags bindFlags, unsigned int size, unsigned int stride);
 
 	/** Signals the cache that we're done with a buffer */
 	void DoneWith(RBuffer* buffer, unsigned int bufferFrame, EBindFlags bindFlags);
-	void DoneWith(std::pair<unsigned int, RBuffer*>& buffer);
+	void DoneWith(RCachedDynamicBuffer& buffer);
 
 	/** Called by the Device when the frame ended */
 	void OnFrameEnded();

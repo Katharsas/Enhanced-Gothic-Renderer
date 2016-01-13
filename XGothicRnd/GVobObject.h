@@ -18,7 +18,7 @@ public:
 	void UpdateVob();
 
 	/** Makes a new renderinstances and puts it into the given vector */
-	void MakeRenderInstances(std::vector<RenderInstance>& instances);
+	void MakeRenderInstances(std::vector<RenderInstance>& instances, GConstants::ERenderStage stage = GConstants::RS_WORLD);
 
 	/** Sets the last time this was collected. Returns true if the timestamps mismatched */
 	inline bool UpdateObjectCollectionState(unsigned int timestamp)
@@ -46,6 +46,7 @@ public:
 
 	/** Reaquires the list of drawables from the visual */
 	void ReaquireDrawables();
+
 protected:
 
 	/** Updates the cache of the render-instances */

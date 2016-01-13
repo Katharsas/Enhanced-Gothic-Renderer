@@ -11,7 +11,7 @@ class GVobObject;
 
 template<typename T>
 class RBufferCollection;
-class GBspTree
+class GBspTree : public GzObjectExtension<zCBspTree, GBspTree>
 {
 public:
 	GBspTree(zCBspTree* sourceTree);
@@ -26,6 +26,13 @@ public:
 	 * Creates a new BSP-Node
 	 */
 	GBspNode* AddBspNode(zCBspBase* source);
+
+	/**
+	 * Returns the world this tree contains 
+	 */
+	GWorld* GetContainedWorld(){return m_ContainedWorld;}
+	void SetContainedWorld(GWorld* world){m_ContainedWorld = world;}
+
 private:
 
 	// Root-node
@@ -41,5 +48,8 @@ private:
 	// World mesh stored in a buffer
 	RBuffer* m_WorldMeshBuffer;
 	RBufferCollection<unsigned int>* m_WorldIndexBuffer;
+
+	// World this tree contains
+	GWorld* m_ContainedWorld;
 };
 

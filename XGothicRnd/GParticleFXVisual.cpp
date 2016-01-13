@@ -55,7 +55,7 @@ GVisual::StateCache* GParticleFXVisual::UpdatePipelineStatesFor(GBaseDrawable* d
 	RStateMachine& sm = REngine::RenderingDevice->GetStateMachine();
 	GTexture* visTexture = GTexture::GetFromSource(emt->visTexture);
 
-	sm.SetFromPipelineState(*defState);
+	sm.SetFromPipelineState(defState);
 
 	// Set the paged buffers to the state machine
 	sm.SetVertexBuffer(0, nullptr);

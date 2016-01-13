@@ -83,13 +83,28 @@ GVisual::StateCache* GStaticMeshVisual::UpdatePipelineStatesFor(GBaseDrawable* d
 	StateCache& cache = m_CreatedPipelineStates[drawable];
 
 	zCProgMeshProto* mesh = (zCProgMeshProto*)m_SourceObject;
-	RPipelineState* defState = REngine::ResourceCache->GetCachedObject<RPipelineState>(GConstants::PipelineStates::BPS_INSTANCED_VOB);
+	RPipelineState* defState = nullptr;
 	RStateMachine& sm = REngine::RenderingDevice->GetStateMachine();
 	RPagedBuffer<ExTVertexStruct>* pagedVB = Engine::Game->GetMainResources()->GetExPagedVertexBuffer();
 	RPagedBuffer<unsigned int>* pagedIB = Engine::Game->GetMainResources()->GetExPagedIndexBuffer();
 	RBuffer* instanceBuffer = Engine::Game->GetMainResources()->GetVobInstanceBuffer();
 
-	sm.SetFromPipelineState(*defState);
+	// Get the right state for the stage
+	switch(stage)
+	{
+	case GConstants::RS_WORLD:
+		defState = REngine::ResourceCache->GetCachedObject<RPipelineState>(GConstants::PipelineStates::BPS_INSTANCED_VOB);
+		break;
+
+	case GConstants::RS_INVENTORY:
+		defState = REngine::ResourceCache->GetCachedObject<RPipelineState>(GConstants::PipelineStates::BPS_INSTANCED_VOB_INVENTORY);
+		break;
+	}
+
+	if(!defState)
+		return nullptr;
+
+	sm.SetFromPipelineState(defState);
 
 	// Check for alpha-test
 
@@ -130,14 +145,22 @@ GVisual::StateCache* GStaticMeshVisual::UpdatePipelineStatesFor(GBaseDrawable* d
 		if (mesh->GetAlphaTestingEnabled())
 			m.m_Material->GetSourceObject()->SetBlendFunc(zTRnd_AlphaBlendFunc::zRND_ALPHA_FUNC_TEST);
 
-		sm.SetPixelShader(m.m_Material->GetMaterialPixelShader(GConstants::RS_WORLD));
+		sm.SetPixelShader(m.m_Material->GetMaterialPixelShader(stage));
 
 		// Apply textures and other parameters
 		m.m_Material->ApplyStates();
 
 		// Make drawcall using the values from the logical buffers. Set -1 as instance index as a placeholder
-		cache.PipelineStates[i] = sm.MakeDrawCallIndexedInstanced(m.m_NumIndices, 1, m_LogicalIndexBuffer->PageStart + m.m_SubMeshIndexStart, 0, (unsigned int)-1);
+		switch(stage)
+		{
+		case GConstants::RS_WORLD:
+			cache.PipelineStates[i] = sm.MakeDrawCallIndexedInstanced(m.m_NumIndices, 1, m_LogicalIndexBuffer->PageStart + m.m_SubMeshIndexStart, 0, (unsigned int)-1);
+			break;
 
+		case GConstants::RS_INVENTORY:
+			cache.PipelineStates[i] = sm.MakeDrawCallIndexed(m.m_NumIndices, m_LogicalIndexBuffer->PageStart + m.m_SubMeshIndexStart, 0);
+			break;
+		}
 
 #ifndef PUBLIC_RELEASE
 		//cache.PipelineStates[i]->SubmeshIdx = i;

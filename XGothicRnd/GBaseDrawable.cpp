@@ -37,13 +37,22 @@ GBaseDrawable::~GBaseDrawable(void)
 }
 
 /** Queries the visual for new pipeline states */
-void GBaseDrawable::ReaquireStateCache()
+void GBaseDrawable::ReaquireStateCache(GConstants::ERenderStage stage)
 {
 	// Make new states for this
-	GVisual::StateCache* cache = m_SourceVisual->UpdatePipelineStatesFor(this, GConstants::ERenderStage::RS_WORLD);
 
-	// No memleak here, the cachepointer will stay the same if this isn't the first call
-	m_StateCaches[GConstants::ERenderStage::RS_WORLD] = cache;
+	// Update all of them?
+	if(stage == GConstants::RS_UNDEFINED)
+	{
+		// No memleak here, the cachepointer will stay the same if this isn't the first call
+		for(int i = 0; i < GConstants::ERenderStage::RS_NUM_STAGES; i++)
+			m_StateCaches[i] = m_SourceVisual->UpdatePipelineStatesFor(this, (GConstants::ERenderStage)i);
+	}
+	else
+	{
+		m_StateCaches[stage] = m_SourceVisual->UpdatePipelineStatesFor(this, stage);
+	}
+
 }
 
 /** Pushes the cached pipeline-states to the renderer */

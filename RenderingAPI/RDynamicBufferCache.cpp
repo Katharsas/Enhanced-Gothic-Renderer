@@ -16,7 +16,7 @@ RDynamicBufferCache::~RDynamicBufferCache(void)
 }
 
 /** Request a dynamic buffer from the stash */
-std::pair<unsigned int, RBuffer*> RDynamicBufferCache::GetDataBuffer(EBindFlags bindFlags, unsigned int size, unsigned int stride)
+RCachedDynamicBuffer RDynamicBufferCache::GetDataBuffer(EBindFlags bindFlags, unsigned int size, unsigned int stride)
 {
 	// Check if such a buffer is free
 	// Map of the current free buffers of the given bindflags
@@ -26,7 +26,7 @@ std::pair<unsigned int, RBuffer*> RDynamicBufferCache::GetDataBuffer(EBindFlags 
 	{
 		auto& bAllMap = FrameBuffers[Frame].AllBuffers[bindFlags];
 		// Make a new buffer, but don't put it into the free-list just yet
-		return std::make_pair(Frame, MakeBufferFor(bAllMap, bindFlags, size, stride));
+		return RCachedDynamicBuffer(Frame, MakeBufferFor(bAllMap, bindFlags, size, stride));
 	}
 	
 	// Use any found free buffer
@@ -36,7 +36,7 @@ std::pair<unsigned int, RBuffer*> RDynamicBufferCache::GetDataBuffer(EBindFlags 
 	// Remove it from the free-map
 	bfreeMap.erase(it);
 
-	return std::make_pair(Frame, buffer);
+	return RCachedDynamicBuffer(Frame, buffer);
 }
 
 /** Signals the cache that we're done with a buffer */
@@ -50,9 +50,9 @@ void RDynamicBufferCache::DoneWith(RBuffer* buffer, unsigned int bufferFrame, EB
 	bDoneMap.insert(std::unordered_multimap<unsigned int, RBuffer*>::value_type(buffer->GetSizeInBytes(), buffer));
 }
 
-void RDynamicBufferCache::DoneWith(std::pair<unsigned int, RBuffer*>& buffer)
+void RDynamicBufferCache::DoneWith(RCachedDynamicBuffer& buffer)
 {
-	DoneWith(buffer.second, buffer.first, buffer.second->GetBindFlags());
+	DoneWith(buffer.Buffer, buffer.Frame, buffer.Buffer->GetBindFlags());
 }
 
 /** Called by the Device when the frame ended */

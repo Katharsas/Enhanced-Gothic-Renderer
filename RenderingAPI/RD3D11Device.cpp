@@ -417,7 +417,7 @@ bool RD3D11Device::DrawPipelineStatesAPI(struct RPipelineState*const* stateArray
  */
 bool RD3D11Device::BindPipelineState(const RPipelineState& state, const RStateMachine::ChangesStruct& changes, ID3D11DeviceContext* context, RStateMachine& stateMachine)
 {
-	stateMachine.SetFromPipelineState(state, changes);
+	stateMachine.SetFromPipelineState(&state, changes);
 	const RPipelineStateFull& fs = stateMachine.GetCurrentState();
 
 	if(changes.RasterizerState && fs.RasterizerState)

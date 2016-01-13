@@ -32,192 +32,192 @@ RStateMachine::~RStateMachine(void)
 /**
  * Collects all resources from the small state and sets them to the current full state
  */
-void RStateMachine::SetFromPipelineState(const RPipelineState& state)
+void RStateMachine::SetFromPipelineState(const RPipelineState* state)
 {
 	RResourceCache* cache = REngine::ResourceCache;
 
-	if(state.IDs.BlendState != State.BoundIDs.BlendState)
+	if(state->IDs.BlendState != State.BoundIDs.BlendState)
 	{
-		State.BlendState = cache->GetFromID<RBlendState>(state.IDs.BlendState);
+		State.BlendState = cache->GetFromID<RBlendState>(state->IDs.BlendState);
 		Changes.BlendState = true;
 		ChangesCount.BlendState++;
 	}
 
-	if(state.IDs.RasterizerState != State.BoundIDs.RasterizerState)
+	if(state->IDs.RasterizerState != State.BoundIDs.RasterizerState)
 	{
-		State.RasterizerState = cache->GetFromID<RRasterizerState>(state.IDs.DepthStencilState);
+		State.RasterizerState = cache->GetFromID<RRasterizerState>(state->IDs.DepthStencilState);
 		Changes.RasterizerState	= true;
 		ChangesCount.RasterizerState++;
 	}
 
-	if(state.IDs.SamplerState != State.BoundIDs.SamplerState)
+	if(state->IDs.SamplerState != State.BoundIDs.SamplerState)
 	{
-		State.SamplerState = cache->GetFromID<RSamplerState>(state.IDs.BlendState);
+		State.SamplerState = cache->GetFromID<RSamplerState>(state->IDs.BlendState);
 		Changes.SamplerState = true;
 		ChangesCount.SamplerState++;
 	}
-	if(state.IDs.DepthStencilState != State.BoundIDs.DepthStencilState)
+	if(state->IDs.DepthStencilState != State.BoundIDs.DepthStencilState)
 	{
-		State.DepthStencilState = cache->GetFromID<RDepthStencilState>(state.IDs.BlendState);
+		State.DepthStencilState = cache->GetFromID<RDepthStencilState>(state->IDs.BlendState);
 		Changes.DepthStencilState = true;
 		ChangesCount.DepthStencilState++;
 	}
-	if(state.IDs.IndexBuffer != State.BoundIDs.IndexBuffer)
+	if(state->IDs.IndexBuffer != State.BoundIDs.IndexBuffer)
 	{
-		State.IndexBuffer = cache->GetFromID<RBuffer>(state.IDs.IndexBuffer);
+		State.IndexBuffer = cache->GetFromID<RBuffer>(state->IDs.IndexBuffer);
 		Changes.IndexBuffer = true;
 		ChangesCount.IndexBuffer++;
 	}
-	if(state.IDs.VertexBuffer0 != State.BoundIDs.VertexBuffer0)
+	if(state->IDs.VertexBuffer0 != State.BoundIDs.VertexBuffer0)
 	{
-		State.VertexBuffers[0] = cache->GetFromID<RBuffer>(state.IDs.VertexBuffer0);
+		State.VertexBuffers[0] = cache->GetFromID<RBuffer>(state->IDs.VertexBuffer0);
 		Changes.VertexBuffers[0] = true;
 		ChangesCount.VertexBuffers[0]++;
 	}
-	if(state.IDs.VertexBuffer1 != State.BoundIDs.VertexBuffer1)
+	if(state->IDs.VertexBuffer1 != State.BoundIDs.VertexBuffer1)
 	{
-		State.VertexBuffers[1] = cache->GetFromID<RBuffer>(state.IDs.VertexBuffer1);
+		State.VertexBuffers[1] = cache->GetFromID<RBuffer>(state->IDs.VertexBuffer1);
 		Changes.VertexBuffers[1] = true;
 		ChangesCount.VertexBuffers[1]++;
 	}
 
-	if(state.IDs.VertexShader != State.BoundIDs.VertexShader)
+	if(state->IDs.VertexShader != State.BoundIDs.VertexShader)
 	{
-		State.VertexShader = cache->GetFromID<RVertexShader>(state.IDs.VertexShader);
+		State.VertexShader = cache->GetFromID<RVertexShader>(state->IDs.VertexShader);
 		Changes.VertexShader = true;
 		ChangesCount.VertexShader++;
 	}
 
-	if(state.IDs.PixelShader != State.BoundIDs.PixelShader)
+	if(state->IDs.PixelShader != State.BoundIDs.PixelShader)
 	{
-		State.PixelShader = cache->GetFromID<RPixelShader>(state.IDs.PixelShader);
+		State.PixelShader = cache->GetFromID<RPixelShader>(state->IDs.PixelShader);
 		Changes.PixelShader = true;
 		ChangesCount.PixelShader++;
 	}
 
-	if(state.IDs.InputLayout != State.BoundIDs.InputLayout)
+	if(state->IDs.InputLayout != State.BoundIDs.InputLayout)
 	{
-		State.InputLayout = cache->GetFromID<RInputLayout>(state.IDs.InputLayout);
+		State.InputLayout = cache->GetFromID<RInputLayout>(state->IDs.InputLayout);
 		Changes.InputLayout = true;
 		ChangesCount.InputLayout++;
 	}
 
-	if(state.IDs.ViewportID != State.BoundIDs.ViewportID)
+	if(state->IDs.ViewportID != State.BoundIDs.ViewportID)
 	{
-		State.Viewport = cache->GetFromID<RViewport>(state.IDs.ViewportID);
+		State.Viewport = cache->GetFromID<RViewport>(state->IDs.ViewportID);
 		Changes.Viewport = true;
 		ChangesCount.Viewport++;
 	}
 
 	for(int i=0;i<EShaderType::ST_NUM_SHADER_TYPES;i++)
 	{
-		if(!state.ConstantBuffers[i].empty() && State.ConstantBuffers[i] != state.ConstantBuffers[i])
+		if(!state->ConstantBuffers[i].empty() && State.ConstantBuffers[i] != state->ConstantBuffers[i])
 		{
-			State.ConstantBuffers[i] = state.ConstantBuffers[i];
+			State.ConstantBuffers[i] = state->ConstantBuffers[i];
 			Changes.ConstantBuffers[i] = true;
 			ChangesCount.ConstantBuffers[i]++;
 		}
 
-		if(!state.StructuredBuffers[i].empty() && State.StructuredBuffers[i] != state.StructuredBuffers[i])
+		if(!state->StructuredBuffers[i].empty() && State.StructuredBuffers[i] != state->StructuredBuffers[i])
 		{
-			State.StructuredBuffers[i] = state.StructuredBuffers[i];
+			State.StructuredBuffers[i] = state->StructuredBuffers[i];
 			Changes.StructuredBuffers[i] = true;
 			ChangesCount.StructuredBuffers[i]++;
 		}
 
-		if(!state.Textures[i].empty() && State.Textures[i] != state.Textures[i])
+		if(!state->Textures[i].empty() && State.Textures[i] != state->Textures[i])
 		{
-			State.Textures[i] = state.Textures[i];
+			State.Textures[i] = state->Textures[i];
 			Changes.MainTexture = true;
 			ChangesCount.MainTexture++;
 		}
 	}
 
-	State.NumDrawElements = state.NumDrawElements;
-	State.StartIndexOffset = state.StartIndexOffset;
-	State.StartVertexOffset = state.StartVertexOffset;
-	State.StartInstanceOffset = state.StartInstanceOffset;
-	State.BoundIDs = state.IDs;
+	State.NumDrawElements = state->NumDrawElements;
+	State.StartIndexOffset = state->StartIndexOffset;
+	State.StartVertexOffset = state->StartVertexOffset;
+	State.StartInstanceOffset = state->StartInstanceOffset;
+	State.BoundIDs = state->IDs;
 }
 
-void RStateMachine::SetFromPipelineState(const struct RPipelineState& state, const ChangesStruct& changes)
+void RStateMachine::SetFromPipelineState(const struct RPipelineState* state, const ChangesStruct& changes)
 {
 	RResourceCache* cache = REngine::ResourceCache;
 
 	if(changes.BlendState)
 	{
-		State.BlendState = cache->GetFromID<RBlendState>(state.IDs.BlendState);
+		State.BlendState = cache->GetFromID<RBlendState>(state->IDs.BlendState);
 	}
 
 	if(changes.RasterizerState)
 	{
-		State.RasterizerState = cache->GetFromID<RRasterizerState>(state.IDs.RasterizerState);
+		State.RasterizerState = cache->GetFromID<RRasterizerState>(state->IDs.RasterizerState);
 	}
 
 	if(changes.SamplerState)
 	{
-		State.SamplerState = cache->GetFromID<RSamplerState>(state.IDs.SamplerState);
+		State.SamplerState = cache->GetFromID<RSamplerState>(state->IDs.SamplerState);
 	}
 	if(changes.DepthStencilState)
 	{
-		State.DepthStencilState = cache->GetFromID<RDepthStencilState>(state.IDs.DepthStencilState);
+		State.DepthStencilState = cache->GetFromID<RDepthStencilState>(state->IDs.DepthStencilState);
 	}
 	if(changes.IndexBuffer)
 	{
-		State.IndexBuffer = cache->GetFromID<RBuffer>(state.IDs.IndexBuffer);
+		State.IndexBuffer = cache->GetFromID<RBuffer>(state->IDs.IndexBuffer);
 	}
 	if(changes.VertexBuffers[0])
 	{
-		State.VertexBuffers[0] = cache->GetFromID<RBuffer>(state.IDs.VertexBuffer0);
+		State.VertexBuffers[0] = cache->GetFromID<RBuffer>(state->IDs.VertexBuffer0);
 	}
 	if(changes.VertexBuffers[1])
 	{
-		State.VertexBuffers[1] = cache->GetFromID<RBuffer>(state.IDs.VertexBuffer1);
+		State.VertexBuffers[1] = cache->GetFromID<RBuffer>(state->IDs.VertexBuffer1);
 	}
 
 	if(changes.VertexShader)
 	{
-		State.VertexShader = cache->GetFromID<RVertexShader>(state.IDs.VertexShader);
+		State.VertexShader = cache->GetFromID<RVertexShader>(state->IDs.VertexShader);
 	}
 
 	if(changes.PixelShader)
 	{
-		State.PixelShader = cache->GetFromID<RPixelShader>(state.IDs.PixelShader);
+		State.PixelShader = cache->GetFromID<RPixelShader>(state->IDs.PixelShader);
 	}
 
 	if(changes.InputLayout)
 	{
-		State.InputLayout = cache->GetFromID<RInputLayout>(state.IDs.InputLayout);
+		State.InputLayout = cache->GetFromID<RInputLayout>(state->IDs.InputLayout);
 	}
 
 	if(changes.Viewport)
 	{
-		State.Viewport = cache->GetFromID<RViewport>(state.IDs.ViewportID);
+		State.Viewport = cache->GetFromID<RViewport>(state->IDs.ViewportID);
 	}
 
 	for(int i=0;i<EShaderType::ST_NUM_SHADER_TYPES;i++)
 	{
 		if(changes.ConstantBuffers[i])
 		{
-			State.ConstantBuffers[i] = state.ConstantBuffers[i];
+			State.ConstantBuffers[i] = state->ConstantBuffers[i];
 		}
 
 		if(changes.StructuredBuffers[i])
 		{
-			State.StructuredBuffers[i] = state.StructuredBuffers[i];
+			State.StructuredBuffers[i] = state->StructuredBuffers[i];
 		}
 
 		if(changes.MainTexture)
 		{
-			State.Textures[i] = state.Textures[i];
+			State.Textures[i] = state->Textures[i];
 		}
 	}
 
-	State.NumDrawElements = state.NumDrawElements;
-	State.StartIndexOffset = state.StartIndexOffset;
-	State.StartVertexOffset = state.StartVertexOffset;
-	State.StartInstanceOffset = state.StartInstanceOffset;
-	State.BoundIDs = state.IDs;
+	State.NumDrawElements = state->NumDrawElements;
+	State.StartIndexOffset = state->StartIndexOffset;
+	State.StartVertexOffset = state->StartVertexOffset;
+	State.StartInstanceOffset = state->StartInstanceOffset;
+	State.BoundIDs = state->IDs;
 }
 
 /**
