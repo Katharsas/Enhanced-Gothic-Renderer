@@ -111,9 +111,16 @@ struct PolyFlags
 		return __GetLightStatAtPos(pos);
 	}
 
+	/** Checks if this polygon is backfacing to the given cameraposition */
 	bool IsBackfacing(const float3& camPosition) const
 	{
 		return (camPosition.Dot(m_PolyPlane.m_Normal) <= m_PolyPlane.m_Distance);
+	}
+
+	/** Returns the polyplane of this polygon */
+	const zTPlane& GetPolyPlane()
+	{
+		return m_PolyPlane;
 	}
 
 private:

@@ -72,6 +72,9 @@ struct zTPlane
 	// Can't use the DX-Math library for this, since PB decided they wanted to store dxyz instead of xyzd, like everyone else does.
 	float m_Distance;
 	float3 m_Normal;
+
+	// This plane as a DX-Math-Plane
+	Plane AsPlane()const{return Plane(m_Normal, m_Distance); }
 };
 
 enum zTBspNodeType 

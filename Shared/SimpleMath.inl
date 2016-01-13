@@ -2632,6 +2632,11 @@ inline float Plane::DotNormal( const Vector3& normal ) const
     return XMVectorGetX( XMPlaneDotNormal( p, n0 ) );
 }
 
+inline float Plane::DistanceToPlane(const Vector3& position) const
+{
+	return position.Dot(Normal()) - D();
+}
+
 //------------------------------------------------------------------------------
 // Static functions
 //------------------------------------------------------------------------------

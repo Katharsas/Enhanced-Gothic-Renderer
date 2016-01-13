@@ -534,7 +534,8 @@ struct Plane : public XMFLOAT4
 
     float Dot( const Vector4& v ) const;
     float DotCoordinate( const Vector3& position ) const;
-    float DotNormal( const Vector3& normal ) const;
+	float DotNormal( const Vector3& normal ) const;
+	float DistanceToPlane( const Vector3& position ) const;
 
     // Static functions
     static void Transform( const Plane& plane, const Matrix& M, Plane& result );

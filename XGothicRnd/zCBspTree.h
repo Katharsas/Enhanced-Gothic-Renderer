@@ -8,6 +8,35 @@
 #include "zCVob.h"
 #include "zCMaterial.h"
 
+#define zSECTOR_INDEX_UNDEF	(0xFFFF)
+#define zSECTOR_INDEX_PORTAL (zWORD(1<<15))
+
+enum zTTraceRayFlags 
+{
+	zTRACERAY_VOB_IGNORE_NO_CD_DYN		= 1<<0,		
+	zTRACERAY_VOB_IGNORE				= 1<<1,		
+	zTRACERAY_VOB_BBOX					= 1<<2,		
+	zTRACERAY_VOB_OBB					= 1<<3,		
+													
+													
+	zTRACERAY_STAT_IGNORE				= 1<<4,		
+													
+	zTRACERAY_STAT_POLY					= 1<<5,		
+	zTRACERAY_STAT_PORTALS				= 1<<6,		
+
+													
+	zTRACERAY_POLY_NORMAL				= 1<<7,		
+	zTRACERAY_POLY_IGNORE_TRANSP		= 1<<8,		
+	zTRACERAY_POLY_TEST_WATER			= 1<<9,		
+	zTRACERAY_POLY_2SIDED				= 1<<10,	
+	zTRACERAY_VOB_IGNORE_CHARACTER		= 1<<11,	
+
+													
+	zTRACERAY_FIRSTHIT					= 1<<12,	
+	zTRACERAY_VOB_TEST_HELPER_VISUALS	= 1<<13,	
+	zTRACERAY_VOB_IGNORE_PROJECTILES	= 1<<14,
+};
+
 struct zCBspNode;
 struct zCBspLeaf;
 struct zCBspBase;
@@ -141,6 +170,56 @@ public:
 	unsigned int GetNumNodes()
 	{
 		return m_NumNodes;
+	}
+
+	/** Returns the sector the camera is currently in.
+		Does 2 raycasts, so don't call this too often. */
+	zCBspSector* GetCurrentCameraSector()
+	{
+		// Start at the current cameraposition and trace down. If we hit a portal, trace up again.
+		float3 start = zCCamera::GetActiveCameraPosition();
+		float3 hitPoint;
+		zCPolygon* hitPolygon = nullptr;
+
+		TraceRay(start, start + float3(0, -500000, 0), zTRACERAY_STAT_POLY | zTRACERAY_STAT_PORTALS, hitPoint, hitPolygon, nullptr);
+		if(hitPolygon && hitPolygon->GetPolyFlags().PortalPoly)
+		{
+			// Check for roof, I guess?
+			TraceRay(start, start + float3(0, 500000, 0), zTRACERAY_STAT_POLY | zTRACERAY_STAT_PORTALS, hitPoint, hitPolygon, nullptr);
+		}
+
+		// No roof, not indoors. Why do they have to check down anyways?
+		if(!hitPolygon)
+			return nullptr;
+
+		int sectorIndex = hitPolygon->GetPolyFlags().SectorIndex;
+		if(sectorIndex != zSECTOR_INDEX_UNDEF)
+		{
+			if(sectorIndex >= zSECTOR_INDEX_PORTAL)
+			{
+				// Get to the sector through the portal
+				// Not exactly sure what this does, but we get the index of the portal we have to use from this
+				int portalIndex = (sectorIndex & (zSECTOR_INDEX_PORTAL - 1)) << 1;
+
+				if(m_PortalList.Array[portalIndex]->GetPolyPlane().AsPlane().DistanceToPlane(start) < 0)
+					sectorIndex	= m_PortalList.Array[portalIndex]->GetPolyFlags().SectorIndex;
+				else
+					sectorIndex	= m_PortalList.Array[portalIndex+1]->GetPolyFlags().SectorIndex;
+			}		
+		}
+
+		return m_SectorList[sectorIndex];
+	}
+
+	/** Does a raytrace using the games original code. This is rather slow
+		start: Startposition of the ray
+		end: Endposition of the ray
+		traceFlags: What to trace (zTTraceRayFlags)
+		intersectionPoint: Point where the ray hit 
+		vobList: List of vobs we have hit on the way */
+	zBOOL TraceRay(const float3& start, const float3& end, int traceFlags, float3& intersectionPoint, zCPolygon* &hitPoly, zCArray<zCVob*> *vobList)
+	{
+		XCALL(MemoryLocations::Gothic::zCBspTree__TraceRay_zVEC3_const_r_zVEC3_const_r_int_zVEC3_r_zCPolygon_p_r_zCArrayzCVob_p_p);
 	}
 
 private:
