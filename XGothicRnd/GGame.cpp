@@ -210,6 +210,9 @@ void GGame::OnWorldLoaded(zCWorld* world, const std::string& file, zTWorldLoadMo
 */
 void GGame::OnFrameStart()
 {
+	// Clear debug text so it can be filled up again this frame
+	m_FrameDebugLines.clear();
+
 	// Update pages in global buffers if needed
 	m_MainResources->GetExPagedVertexBuffer()->RebuildPages();
 	m_MainResources->GetExPagedIndexBuffer()->RebuildPages();
@@ -336,6 +339,14 @@ float GGame::GetFramesPerSecond()
 }
 
 /**
+* Adds a single line to this frames debug-output
+*/
+void GGame::AddFrameDebugLine(const std::string& line)
+{
+	m_FrameDebugLines += line + "\n";
+}
+
+/**
 * Draws the statistics of the renderer using ingame-methods
 */
 void GGame::DrawStatistics()
@@ -343,14 +354,19 @@ void GGame::DrawStatistics()
 	static int s = 0;
 	s++;
 
-	if ((s % 25) == 0)
+	if ((s % 35) == 0)
 	{
 		std::stringstream stat;
 		stat << "FPS: " << std::fixed << std::setprecision(2) << GetFramesPerSecond() << " (" << 1000.0f / GetFramesPerSecond() << "ms)" << "\n";
 		SetWindowText(REngine::RenderingDevice->GetOutputWindow(), stat.str().c_str());
 	}
+
+	if (zCView::GetSessionView())
+		zCView::GetSessionView()->Print(INT2(0,0), m_FrameDebugLines);
+	
+
 	return;
-	std::stringstream stat;
+	/*std::stringstream stat;
 	stat << "FPS: " << std::fixed << std::setprecision(2) << GetFramesPerSecond() << " (" << 1000.0f / GetFramesPerSecond() << "ms)" << "\n"
 		<< "Queues: " << REngine::RenderingDevice->GetNumQueuesInUse() << "\n"
 		<< "DrawCalls: " << REngine::RenderingDevice->GetNumRegisteredDrawCalls() << "\n";
@@ -362,7 +378,7 @@ void GGame::DrawStatistics()
 	memset(&REngine::RenderingDevice->GetStateMachine().GetChangesCounts(), 0, sizeof(RStateMachine::ChangesCountStruct));
 
 	if (zCView::GetSessionView())
-		zCView::GetSessionView()->Print(INT2(0,0), stat.str());
+		zCView::GetSessionView()->Print(INT2(0,0), stat.str());*/
 }
 
 /**
