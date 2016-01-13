@@ -223,7 +223,8 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <CustomBuildStep>
-      <Command>copy "$(SolutionDir)$(Configuration)\$(ProjectName).lib" "$(SolutionDir)lib"</Command>
+      <Command>copy "$(SolutionDir)$(Configuration)\$(ProjectName).lib" "$(SolutionDir)lib"
+</Command>
     </CustomBuildStep>
     <CustomBuildStep>
       <Outputs>xxx</Outputs>
@@ -248,7 +249,8 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <CustomBuildStep>
-      <Command>copy "$(SolutionDir)$(Configuration)\$(ProjectName).lib" "$(SolutionDir)lib"</Command>
+      <Command>copy "$(SolutionDir)$(Configuration)\$(ProjectName).lib" "$(SolutionDir)lib"
+</Command>
     </CustomBuildStep>
     <CustomBuildStep>
       <Outputs>xxx</Outputs>
@@ -273,7 +275,8 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <CustomBuildStep>
-      <Command>copy "$(SolutionDir)$(Configuration)\$(ProjectName).lib" "$(SolutionDir)lib"</Command>
+      <Command>copy "$(SolutionDir)$(Configuration)\$(ProjectName).lib" "$(SolutionDir)lib"
+</Command>
     </CustomBuildStep>
     <CustomBuildStep>
       <Outputs>xxx</Outputs>

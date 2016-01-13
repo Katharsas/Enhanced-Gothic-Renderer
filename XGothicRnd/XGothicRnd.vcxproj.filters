@@ -29,6 +29,9 @@
     <Filter Include="Wrappers\Visuals">
       <UniqueIdentifier>{8a6e8b27-6136-4086-81da-7794eba6876c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Batch">
+      <UniqueIdentifier>{cbcc8ad5-11d5-4c4e-886b-fbe0814c570c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="D3D7\MyDirectDrawSurface7.cpp">
@@ -421,6 +424,12 @@
   <ItemGroup>
     <None Include="ddraw.def">
       <Filter>Base</Filter>
+    </None>
+    <None Include="UnPatchSmartheap.bat">
+      <Filter>Batch</Filter>
+    </None>
+    <None Include="PatchSmartheap.bat">
+      <Filter>Batch</Filter>
     </None>
   </ItemGroup>
 </Project>
