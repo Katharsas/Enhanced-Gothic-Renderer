@@ -44,6 +44,7 @@ void GWorld::OnWorldLoaded(zTWorldLoadMode mode)
 	LogInfo() << "BSP-Tree initialization complete!";
 }
 
+
 /**
  * Draws the world from the current camerapperspective
  */

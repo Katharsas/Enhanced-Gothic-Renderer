@@ -26,7 +26,7 @@ private:
 	zBOOL m_BOneShotAni;
 };
 
-class zCBspSector;
+struct zCBspSector;
 class zCTexture;
 class zCMaterial : public zCObject
 {
@@ -61,6 +61,16 @@ public:
 	void SetBlendFunc(zTRnd_AlphaBlendFunc func)
 	{
 		m_Flags.m_RndAlphaBlendFunc = func;
+	}
+
+	zCBspSector* GetSectorFront()
+	{
+		return m_BspSectorFront;
+	}
+
+	zCBspSector* GetSectorBack()
+	{
+		return m_BspSectorBack;
 	}
 
 private:

@@ -53,5 +53,6 @@ private:
 
 	// Currently rendered vobs
 	std::vector<GVobObject*> m_VobRenderList;
+
 };
 

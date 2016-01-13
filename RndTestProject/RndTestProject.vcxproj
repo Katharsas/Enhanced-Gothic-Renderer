@@ -56,14 +56,16 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>E:\Code\XGothicRnd\RenderingAPI;$(DXSDK_DIR)\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(DXSDK_DIR)\Lib\x86;E:\Code\XGothicRnd\lib;C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\lib;$(DXSDK_DIR)\Lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\jodok\Source\Repos\Enhanced-Gothic-Renderer\RenderingAPI;$(DXSDK_DIR)\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(DXSDK_DIR)\Lib\x86;C:\Users\jodok\Source\Repos\Enhanced-Gothic-Renderer\lib;C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_NoOpt|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>C:\Users\jodok\Source\Repos\Enhanced-Gothic-Renderer\RenderingAPI;$(DXSDK_DIR)\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(DXSDK_DIR)\Lib\x86;C:\Users\jodok\Source\Repos\Enhanced-Gothic-Renderer\lib;C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

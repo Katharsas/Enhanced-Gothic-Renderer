@@ -33,6 +33,12 @@ enum zTWld_RenderMode
 	zTW_RENDER_MODE_LIGHTMAPS  
 };	
 
+struct zTBBox2D
+{
+	float2 m_Min;
+	float2 m_Max;
+};
+
 struct zTBBox3D 
 {
 	float3 m_Min;	

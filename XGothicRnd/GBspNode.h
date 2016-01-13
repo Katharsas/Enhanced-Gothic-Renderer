@@ -3,7 +3,7 @@
 #include "VertexTypes.h"
 
 // Only generate geometry-cache for the levels from this to zero.
-const unsigned int GEOMETRY_MAX_NODE_LEVEL = 15;
+const unsigned int GEOMETRY_MAX_NODE_LEVEL = 9;
 
 class GVobObject;
 class GBspTree;
@@ -98,7 +98,10 @@ private:
 	void DrawNodeExplicit(RRenderQueueID queue);
 
 	/** Collects all vobs from the underlaying leaf-nodes */
-	void CollectVobs(std::vector<GVobObject*>& visibleVobs, float3 cameraPosition, float objectFarplane);
+	void CollectVobs(std::vector<GVobObject*>& visibleVobs, const float3& cameraPosition, float objectFarplane);
+
+	/** Draws all Nodes related to a visible Portal */
+	void AddVisibleIndoorVobs(const float3& cameraPosition, std::vector<GVobObject*>& visibleVobs, unsigned int frame);
 
 	// Original node
 	zCBspBase* m_SourceNode;
@@ -106,6 +109,10 @@ private:
 	GBspNode* m_Back;
 	Plane m_SeperationPlane;
 	zTBBox3D m_BBox;
+
+	//List of all Portals
+	std::vector<zCPolygon*> m_PortalList;
+	bool m_Indoor;
 
 	// Whether this node is a leaf or not
 	bool m_IsLeaf;

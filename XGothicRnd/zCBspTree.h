@@ -3,6 +3,7 @@
 #include "zCArray.h"
 #include <vector>
 #include "zCPolygon.h"
+#include "zSTRING.h"
 
 struct zCBspNode;
 struct zCBspLeaf;
@@ -11,15 +12,32 @@ class zCMesh;
 class zCPolygon;
 class zCVob;
 class zCVobLight;
-class zCBspSector;
 
+struct zCBspSector
+{
+	struct zTPortalInfo {
+		byte visible;
+		byte alpha;
+	};
+
+	zSTRING m_SectorName;
+	zCArray<zCBspBase*> m_SectorNodes;
+	DWORD m_SectorIndex;
+	zCArray<zCPolygon*> m_SectorPortals;
+	zCArray<zTPortalInfo> m_SectorPortalInfo;
+	UINT m_Activated;
+	UINT m_Rendered;
+	zTBBox2D m_ActivePortal;
+	float3 m_SectorCenter;
+	byte m_HasBigNoFade;
+};
 
 struct zCBspBase
 {
 	zCBspNode* m_Parent;
-	zTBBox3D m_BBox3D;							
+	zTBBox3D m_BBox3D;
 	zCPolygon** m_PolyList;
-	unsigned int m_NumPolys;						
+	unsigned int m_NumPolys;
 	zTBspNodeType m_NodeType;
 };
 
@@ -35,11 +53,11 @@ struct zCBspNode : public zCBspBase
 	/** Returns only the polygons used in LOD0 of the world */
 	void GetLOD0Polygons(std::vector<zCPolygon *>& target)
 	{
-		for(int i=0;i<m_NumLeafs;i++)
+		for (int i = 0; i < m_NumLeafs; i++)
 		{
 			zCBspLeaf* leaf = &m_LeafList[i];
 
-			for(unsigned int j=0;j<leaf->m_NumPolys;j++)
+			for (unsigned int j = 0; j < leaf->m_NumPolys; j++)
 			{
 				target.push_back(leaf->m_PolyList[j]);
 			}
@@ -47,8 +65,8 @@ struct zCBspNode : public zCBspBase
 	}
 
 	Plane	m_Plane;
-	zCBspBase* m_Front;			
-	zCBspBase* m_Back;		
+	zCBspBase* m_Front;
+	zCBspBase* m_Back;
 	zCBspLeaf* m_LeafList;
 	int m_NumLeafs;
 	char m_PlaneSignbits;
@@ -63,11 +81,11 @@ public:
 	/** Returns only the polygons used in LOD0 of the world */
 	void GetLOD0Polygons(std::vector<zCPolygon *>& target)
 	{
-		for(int i=0;i<m_NumLeafs;i++)
+		for (int i = 0; i < m_NumLeafs; i++)
 		{
 			zCBspLeaf* leaf = &m_LeafList[i];
 
-			for(unsigned int j=0;j<leaf->m_NumPolys;j++)
+			for (unsigned int j = 0; j < leaf->m_NumPolys; j++)
 			{
 				target.push_back(leaf->m_PolyList[j]);
 			}
@@ -92,11 +110,11 @@ private:
 	zCBspBase* m_BSPRoot;
 	zCMesh* m_Mesh;
 	zCPolygon** m_TreePolyList;
-	zCBspNode* m_NodeList;				
-	zCBspLeaf* m_LeafList;				
-	int	m_NumNodes;				
-	int	m_NumLeafs;				
-	int	m_NumPolys;				
+	zCBspNode* m_NodeList;
+	zCBspLeaf* m_LeafList;
+	int	m_NumNodes;
+	int	m_NumLeafs;
+	int	m_NumPolys;
 	zCArray<zCVob*>	m_RenderVobList;
 	zCArray<zCVobLight*> m_RenderLightList;
 	zCArray<zCBspSector*> m_SectorList;
@@ -105,8 +123,8 @@ private:
 	zTWld_RenderMode m_WorldRenderMode;
 	float m_VobFarClipZ;
 	zTPlane	m_VobFarPlane;
-	int	m_VobFarPlaneSignbits;		
-	zBOOL m_DrawVobBBox3D;	
+	int	m_VobFarPlaneSignbits;
+	zBOOL m_DrawVobBBox3D;
 	int	m_LeafsRendered;
 	int	m_VobsRendered;
 };

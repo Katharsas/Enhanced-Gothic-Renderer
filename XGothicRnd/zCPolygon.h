@@ -111,6 +111,11 @@ struct PolyFlags
 		return __GetLightStatAtPos(pos);
 	}
 
+	bool IsBackfacing(const float3& camPosition) const
+	{
+		return (camPosition.Dot(m_PolyPlane.m_Normal) <= m_PolyPlane.m_Distance);
+	}
+
 private:
 	float3 __GetLightStatAtPos(const float3& pos)
 	{
