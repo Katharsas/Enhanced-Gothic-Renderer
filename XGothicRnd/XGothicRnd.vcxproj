@@ -228,7 +228,7 @@ copy "$(OutDir)$(TargetName).pdb" "$(G2_SYSTEM_PATH)\ddraw.pdb"</Command>
       <Command>copy "shaders\*.*" "$(G2_SYSTEM_PATH)\GD3D11\shaders\"
 copy "$(OutDir)$(TargetName)$(TargetExt)" "$(G2_SYSTEM_PATH)\ddraw.dll"
 copy "$(OutDir)$(TargetName).pdb" "$(G2_SYSTEM_PATH)\ddraw.pdb"
-copy "$(G2_SYSTEM_PATH)\ShW32_org.dll" "$(G2_SYSTEM_PATH)\ShW32.dll"</Command>
+call "$(ProjectDir)\UnPatchSmartHeap.bat"</Command>
     </CustomBuildStep>
     <CustomBuildStep>
       <Outputs>xxx</Outputs>
@@ -259,7 +259,7 @@ copy "$(G2_SYSTEM_PATH)\ShW32_org.dll" "$(G2_SYSTEM_PATH)\ShW32.dll"</Command>
       <Command>copy "shaders\*.*" "$(G2_SYSTEM_PATH)\GD3D11\shaders\"
 copy "$(OutDir)$(TargetName)$(TargetExt)" "$(G2_SYSTEM_PATH)\ddraw.dll"
 copy "$(OutDir)$(TargetName).pdb" "$(G2_SYSTEM_PATH)\ddraw.pdb"
-copy "$(G2_SYSTEM_PATH)\ShW32_org.dll" "$(G2_SYSTEM_PATH)\ShW32.dll"</Command>
+call "$(ProjectDir)\UnPatchSmartHeap.bat"</Command>
     </CustomBuildStep>
     <CustomBuildStep>
       <Outputs>xxx</Outputs>
@@ -289,8 +289,8 @@ copy "$(G2_SYSTEM_PATH)\ShW32_org.dll" "$(G2_SYSTEM_PATH)\ShW32.dll"</Command>
     <CustomBuildStep>
       <Command>copy "shaders\*.*" "$(G2_SYSTEM_PATH)\GD3D11\shaders\"
 copy "$(OutDir)$(TargetName)$(TargetExt)" "$(G2_SYSTEM_PATH)\ddraw.dll"
-copy "$(OutDir)$(TargetName).pdb" "$(G2_SYSTEM_PATH)\ddraw.pdb"
-copy "$(G2_SYSTEM_PATH)\ShW32_nop.dll" "$(G2_SYSTEM_PATH)\ShW32.dll"</Command>
+
+call "$(ProjectDir)\PatchSmartHeap.bat"</Command>
     </CustomBuildStep>
     <CustomBuildStep>
       <Outputs>xxx</Outputs>
@@ -488,9 +488,9 @@ copy "$(G2_SYSTEM_PATH)\ShW32_nop.dll" "$(G2_SYSTEM_PATH)\ShW32.dll"</Command>
     <ClInclude Include="zSTRING.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\RenderingAPI\PatchSmartheap.bat" />
-    <None Include="..\RenderingAPI\UnPatchSmartheap.bat" />
     <None Include="ddraw.def" />
+    <None Include="PatchSmartheap.bat" />
+    <None Include="UnPatchSmartheap.bat" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -425,10 +425,10 @@
     <None Include="ddraw.def">
       <Filter>Base</Filter>
     </None>
-    <None Include="..\RenderingAPI\PatchSmartheap.bat">
+    <None Include="UnPatchSmartheap.bat">
       <Filter>Batch</Filter>
     </None>
-    <None Include="..\RenderingAPI\UnPatchSmartheap.bat">
+    <None Include="PatchSmartheap.bat">
       <Filter>Batch</Filter>
     </None>
   </ItemGroup>

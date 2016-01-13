@@ -224,7 +224,7 @@
     </Link>
     <CustomBuildStep>
       <Command>copy "$(SolutionDir)$(Configuration)\$(ProjectName).lib" "$(SolutionDir)lib"
-call "$(ProjectDir)\UnPatchSmartHeap.bat"</Command>
+</Command>
     </CustomBuildStep>
     <CustomBuildStep>
       <Outputs>xxx</Outputs>
@@ -250,7 +250,7 @@ call "$(ProjectDir)\UnPatchSmartHeap.bat"</Command>
     </Link>
     <CustomBuildStep>
       <Command>copy "$(SolutionDir)$(Configuration)\$(ProjectName).lib" "$(SolutionDir)lib"
-call "$(ProjectDir)\UnPatchSmartHeap.bat"</Command>
+</Command>
     </CustomBuildStep>
     <CustomBuildStep>
       <Outputs>xxx</Outputs>
@@ -276,7 +276,7 @@ call "$(ProjectDir)\UnPatchSmartHeap.bat"</Command>
     </Link>
     <CustomBuildStep>
       <Command>copy "$(SolutionDir)$(Configuration)\$(ProjectName).lib" "$(SolutionDir)lib"
-call "$(ProjectDir)\PatchSmartHeap.bat"</Command>
+</Command>
     </CustomBuildStep>
     <CustomBuildStep>
       <Outputs>xxx</Outputs>
