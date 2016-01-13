@@ -4,6 +4,9 @@
 #include <vector>
 #include "zCPolygon.h"
 #include "zSTRING.h"
+#include "GVobObject.h"
+#include "zCVob.h"
+#include "zCMaterial.h"
 
 struct zCBspNode;
 struct zCBspLeaf;
@@ -12,25 +15,7 @@ class zCMesh;
 class zCPolygon;
 class zCVob;
 class zCVobLight;
-
-struct zCBspSector
-{
-	struct zTPortalInfo {
-		byte visible;
-		byte alpha;
-	};
-
-	zSTRING m_SectorName;
-	zCArray<zCBspBase*> m_SectorNodes;
-	DWORD m_SectorIndex;
-	zCArray<zCPolygon*> m_SectorPortals;
-	zCArray<zTPortalInfo> m_SectorPortalInfo;
-	UINT m_Activated;
-	UINT m_Rendered;
-	zTBBox2D m_ActivePortal;
-	float3 m_SectorCenter;
-	byte m_HasBigNoFade;
-};
+class GVobObject;
 
 struct zCBspBase
 {
@@ -72,7 +57,61 @@ struct zCBspNode : public zCBspBase
 	char m_PlaneSignbits;
 };
 
+struct zCBspSector
+{
+	void AddSectorVobsRec(const float3& cameraPosition, std::vector<GVobObject*>& visibleVobs, unsigned int frame, zCBspSector* lastSector)
+	{
+		if (m_Rendered == frame)
+			return;
+		
+		m_Rendered = frame;
+		for (int i = 0; i < m_SectorNodes.GetSize(); i++)
+		{
+			zCBspBase* base = m_SectorNodes.Array[i];
 
+			zCBspLeaf* leaf = (zCBspLeaf*)base;
+			for (unsigned int j = 0; j < leaf->LeafVobList.NumInArray; j++)
+			{
+				GVobObject* vob = leaf->LeafVobList.Array[j]->GetVobObject();
+				if (vob && vob->UpdateObjectCollectionState(frame))
+				{
+					visibleVobs.push_back(vob);
+				}
+			}
+		}
+
+		for (int i = 0; i < m_SectorPortals.GetSize(); i++)
+		{
+			zCPolygon* p = m_SectorPortals.Array[i];
+
+			// no outdoor -> indoor portals
+			if (p->GetMaterial()->GetSectorFront())
+			{
+				zCBspSector* back = p->GetMaterial()->GetSectorBack();
+				if (back && lastSector != back)
+				{
+					back->AddSectorVobsRec(cameraPosition, visibleVobs, frame, this);
+				}
+			}
+		}
+	}
+
+	struct zTPortalInfo {
+		byte visible;
+		byte alpha;
+	};
+
+	zSTRING m_SectorName;
+	zCArray<zCBspBase*> m_SectorNodes;
+	DWORD m_SectorIndex;
+	zCArray<zCPolygon*> m_SectorPortals;
+	zCArray<zTPortalInfo> m_SectorPortalInfo;
+	UINT m_Activated;
+	UINT m_Rendered;
+	zTBBox2D m_ActivePortal;
+	float3 m_SectorCenter;
+	byte m_HasBigNoFade;
+};
 
 
 class zCBspTree

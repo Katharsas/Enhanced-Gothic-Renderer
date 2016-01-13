@@ -77,7 +77,7 @@ public:
 		return m_MeshParts;
 	}
 
-	/** Returns wheather this is a leaf or not */
+	/** Returns whether this is a leaf or not */
 	bool IsLeaf()
 	{
 		return m_IsLeaf;
@@ -112,7 +112,6 @@ private:
 
 	//List of all Portals
 	std::vector<zCPolygon*> m_PortalList;
-	bool m_Indoor;
 
 	// Whether this node is a leaf or not
 	bool m_IsLeaf;

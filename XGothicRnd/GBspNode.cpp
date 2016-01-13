@@ -32,7 +32,6 @@ void GBspNode::Init(zCBspBase* sourceNode, GBspTree* sourceTree)
 	m_IsLeaf = sourceNode->m_NodeType == zTBspNodeType::zBSP_LEAF;
 	m_NodeLevel = 0;
 	m_BBox = sourceNode->m_BBox3D;
-	m_Indoor = true;
 
 	if (sourceNode->m_NodeType == zTBspNodeType::zBSP_NODE)
 		m_SeperationPlane = ((zCBspNode*)sourceNode)->m_Plane;
@@ -106,9 +105,6 @@ void GBspNode::BuildTriangleList(std::vector<ExTVertexStruct>& vertices)
 			if (poly->GetPolyFlags().PortalIndoorOutdoor)
 				m_PortalList.push_back(poly);
 
-			if (!poly->GetPolyFlags().SectorPoly || !m_IsLeaf)
-				m_Indoor = false;
-
 			// Pack all vertices into a better datastructure
 			std::vector<ExTVertexStruct> packed;
 
@@ -179,8 +175,6 @@ void GBspNode::BuildTriangleList(std::vector<ExTVertexStruct>& vertices)
 			vertices.insert(vertices.end(), validVertices.begin(), validVertices.end());
 
 		}
-		if (m_Indoor)
-			LogInfo() << "indoor";
 
 	}else
 	{
@@ -270,7 +264,7 @@ void  GBspNode::UpdateMeshPartPipelineState(WorldMeshPart& part)
 	RStateMachine& sm = REngine::RenderingDevice->GetStateMachine();
 
 	// Assign default values
-	sm.SetFromPipelineState(defState);
+	sm.SetFromPipelineState(*defState);
 
 	// Now ours...
 	GMeshIndexed* msh = part.m_Mesh;
@@ -400,7 +394,7 @@ void GBspNode::CollectVobs(std::vector<GVobObject*>& visibleVobs, const float3& 
 	// TODO: This method is pretty bad at cache locality. Keep an eye on optimizing this!
 
 	// Run until we find a leaf and put its vobs into the target vector
-	if (IsLeaf() && !m_Indoor)
+	if (IsLeaf())
 	{
 		zCBspLeaf* leaf = (zCBspLeaf*)m_SourceNode;
 
@@ -410,13 +404,14 @@ void GBspNode::CollectVobs(std::vector<GVobObject*>& visibleVobs, const float3& 
 		for (unsigned int i = 0; i < leaf->LeafVobList.NumInArray; i++)
 		{
 			GVobObject* vob = leaf->LeafVobList.Array[i]->GetVobObject();
-			if (vob && vob->UpdateObjectCollectionState(frame))
+			bool isIndoor = (leaf->LeafVobList.Array[i]->GetGroundPolygon() && leaf->LeafVobList.Array[i]->GetGroundPolygon()->GetMaterial()->GetSectorFront());
+			if (vob && !isIndoor && vob->UpdateObjectCollectionState(frame))
 			{
 				visibleVobs.push_back(vob);
 			}
 		}
 
-		//AddVisibleIndoorVobs(cameraPosition, visibleVobs, frame);
+		AddVisibleIndoorVobs(cameraPosition, visibleVobs, frame);
 
 	}
 	else
@@ -451,37 +446,9 @@ void GBspNode::AddVisibleIndoorVobs(const float3& cameraPosition, std::vector<GV
 			zCBspSector* sector = p->GetMaterial()->GetSectorBack();
 			if (sector)
 			{
-				for (int i = 0; i < sector->m_SectorNodes.GetSize(); i++)
-				{
-					zCBspBase* base = sector->m_SectorNodes.Array[i];
-
-					std::function<void(zCBspBase*)> fn = [&](zCBspBase* base)
-					{
-						if (base->m_NodeType == zBSP_LEAF)
-						{
-							zCBspLeaf* leaf = (zCBspLeaf*)base;
-							for (unsigned int i = 0; i < leaf->LeafVobList.NumInArray; i++)
-							{
-								GVobObject* vob = leaf->LeafVobList.Array[i]->GetVobObject();
-								if (vob && vob->UpdateObjectCollectionState(frame))
-								{
-									visibleVobs.push_back(vob);
-								}
-							}
-						}
-						else
-						{
-							zCBspNode* node = (zCBspNode*)base;
-							if (node->m_Front)
-								fn(node->m_Front);
-							if (node->m_Back)
-								fn(node->m_Back);
-						}
-					};
-
-					fn(base);
-				}
+				sector->AddSectorVobsRec(cameraPosition, visibleVobs, frame, nullptr);
 			}
+
 		}
 	}
 }
