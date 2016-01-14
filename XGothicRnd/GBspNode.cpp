@@ -264,7 +264,7 @@ void  GBspNode::UpdateMeshPartPipelineState(WorldMeshPart& part)
 	RStateMachine& sm = REngine::RenderingDevice->GetStateMachine();
 
 	// Assign default values
-	sm.SetFromPipelineState(*defState);
+	sm.SetFromPipelineState(defState);
 
 	// Now ours...
 	GMeshIndexed* msh = part.m_Mesh;
@@ -441,13 +441,24 @@ void GBspNode::AddVisibleIndoorVobs(const float3& cameraPosition, std::vector<GV
 {
 	for (zCPolygon* p: m_PortalList)
 	{
-		// check if we are looking at the front of a portal with no front sector
-		if (!p->IsBackfacing(cameraPosition) && !p->GetMaterial()->GetSectorFront())
+		// add all vobs that are in a sector behind a portal facing the camera
+		if (!p->IsBackfacing(cameraPosition))
 		{
 			zCBspSector* sector = p->GetMaterial()->GetSectorBack();
 			if (sector)
 			{
-				sector->AddSectorVobsRec(cameraPosition, visibleVobs, frame, nullptr);
+				for (int i = 0; i < sector->m_SectorNodes.GetSize(); i++)
+				{
+					zCBspLeaf* leaf = (zCBspLeaf*)sector->m_SectorNodes.Array[i];
+					for (unsigned int j = 0; j < leaf->LeafVobList.NumInArray; j++)
+					{
+						GVobObject* vob = leaf->LeafVobList.Array[j]->GetVobObject();
+						if (vob && vob->UpdateObjectCollectionState(frame))
+						{
+							visibleVobs.push_back(vob);
+						}
+					}
+				}
 			}
 
 		}

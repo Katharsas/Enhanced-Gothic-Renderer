@@ -59,46 +59,6 @@ struct zCBspNode : public zCBspBase
 
 struct zCBspSector
 {
-	/** Recursively walks through connected sectors and adds them to visibleVobs */
-	void AddSectorVobsRec(const float3& cameraPosition, std::vector<GVobObject*>& visibleVobs, unsigned int frame, zCBspSector* lastSector)
-	{
-		//return if this sector has already been processed to avoid running in circles
-		if (m_Rendered == frame)
-			return;
-		
-		m_Rendered = frame;
-
-		//add all vobs from the current sector to visibleVobs
-		for (int i = 0; i < m_SectorNodes.GetSize(); i++)
-		{
-			zCBspLeaf* leaf = (zCBspLeaf*)m_SectorNodes.Array[i];
-			for (unsigned int j = 0; j < leaf->LeafVobList.NumInArray; j++)
-			{
-				GVobObject* vob = leaf->LeafVobList.Array[j]->GetVobObject();
-				if (vob && vob->UpdateObjectCollectionState(frame))
-				{
-					visibleVobs.push_back(vob);
-				}
-			}
-		}
-
-		//recursively call  the function for all sectors connected to this sector via a sectorportal (except for outdoor -> indoor portals)
-		for (int i = 0; i < m_SectorPortals.GetSize(); i++)
-		{
-			zCPolygon* p = m_SectorPortals.Array[i];
-
-			// no outdoor -> indoor portals
-			if (p->GetMaterial()->GetSectorFront())
-			{
-				zCBspSector* back = p->GetMaterial()->GetSectorBack();
-				if (back && lastSector != back)
-				{
-					back->AddSectorVobsRec(cameraPosition, visibleVobs, frame, this);
-				}
-			}
-		}
-	}
-
 	struct zTPortalInfo {
 		byte visible;
 		byte alpha;
