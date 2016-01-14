@@ -47,6 +47,11 @@ public:
 	void DrawSkyPre();
 	void DrawSkyPost();
 
+	/**
+	 * Returns whether this world was fully loaded yet
+	 */
+	bool IsFullyLoaded(){return m_IsFullyLoaded;}
+
 private:
 	/** Draws the vobs in this scene */
 	void DrawVobs();
@@ -60,5 +65,9 @@ private:
 	// Currently rendered vobs
 	std::vector<GVobObject*> m_VobRenderList;
 
+	/**
+	* Returns whether this world was fully loaded yet
+	*/
+	bool m_IsFullyLoaded;
 };
 

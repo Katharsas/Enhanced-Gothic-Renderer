@@ -5,6 +5,7 @@
 #include "REngine.h"
 #include "RThreadPool.h"
 #include "RCommandList.h"
+#include "RBuffer.h"
 
 #define NO_MULTITHREADED_RENDERING
 
@@ -116,6 +117,17 @@ bool RDevice::Present()
 bool RDevice::DrawPipelineState(const struct RPipelineState& state)
 {
 	StateMachine.SetFromPipelineState(&state);
+
+#ifndef PUBLIC_RELEASE
+	// Do some safety checks
+	if(StateMachine.GetCurrentState().VertexBuffers[0])
+	{
+		size_t bufferSize = StateMachine.GetCurrentState().VertexBuffers[0]->GetSizeInBytes();
+		size_t numBufferElements = bufferSize / StateMachine.GetCurrentState().VertexBuffers[0]->GetStructuredByteSize();
+		assert(numBufferElements >= state.NumDrawElements + state.StartVertexOffset);
+	}
+#endif
+
 	bool r = DrawPipelineStateAPI(state, StateMachine.GetChanges(), StateMachine);
 
 	StateMachine.ResetChanges();

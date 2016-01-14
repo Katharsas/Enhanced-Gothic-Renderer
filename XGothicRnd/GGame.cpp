@@ -369,9 +369,9 @@ void GGame::DrawStatistics()
 		SetWindowText(REngine::RenderingDevice->GetOutputWindow(), stat.str().c_str());
 	}
 
-	if (zCView::GetSessionView())
+	// Only draw if we're ingame. Crashes otehrwise. // TODO: fix this
+	if (zCView::GetSessionView() && m_ActiveWorld)
 		zCView::GetSessionView()->Print(INT2(0,0), m_FrameDebugLines);
-	
 
 	return;
 	/*std::stringstream stat;

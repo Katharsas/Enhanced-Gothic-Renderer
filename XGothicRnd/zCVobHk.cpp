@@ -38,11 +38,9 @@ void __fastcall zCVobHk::zCVob__SetVisual(zCVob* thisptr, void* edx, zCVisual* v
 void __fastcall zCVobHk::zCVob__EndMovement(zCVob* thisptr, void* edx, zBOOL transformChanged)
 {
 	GVobObject* vobj = thisptr->GetVobObject();
-	if(vobj != GVobObject::QueryFromSource(thisptr))
+	GVobObject* vobjq = GVobObject::QueryFromSource(thisptr);
+	if(vobj != vobjq)
 		LogWarn() << "zCVob has wrong pointer to GVobObject!";
-
-	// FIXME: Crash here with invalid vob in both GetVobObject() and QueryFromSource!
-	// To reproduce: Spawn a ton of meatbugs.
 
 	// PB didn't use this parameter really carefully. It's way faster to simply check the transform
 	// a couple of times more than needed. Vobs for particles have this set to true for example, even if they 
