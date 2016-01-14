@@ -5,7 +5,6 @@
 #include "D3D7/MyDirectDraw.h"
 #include "../Shared/Logger.h"
 #include "DbgHelp.h"
-#include <signal.h>
 #include "Hooks.h"
 #include "Engine.h"
 #include "GGame.h"
@@ -14,26 +13,16 @@
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "Imagehlp.lib")
 
-//#pragma pack(1)
-
 // Signal nvidia drivers that we want the high-performance card on laptops
+// TODO: Doesn't seem to work, though!
 extern "C" {
 	_declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
 }
 
-static HINSTANCE hLThis = 0;
-static HINSTANCE hDDRAW = 0;
-
+// Function-decleration for DirectDrawCreateEx
 static HRESULT (WINAPI *DirectDrawCreateEx_t)(GUID FAR * lpGuid, LPVOID  *lplpDD, REFIID  iid,IUnknown FAR *pUnkOuter);
-typedef void (WINAPI *DirectDrawSimple)();
-typedef HRESULT (WINAPI *DirectDrawCreateEx_type)(GUID FAR*, LPVOID*, REFIID ,IUnknown FAR*);
 
-void SignalHandler(int signal)
-{
-	LogInfo() << "Signal:" << signal;
-	throw "!Access Violation!";
-}
-
+// Container for all exports of the DDRAW.dll
 struct ddraw_dll
 {
 	HMODULE dll;
@@ -61,27 +50,26 @@ struct ddraw_dll
 	FARPROC	ReleaseDDThreadLock;
 } ddraw;
 
-HRESULT DoHookedDirectDrawCreateEx(GUID FAR * lpGuid, LPVOID  *lplpDD, REFIID  iid,IUnknown FAR *pUnkOuter)
-{
+/** Our hooked DirectDrawCreateEx */
+extern "C" HRESULT WINAPI HookedDirectDrawCreateEx(GUID FAR * lpGuid, LPVOID  *lplpDD, REFIID  iid,IUnknown FAR *pUnkOuter) {
+	// Initialize main graphics engine, if we don't have one yet
 	if(!REngine::RenderingDevice)
 	{
+		// Initialize rendering-engine
 		REngine::InitializeEngine();
+
+		// Create a rendering device
 		REngine::RenderingDevice->CreateDevice();
-		
+
+		// Initialize Gothic-dependent Engine
 		if(!Engine::Initialize())
 			LogErrorBox() << "XRND: Failed to initialize Engine!";
 	};
 
-	//DirectDrawCreateEx_type fn = (DirectDrawCreateEx_type)ddraw.DirectDrawCreateEx;
-	//fn(lpGuid, lplpDD, iid, pUnkOuter);
-
+	// Create fake D3D7-Device to get the game starting
 	*lplpDD = new MyDirectDraw(NULL);
 
 	return S_OK;
-}
-
-extern "C" HRESULT WINAPI HookedDirectDrawCreateEx(GUID FAR * lpGuid, LPVOID  *lplpDD, REFIID  iid,IUnknown FAR *pUnkOuter) {
-	return DoHookedDirectDrawCreateEx(lpGuid, lplpDD, iid, pUnkOuter);
 }
 
 __declspec(naked) void FakeAcquireDDThreadLock()			{ _asm { jmp [ddraw.AcquireDDThreadLock] } }
@@ -114,6 +102,7 @@ __declspec(naked) void FakeGetSurfaceFromDC()				{ _asm { jmp [ddraw.GetSurfaceF
 __declspec(naked) void FakeRegisterSpecialCase()			{ _asm { jmp [ddraw.RegisterSpecialCase] } }
 __declspec(naked) void FakeReleaseDDThreadLock()			{ _asm { jmp [ddraw.ReleaseDDThreadLock] } }
 
+/** Turns on all exceptions */
 void EnableCrashingOnCrashes()
 {
 	typedef BOOL (WINAPI *tGetPolicy)(LPDWORD lpFlags);
@@ -139,59 +128,65 @@ void EnableCrashingOnCrashes()
 	}
 }
 
+/** Extracts all exports of the DDRAW.dll and puts them into teh ddraw-object, in case we need one 
+	of its functions again */
+void ExtractDDRAWExports()
+{
+	char infoBuf[MAX_PATH];
+	GetSystemDirectoryA(infoBuf, MAX_PATH);
+	// We then append \ddraw.dll, which makes the string:
+	// C:\windows\system32\ddraw.dll
+	// Or syswow64, since we're on x86 here.
+	strcat_s(infoBuf, MAX_PATH, "\\ddraw.dll");
+
+	ddraw.dll = LoadLibraryA(infoBuf);     
+	if(!ddraw.dll)
+		return;
+
+	ddraw.AcquireDDThreadLock			= GetProcAddress(ddraw.dll, "AcquireDDThreadLock");
+	ddraw.CheckFullscreen				= GetProcAddress(ddraw.dll, "CheckFullscreen");
+	ddraw.CompleteCreateSysmemSurface	= GetProcAddress(ddraw.dll, "CompleteCreateSysmemSurface");
+	ddraw.D3DParseUnknownCommand		= GetProcAddress(ddraw.dll, "D3DParseUnknownCommand");
+	ddraw.DDGetAttachedSurfaceLcl		= GetProcAddress(ddraw.dll, "DDGetAttachedSurfaceLcl");
+	ddraw.DDInternalLock				= GetProcAddress(ddraw.dll, "DDInternalLock");
+	ddraw.DDInternalUnlock				= GetProcAddress(ddraw.dll, "DDInternalUnlock");
+	ddraw.DSoundHelp					= GetProcAddress(ddraw.dll, "DSoundHelp");
+	ddraw.DirectDrawCreate				= GetProcAddress(ddraw.dll, "DirectDrawCreate");
+	ddraw.DirectDrawCreateClipper		= GetProcAddress(ddraw.dll, "DirectDrawCreateClipper");
+	ddraw.DirectDrawCreateEx			= GetProcAddress(ddraw.dll, "DirectDrawCreateEx");
+	ddraw.DirectDrawEnumerateA			= GetProcAddress(ddraw.dll, "DirectDrawEnumerateA");
+	ddraw.DirectDrawEnumerateExA		= GetProcAddress(ddraw.dll, "DirectDrawEnumerateExA");
+	ddraw.DirectDrawEnumerateExW		= GetProcAddress(ddraw.dll, "DirectDrawEnumerateExW");
+	ddraw.DirectDrawEnumerateW			= GetProcAddress(ddraw.dll, "DirectDrawEnumerateW");
+	ddraw.DllCanUnloadNow				= GetProcAddress(ddraw.dll, "DllCanUnloadNow");
+	ddraw.DllGetClassObject				= GetProcAddress(ddraw.dll, "DllGetClassObject");
+	ddraw.GetDDSurfaceLocal				= GetProcAddress(ddraw.dll, "GetDDSurfaceLocal");
+	ddraw.GetOLEThunkData				= GetProcAddress(ddraw.dll, "GetOLEThunkData");
+	ddraw.GetSurfaceFromDC				= GetProcAddress(ddraw.dll, "GetSurfaceFromDC");
+	ddraw.RegisterSpecialCase			= GetProcAddress(ddraw.dll, "RegisterSpecialCase");
+	ddraw.ReleaseDDThreadLock			= GetProcAddress(ddraw.dll, "ReleaseDDThreadLock");
+
+	*(void**)&DirectDrawCreateEx_t = (void*)GetProcAddress(ddraw.dll, "DirectDrawCreateEx");
+}
+
+/** Entry-point */
 BOOL WINAPI DllMain(HINSTANCE hInst, DWORD reason, LPVOID) {
 	if (reason == DLL_PROCESS_ATTACH) 
 	{
+		// Don't let the old smartheap-library patch the CRT, if compile flags want.
 		UnpatchSmartHeap();
 
-		//DebugWrite_i("DDRAW Proxy DLL starting.\n", 0);
-		hLThis = hInst;
-
+		// Turn of exception-filter to get all crashes reported
 		EnableCrashingOnCrashes();
 
+		// Start with a fresh log
 		Log::Clear();
 		LogInfo() << "Starting DDRAW Proxy DLL.";
 
-		
-		char infoBuf[MAX_PATH];
-		GetSystemDirectoryA(infoBuf, MAX_PATH);
-		// We then append \ddraw.dll, which makes the string:
-		// C:\windows\system32\ddraw.dll
-		strcat_s(infoBuf, MAX_PATH, "\\ddraw.dll");
-
-		ddraw.dll = LoadLibraryA(infoBuf);     
-		if(!ddraw.dll)
-			return TRUE;
-
-		ddraw.AcquireDDThreadLock			= GetProcAddress(ddraw.dll, "AcquireDDThreadLock");
-		ddraw.CheckFullscreen				= GetProcAddress(ddraw.dll, "CheckFullscreen");
-		ddraw.CompleteCreateSysmemSurface	= GetProcAddress(ddraw.dll, "CompleteCreateSysmemSurface");
-		ddraw.D3DParseUnknownCommand		= GetProcAddress(ddraw.dll, "D3DParseUnknownCommand");
-		ddraw.DDGetAttachedSurfaceLcl		= GetProcAddress(ddraw.dll, "DDGetAttachedSurfaceLcl");
-		ddraw.DDInternalLock				= GetProcAddress(ddraw.dll, "DDInternalLock");
-		ddraw.DDInternalUnlock				= GetProcAddress(ddraw.dll, "DDInternalUnlock");
-		ddraw.DSoundHelp					= GetProcAddress(ddraw.dll, "DSoundHelp");
-		ddraw.DirectDrawCreate				= GetProcAddress(ddraw.dll, "DirectDrawCreate");
-		ddraw.DirectDrawCreateClipper		= GetProcAddress(ddraw.dll, "DirectDrawCreateClipper");
-		ddraw.DirectDrawCreateEx			= GetProcAddress(ddraw.dll, "DirectDrawCreateEx");
-		ddraw.DirectDrawEnumerateA			= GetProcAddress(ddraw.dll, "DirectDrawEnumerateA");
-		ddraw.DirectDrawEnumerateExA		= GetProcAddress(ddraw.dll, "DirectDrawEnumerateExA");
-		ddraw.DirectDrawEnumerateExW		= GetProcAddress(ddraw.dll, "DirectDrawEnumerateExW");
-		ddraw.DirectDrawEnumerateW			= GetProcAddress(ddraw.dll, "DirectDrawEnumerateW");
-		ddraw.DllCanUnloadNow				= GetProcAddress(ddraw.dll, "DllCanUnloadNow");
-		ddraw.DllGetClassObject				= GetProcAddress(ddraw.dll, "DllGetClassObject");
-		ddraw.GetDDSurfaceLocal				= GetProcAddress(ddraw.dll, "GetDDSurfaceLocal");
-		ddraw.GetOLEThunkData				= GetProcAddress(ddraw.dll, "GetOLEThunkData");
-		ddraw.GetSurfaceFromDC				= GetProcAddress(ddraw.dll, "GetSurfaceFromDC");
-		ddraw.RegisterSpecialCase			= GetProcAddress(ddraw.dll, "RegisterSpecialCase");
-		ddraw.ReleaseDDThreadLock			= GetProcAddress(ddraw.dll, "ReleaseDDThreadLock");
-
-		*(void**)&DirectDrawCreateEx_t = (void*)GetProcAddress(ddraw.dll, "DirectDrawCreateEx");
-	
-		
+		ExtractDDRAWExports();
 
 	} else if (reason == DLL_PROCESS_DETACH) {
-		FreeLibrary(hDDRAW);
+		FreeLibrary(ddraw.dll);
 
 		REngine::UninitializeEngine();
 
