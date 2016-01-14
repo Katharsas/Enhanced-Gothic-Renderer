@@ -21,6 +21,7 @@
 GWorld::GWorld(zCWorld* sourceObject) : GzObjectExtension<zCWorld, GWorld>(sourceObject)
 {
 	m_BspTree = nullptr;
+	m_IsFullyLoaded = false;
 }
 
 
@@ -45,6 +46,8 @@ void GWorld::OnWorldLoaded(zTWorldLoadMode mode)
 	m_BspTree->SetContainedWorld(this);
 
 	LogInfo() << "BSP-Tree initialization complete!";
+
+	m_IsFullyLoaded = true;
 }
 
 
@@ -136,7 +139,8 @@ void GWorld::Render()
 	// Then push the other parts of the sky into the following queues
 	DrawSkyPost();
 
-	
+	Engine::Game->AddFrameDebugLine(std::string("Queues: ") + std::to_string(REngine::RenderingDevice->GetNumQueuesInUse()));
+	Engine::Game->AddFrameDebugLine(std::string("DrawCalls: ") + std::to_string(REngine::RenderingDevice->GetNumRegisteredDrawCalls()));
 }
 
 /**

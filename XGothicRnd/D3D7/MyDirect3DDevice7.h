@@ -567,8 +567,8 @@ public:
     HRESULT STDMETHODCALLTYPE EndScene() {
 
 		// Construct immediate buffer
-		ImmediateBufferCollection_XYZRHW_DIF_T1.Construct(EBindFlags::B_VERTEXBUFFER, EUsageFlags::U_DYNAMIC, false);
-		ImmediateBufferCollection_XYZRHW_DIF_SPEC_T1.Construct(EBindFlags::B_VERTEXBUFFER, EUsageFlags::U_DYNAMIC, false);
+		ImmediateBufferCollection_XYZRHW_DIF_T1.Construct(EBindFlags::B_VERTEXBUFFER, EUsageFlags::U_DYNAMIC);
+		ImmediateBufferCollection_XYZRHW_DIF_SPEC_T1.Construct(EBindFlags::B_VERTEXBUFFER, EUsageFlags::U_DYNAMIC);
 
 		Engine::Game->OnFrameEnd();
 		REngine::RenderingDevice->OnFrameEnd();

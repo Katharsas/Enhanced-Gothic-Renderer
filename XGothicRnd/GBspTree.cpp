@@ -98,4 +98,7 @@ void GBspTree::Draw(RRenderQueueID queue, std::vector<GVobObject*>& visibleVobs,
 		startSector->AddSectorVobsRec(info.CameraPostion, visibleVobs, REngine::RenderingDevice->GetFrameCounter(), nullptr);
 		Engine::Game->AddFrameDebugLine("SECTOR: " + std::string(startSector->m_SectorName.ToChar()) + " #" + std::to_string(startSector->m_SectorIndex));
 	}
+
+	Engine::Game->AddFrameDebugLine(std::to_string(visibleVobs.size()) + " Vobs drawn");
+
 }

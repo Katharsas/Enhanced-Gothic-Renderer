@@ -67,7 +67,7 @@ public:
 		}
 
 		// Only delete data if the user doesn't need it anymore
-		if(!deleteData)
+		if(deleteData)
 		{
 			TempDataStorage.clear();
 			TempDataStorage.shrink_to_fit(); // Clear memory as well
