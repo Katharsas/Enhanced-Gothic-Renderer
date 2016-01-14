@@ -170,7 +170,7 @@ void ExtractDDRAWExports()
 }
 
 /** Entry-point */
-BOOL WINAPI DllMain(HINSTANCE hInst, DWORD reason, LPVOID) {
+BOOL WINAPI DllMain(HINSTANCE hInst, DWORD reason, LPVOID lpvReserved) {
 	if (reason == DLL_PROCESS_ATTACH) 
 	{
 		// Don't let the old smartheap-library patch the CRT, if compile flags want.
@@ -188,6 +188,7 @@ BOOL WINAPI DllMain(HINSTANCE hInst, DWORD reason, LPVOID) {
 	} else if (reason == DLL_PROCESS_DETACH) {
 		FreeLibrary(ddraw.dll);
 
+		if(!lpvReserved) // nullptr means simple detach. Otherwise the process was alredy exited
 		REngine::UninitializeEngine();
 
 		LogInfo() << "DDRAW Proxy DLL signing off.\n";
