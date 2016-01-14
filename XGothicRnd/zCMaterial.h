@@ -26,6 +26,7 @@ private:
 	zBOOL m_BOneShotAni;
 };
 
+
 struct zCBspSector;
 class zCTexture;
 class zCMaterial : public zCObject

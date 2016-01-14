@@ -3,6 +3,7 @@
 #include "zDefinitions.h"
 #include "VertexTypes.h"
 #include "zEngineFunctions.h"
+#include "zCTexture.h"
 
 class zCTexture;
 class zCMaterial;
@@ -55,9 +56,13 @@ struct PolyFlags
 	{
 		vx.Position = GetVertices()[idx]->m_Position;
 		vx.Normal = GetFeatures()[idx]->m_Normal;
-		vx.Color = GetFeatures()[idx]->m_LightStatic;
 		vx.TexCoord = GetFeatures()[idx]->m_TexCoord;
-		vx.TexCoord2 = float2(0,0); // TODO: zCLightMap::GetLightmapTexCoords
+
+		// Use white as vertexcolor if we got a lightmap
+		vx.Color = m_Lightmap ? 0xFFFFFFFF : GetFeatures()[idx]->m_LightStatic;
+
+		// Calculate UV-Coords from the lightmap
+		vx.TexCoord2 = m_Lightmap ? m_Lightmap->GetLightmapTexCoords(vx.Position) : float2(0,0);
 	}
 
 	/** Size of the vertices-array */
@@ -105,10 +110,16 @@ struct PolyFlags
 	/** Returns the static lighting under the given position */
 	float3 GetLightStatAtPos(const float3& pos)
 	{
-		// Can't sample from lightmap, so just NULL it
-		// TODO: Don't forget this, if I ever implement lightmapping!
+		// Can't sample from lightmap, so just NULL it for a short period of time
+		// TODO: Implement? Keep a CPU-Side copy of the lightmap maybe?
+		zCLightmap* lm = m_Lightmap;
 		SetLightmap(nullptr);
-		return __GetLightStatAtPos(pos);
+
+		float3 l = __GetLightStatAtPos(pos);
+
+		SetLightmap(lm);
+
+		return l;
 	}
 
 	/** Checks if this polygon is backfacing to the given cameraposition */

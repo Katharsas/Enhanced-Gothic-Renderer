@@ -88,4 +88,14 @@ void GBspTree::Draw(RRenderQueueID queue, std::vector<GVobObject*>& visibleVobs,
 	info.ObjectFarplane = objectFarplane;
 
 	m_RootNode->DrawNodeRecursive(std::max(0U, GEOMETRY_MAX_NODE_LEVEL - 4), queue, info, visibleVobs);
+
+	// DEBUG
+	zCBspSector* startSector = m_SourceTree->GetCurrentCameraSector();
+
+	// Draw everything connected to the sector we are currently inside of
+	if(startSector)
+	{
+		startSector->AddSectorVobsRec(info.CameraPostion, visibleVobs, REngine::RenderingDevice->GetFrameCounter(), nullptr);
+		Engine::Game->AddFrameDebugLine("SECTOR: " + std::string(startSector->m_SectorName.ToChar()) + " #" + std::to_string(startSector->m_SectorIndex));
+	}
 }

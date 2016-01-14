@@ -7,9 +7,10 @@
 #include "GVobObject.h"
 #include "zCVob.h"
 #include "zCMaterial.h"
+#include "zCCamera.h"
 
-#define zSECTOR_INDEX_UNDEF	(0xFFFF)
-#define zSECTOR_INDEX_PORTAL (zWORD(1<<15))
+#define zSECTOR_INDEX_UNDEF	(-1)
+#define zSECTOR_INDEX_PORTAL (1<<15)
 
 enum zTTraceRayFlags 
 {
@@ -94,7 +95,7 @@ struct zCBspSector
 			return;
 		
 		m_Rendered = frame;
-		for (int i = 0; i < m_SectorNodes.GetSize(); i++)
+		for (unsigned int i = 0; i < m_SectorNodes.GetSize(); i++)
 		{
 			zCBspBase* base = m_SectorNodes.Array[i];
 
@@ -109,7 +110,7 @@ struct zCBspSector
 			}
 		}
 
-		for (int i = 0; i < m_SectorPortals.GetSize(); i++)
+		for (unsigned int i = 0; i < m_SectorPortals.GetSize(); i++)
 		{
 			zCPolygon* p = m_SectorPortals.Array[i];
 
@@ -173,42 +174,25 @@ public:
 	}
 
 	/** Returns the sector the camera is currently in.
-		Does 2 raycasts, so don't call this too often. */
+		Does a raycast, so don't call this too often. */
 	zCBspSector* GetCurrentCameraSector()
 	{
-		// Start at the current cameraposition and trace down. If we hit a portal, trace up again.
+		// Start at the current cameraposition and trace down to check the poly we are on, including portals
 		float3 start = zCCamera::GetActiveCameraPosition();
 		float3 hitPoint;
 		zCPolygon* hitPolygon = nullptr;
 
 		TraceRay(start, start + float3(0, -500000, 0), zTRACERAY_STAT_POLY | zTRACERAY_STAT_PORTALS, hitPoint, hitPolygon, nullptr);
-		if(hitPolygon && hitPolygon->GetPolyFlags().PortalPoly)
-		{
-			// Check for roof, I guess?
-			TraceRay(start, start + float3(0, 500000, 0), zTRACERAY_STAT_POLY | zTRACERAY_STAT_PORTALS, hitPoint, hitPolygon, nullptr);
-		}
 
-		// No roof, not indoors. Why do they have to check down anyways?
-		if(!hitPolygon)
+
+		// Check:
+		if(	!hitPolygon
+			|| !hitPolygon->GetPolyFlags().SectorPoly 
+			|| (hitPolygon->GetPolyFlags().PortalPoly && !hitPolygon->GetMaterial()->GetSectorFront())) // Outdoor-facing portal?
 			return nullptr;
 
-		int sectorIndex = hitPolygon->GetPolyFlags().SectorIndex;
-		if(sectorIndex != zSECTOR_INDEX_UNDEF)
-		{
-			if(sectorIndex >= zSECTOR_INDEX_PORTAL)
-			{
-				// Get to the sector through the portal
-				// Not exactly sure what this does, but we get the index of the portal we have to use from this
-				int portalIndex = (sectorIndex & (zSECTOR_INDEX_PORTAL - 1)) << 1;
-
-				if(m_PortalList.Array[portalIndex]->GetPolyPlane().AsPlane().DistanceToPlane(start) < 0)
-					sectorIndex	= m_PortalList.Array[portalIndex]->GetPolyFlags().SectorIndex;
-				else
-					sectorIndex	= m_PortalList.Array[portalIndex+1]->GetPolyFlags().SectorIndex;
-			}		
-		}
-
-		return m_SectorList[sectorIndex];
+		// Get the sector of the direction the poly is facing
+		return hitPolygon->GetMaterial()->GetSectorFront();
 	}
 
 	/** Does a raytrace using the games original code. This is rather slow

@@ -19,6 +19,7 @@ namespace GConstants
 	namespace ShaderAliases
 	{
 		static const char* PS_DEFAULT_WORLD = "PS_World";
+		static const char* PS_DEFAULT_WORLD_LIGHTMAPPED = "PS_World_Lightmapped";
 		static const char* PS_MASKED_WORLD = "PS_World_Masked";
 		//static const char* PS_MASKED_WORLD = "PS_Simple";
 	}

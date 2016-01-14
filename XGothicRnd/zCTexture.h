@@ -46,3 +46,36 @@ private:
 
 	zTextureFlags m_TextureFlags;
 };
+
+
+class zCLightmap : public zCObject
+{	
+public:
+
+	/** Returns matching UV-Coords for the input world-position */
+	float2 GetLightmapTexCoords (const float3& posWorldSpace) const 
+	{
+		float3 q = posWorldSpace - m_LightmapOrigin;
+		return float2(q.Dot(m_LightmapUVRight), q.Dot(m_LightmapUVUp));
+	}
+
+	/** Accessors */
+	void GetLightmapUVs(float3& origin, float3& up, float3& right)
+	{
+		origin = m_LightmapOrigin;
+		up = m_LightmapUVUp;
+		right = m_LightmapUVRight;
+	}
+
+	zCTexture* GetTexture()
+	{
+		return m_Texture;
+	}
+
+private:
+	float3 m_LightmapOrigin;
+	float3 m_LightmapUVUp;
+	float3 m_LightmapUVRight;
+
+	zCTexture* m_Texture;
+};

@@ -135,6 +135,8 @@ void GWorld::Render()
 	
 	// Then push the other parts of the sky into the following queues
 	DrawSkyPost();
+
+	
 }
 
 /**

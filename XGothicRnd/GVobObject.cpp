@@ -54,14 +54,11 @@ GVobObject::~GVobObject(void)
 
 	//Toolbox::PrintStack();
 
-	// De-register
-	m_SourceObject->SetVobObject(nullptr);
+	// De-register, but check if it was already deleted first
+	if(GVobObject::QueryFromSource(m_SourceObject))
+		m_SourceObject->SetVobObject(nullptr);
 
 	//LogInfo() << "Deleting Vob at 0x" << this << " with source of 0x" << m_SourceObject;
-
-	if( std::string(m_SourceObject->GetObjectName()) == "MEATBUG"
-		|| std::string(m_SourceObject->GetObjectName()) == "GIANT_BUG")
-		sinf(1.0f);
 
 	if(!m_Visual)
 		LogWarn() << "Deleting Vob without visual?";

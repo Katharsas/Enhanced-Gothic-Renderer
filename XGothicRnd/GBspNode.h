@@ -36,10 +36,12 @@ public:
 			m_Mesh = nullptr;
 			m_Material = nullptr;
 			m_PipelineState = nullptr;
+			m_Lightmap = nullptr;
 		}
 
 		GMeshIndexed* m_Mesh;
 		GMaterial* m_Material;
+		GTexture* m_Lightmap;
 		RPipelineState* m_PipelineState;
 
 		// Indices to the indices of the full mesh
@@ -72,7 +74,7 @@ public:
 	}
 
 	/** Returns a reference to the map containing the mesh-info for this node */
-	const std::unordered_map<zCMaterial*, WorldMeshPart>& GetMeshesByMaterial()
+	const std::map<std::pair<zCLightmap*, zCMaterial*>, WorldMeshPart>& GetMeshesByMaterial()
 	{
 		return m_MeshParts;
 	}
@@ -120,7 +122,8 @@ private:
 	int m_FrustumTestCache;
 
 	// Vector meshes inside this node
-	std::unordered_map<zCMaterial*, WorldMeshPart> m_MeshParts;
+	std::map<std::pair<zCLightmap*, zCMaterial*>, WorldMeshPart> m_MeshParts;
+	//std::unordered_map<zCMaterial*, WorldMeshPart> m_MeshParts;
 
 	// List of all further leafs
 	std::vector<GBspNode*> m_LeafList;

@@ -101,7 +101,7 @@ void GBspNode::BuildTriangleList(std::vector<ExTVertexStruct>& vertices)
 		for(unsigned int i=0;i<m_SourceNode->m_NumPolys;i++)
 		{
 			zCPolygon* poly = m_SourceNode->m_PolyList[i];
-
+			
 			if (poly->GetPolyFlags().PortalIndoorOutdoor)
 				m_PortalList.push_back(poly);
 
@@ -160,11 +160,9 @@ void GBspNode::BuildTriangleList(std::vector<ExTVertexStruct>& vertices)
 				}
 			}
 
-			
-
-
 			zCMaterial* mat = poly->GetMaterial();
-			WorldMeshPart& p = m_MeshParts[mat];
+			zCLightmap* lightmap = poly->GetLightmap();
+			WorldMeshPart& p = m_MeshParts[std::make_pair(lightmap, mat)];
 
 			// Store indices to the real vertex indices so in case they change,
 			// we still can read out the real index-values for the buffer
@@ -231,8 +229,11 @@ void GBspNode::GenerateIndexedMesh(const std::vector<unsigned int>& indices,
 				0,
 				start);
 
-			// Get GMaterial-instance
-			pair.second.m_Material = GMaterial::GetFromSource(pair.first);
+			// Get GMaterial- and Lightmap instances
+			pair.second.m_Material = GMaterial::GetFromSource(pair.first.second);
+
+			if(pair.first.first)
+				pair.second.m_Lightmap = GTexture::GetFromSource(pair.first.first->GetTexture());
 		}
 
 		// We can now create our statecache
@@ -254,7 +255,7 @@ void GBspNode::BuildPipelineStateCache()
 }
 
 /** Updates the pipeline-state of one meshpart */
-void  GBspNode::UpdateMeshPartPipelineState(WorldMeshPart& part)
+void GBspNode::UpdateMeshPartPipelineState(WorldMeshPart& part)
 {
 	// Delete old state, in case this is a recreation
 	REngine::ResourceCache->DeleteResource(part.m_PipelineState);
@@ -264,7 +265,7 @@ void  GBspNode::UpdateMeshPartPipelineState(WorldMeshPart& part)
 	RStateMachine& sm = REngine::RenderingDevice->GetStateMachine();
 
 	// Assign default values
-	sm.SetFromPipelineState(*defState);
+	sm.SetFromPipelineState(defState);
 
 	// Now ours...
 	GMeshIndexed* msh = part.m_Mesh;
@@ -273,16 +274,29 @@ void  GBspNode::UpdateMeshPartPipelineState(WorldMeshPart& part)
 
 	if (part.m_Material->GetDiffuse())
 	{
+		UINT mFlags = MPS_NONE;
+
 		sm.SetTexture(0, part.m_Material->GetDiffuse()->GetTexture(), EShaderType::ST_PIXEL);
 
+		// Set lightmap if we have one
+		if(part.m_Lightmap)
+		{
+			part.m_Lightmap->CacheIn(false);
+			sm.SetTexture(1, part.m_Lightmap->GetTexture(), EShaderType::ST_PIXEL);
+
+			mFlags |= MPS_LIGHTMAPPED;
+		}
+
 		// Force a cache-in because we need to know if the texture uses alpha-testing
+		// TODO: Maybe this is possible with threading. But is it even worth it?
 		part.m_Material->GetDiffuse()->CacheIn(false);
+		
 
 		//if (part.m_Material->GetDiffuse()->GetSourceObject()->GetTextureFlags().HasAlpha)
 		//	LogInfo() << "Alphatest on: " << part.m_Material->GetDiffuse()->GetSourceObject()->GetObjectName();
 
 		// Get the right pixelshader for the mesh-part
-		RPixelShader* ps = part.m_Material->GetMaterialPixelShader(GConstants::RS_WORLD);
+		RPixelShader* ps = part.m_Material->GetMaterialPixelShader(GConstants::RS_WORLD, mFlags);
 		sm.SetPixelShader(ps);
 	}
 	
@@ -372,6 +386,10 @@ void GBspNode::DrawNodeExplicit(RRenderQueueID queue)
 		// Make sure we have textures
 		if(part.m_Material->CacheTextures())
 		{
+			// Make sure the lightmap is loaded
+			if(part.m_Lightmap)
+				part.m_Lightmap->CacheIn(false);
+
 			// Check if the state is valid and the texture still the same
 			if(!part.m_PipelineState 
 				|| part.m_PipelineState->IDs.MainTexture != part.m_Material->GetDiffuse()->GetTexture()->GetID())

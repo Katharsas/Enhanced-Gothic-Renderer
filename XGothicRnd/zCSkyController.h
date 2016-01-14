@@ -85,9 +85,16 @@ public:
 	virtual void SetWeatherType(const zTWeather a_weather) = 0;
 	virtual zTWeather GetWeatherType() const = 0;
 
+	/** Returns the daylight coloring-array */
+	DWORD* GetPolyLightCLUT()
+	{
+		return m_PolyLightCLUTPtr;
+	}
+
 protected:
 
 	// This is for coloring the world during different daytimes
+	// Points to a 256-sized DWORD-array
 	DWORD* m_PolyLightCLUTPtr;
 
 	// Cloudshadows for when it's raining

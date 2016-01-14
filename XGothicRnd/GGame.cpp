@@ -63,10 +63,15 @@ bool GGame::Initialize()
 	RPixelShader* ps_World = RTools::LoadShader<RPixelShader>("system\\GD3D11\\Shaders\\PS_World.hlsl", "PS_World");
 	RPixelShader* ps_Particle = RTools::LoadShader<RPixelShader>("system\\GD3D11\\Shaders\\PS_Particle.hlsl", "PS_Particle");
 	
+
 	// TODO: Use/implement definition-system
 	RPixelShader* ps_WorldMasked = RTools::LoadShader<RPixelShader>("system\\GD3D11\\Shaders\\PS_World.hlsl", 
 		"PS_World_Masked",
 		{ {"DO_ALPHATEST"} });
+
+	RPixelShader* ps_WorldLightmapped = RTools::LoadShader<RPixelShader>("system\\GD3D11\\Shaders\\PS_World.hlsl", 
+		"PS_World_Lightmapped",
+		{ {"LIGHTMAPPING"} });
 
 	// Make default per-frame constant buffer
 	RBuffer* perFrameCB = REngine::ResourceCache->CreateResource<RBuffer>();
@@ -319,6 +324,9 @@ void GGame::ExtractSkyParameters(ConstantBuffers::PerFrameConstantBuffer& cb)
 	}
 
 	cb.PF_SceneParams.S_FogRange = cb.PF_SceneParams.S_FogEnd - cb.PF_SceneParams.S_FogStart;
+
+	// Copy CLUT
+	memcpy(cb.PF_SceneParams.S_LightCLUT, sky->GetPolyLightCLUT(), sizeof(DWORD) * 256);
 }
 
 

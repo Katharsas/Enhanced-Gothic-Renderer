@@ -10,6 +10,8 @@ namespace ConstantBuffers
 		float S_FogRange; // = FogEnd - FogStart
 		float S_pad0;
 		float4 S_FogColor;
+
+		DWORD S_LightCLUT[256]; // CLUT from gothic
 	};
 
 	struct PerFrameConstantBuffer

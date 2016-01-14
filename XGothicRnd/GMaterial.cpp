@@ -106,17 +106,22 @@ bool GMaterial::IsMaterialUsingAlphaTest()
 /**
 * Returns the right pixelshader for this material and the given rendering stage
 */
-RPixelShader* GMaterial::GetMaterialPixelShader(GConstants::ERenderStage stage)
+RPixelShader* GMaterial::GetMaterialPixelShader(GConstants::ERenderStage stage, UINT flags)
 {
 	switch (stage)
 	{
 	case RS_WORLD:
 	case RS_SHADOW_SUN:
 	case RS_INVENTORY:
-		if(!IsMaterialUsingAlphaTest())
+		if((flags & MPS_LIGHTMAPPED) != 0)
+			return REngine::ResourceCache->GetCachedObject<RPixelShader>(ShaderAliases::PS_DEFAULT_WORLD_LIGHTMAPPED);
+
+		if(!IsMaterialUsingAlphaTest() || (flags & MPS_FORCE_ALPHA_TEST) == 0)
 			return REngine::ResourceCache->GetCachedObject<RPixelShader>(ShaderAliases::PS_DEFAULT_WORLD);
 		else
 			return REngine::ResourceCache->GetCachedObject<RPixelShader>(ShaderAliases::PS_MASKED_WORLD);
+
+	break;
 	}
 
 	LogError() << "Invalid rendering stage!";
