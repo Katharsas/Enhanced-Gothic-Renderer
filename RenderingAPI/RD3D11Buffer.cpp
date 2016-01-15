@@ -2,6 +2,7 @@
 #include "RD3D11Buffer.h"
 #include "REngine.h"
 #include "../Shared/Logger.h"
+#include "RD3D11SyncCheck.h"
 
 const bool USE_DOUBLEBUFFERING = true;
 
@@ -101,7 +102,7 @@ bool RD3D11Buffer::MapAPI(void ** dataOut)
 	ID3D11DeviceContext* context = REngine::RenderingDevice->GetThreadContext(GetCurrentThreadId());
 
 	D3D11_MAPPED_SUBRESOURCE res;
-	LE(context->Map(Buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &res));
+	RD3D11_CTX_SYNC_CHECK_R(LE(context->Map(Buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &res)));
 
 	*dataOut = res.pData;
 
@@ -155,8 +156,10 @@ bool RD3D11Buffer::TrySwitchBuffers()
 	if((Usage & EUsageFlags::U_DYNAMIC) == 0 || !USE_DOUBLEBUFFERING)
 		return false;
 
-	// Check if we were updated on the current frame
-	if(LastFrameUpdated == REngine::RenderingDevice->GetFrameCounter())
+	unsigned int frame = REngine::RenderingDevice->GetFrameCounter();
+
+	// Check if we were updated on the current or last frame
+	if(LastFrameUpdated == frame || LastFrameUpdated + 1 == frame)
 	{
 		// We were, do the switch!
 		StashBufferRotation = (StashBufferRotation + 1) % NUM_BUFFERSTASH_FRAME_STORAGES;
@@ -164,6 +167,8 @@ bool RD3D11Buffer::TrySwitchBuffers()
 		BufferSRV = BufferStash[StashBufferRotation].second;
 		return true;
 	}
+
+	LastFrameUpdated = frame;
 
 	return false;
 }

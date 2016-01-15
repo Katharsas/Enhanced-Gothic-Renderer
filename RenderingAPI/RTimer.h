@@ -12,10 +12,10 @@ private:
 	LARGE_INTEGER m_currentTime;
 	LARGE_INTEGER m_startTime;
 	LARGE_INTEGER m_lastTime;
-	float m_total;
-	float m_delta[R_NUM_FRAMES_TO_MIDDLE];
-	float m_deltaAvg;
-	float m_deltaAccurate;
+	double m_total;
+	double m_delta[R_NUM_FRAMES_TO_MIDDLE];
+	double m_deltaAvg;
+	double m_deltaAccurate;
 	int currentMidFrame;
 
 public:
@@ -64,7 +64,7 @@ public:
 			throw std::exception();
 		}
 
-		m_total = static_cast<float>(
+		m_total = static_cast<double>(
 			static_cast<double>(m_currentTime.QuadPart-m_startTime.QuadPart) /
 			static_cast<double>(m_frequency.QuadPart)
 			);
@@ -77,7 +77,7 @@ public:
 		}
 		else
 		{
-			float d = static_cast<float>(
+			double d = static_cast<double>(
 				static_cast<double>(m_currentTime.QuadPart-m_lastTime.QuadPart) /
 				static_cast<double>(m_frequency.QuadPart)
 				);
@@ -93,24 +93,24 @@ public:
 		for(int i=0; i<R_NUM_FRAMES_TO_MIDDLE; i++)
 			m_deltaAvg += m_delta[i];
 
-		m_deltaAvg /= (float)R_NUM_FRAMES_TO_MIDDLE;
+		m_deltaAvg /= (double)R_NUM_FRAMES_TO_MIDDLE;
 
 		m_lastTime = m_currentTime;
 	}
 
 
 
-	float GetTotal() 
+	double GetTotal() 
 	{  
 		return m_total;
 	}
 
-	void SetTotal(float t) 
+	void SetTotal(double t) 
 	{  
 		m_total=t;
 	}
 
-	float GetDelta() 
+	double GetDelta() 
 	{ 
 		//return m_delta[0];
 
@@ -118,7 +118,7 @@ public:
 		return m_deltaAvg;
 	}
 
-	float GetDeltaAccurate()
+	double GetDeltaAccurate()
 	{
 		return m_deltaAccurate;
 	}

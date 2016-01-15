@@ -2,7 +2,7 @@
 #include "RBaseBuffer.h"
 
 // Numbers of frames should have buffers to prepare for
-const int NUM_BUFFERSTASH_FRAME_STORAGES = 2;
+const int NUM_BUFFERSTASH_FRAME_STORAGES = 3;
 
 class RD3D11Buffer :
 	public RBaseBuffer

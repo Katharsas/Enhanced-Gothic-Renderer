@@ -732,18 +732,27 @@ public:
 		{
 			LastBoundFFStateHash = ffStateHash;
 
-			// Update data for FF-Emulator if needed
-			if(FFConstantBuffer.Buffer)
-				REngine::DynamicBufferCache->DoneWith(FFConstantBuffer);
+			// Check if we already have such a buffer
+			auto it = FFConstantBufferByHash.find(ffStateHash);
+			if(it == FFConstantBufferByHash.end())
+			{
+				// Create a new cached state
+				RBuffer* b =REngine::ResourceCache->CreateResource<RBuffer>();
+				b->Init(&FixedFunctionStageInfo, sizeof(FixedFunctionGraphicsState), sizeof(FixedFunctionGraphicsState), EBindFlags::B_CONSTANTBUFFER);
 
-			// Get us a new buffer
-			FFConstantBuffer = REngine::DynamicBufferCache->GetDataBuffer(EBindFlags::B_CONSTANTBUFFER, sizeof(FixedFunctionGraphicsState), sizeof(FixedFunctionGraphicsState));
-			FFConstantBuffer.Buffer->UpdateData(&FixedFunctionStageInfo);
+				FFConstantBufferByHash[ffStateHash] = b;
+				LastBoundFFStateCB = b;
+			}
+			else
+			{
+				// Got one from cache
+				LastBoundFFStateCB = (*it).second;
+			}
 		}
 
 		// Set FF-State
-		sm.SetConstantBuffer(0, FFConstantBuffer.Buffer, EShaderType::ST_VERTEX);
-		sm.SetConstantBuffer(0, FFConstantBuffer.Buffer, EShaderType::ST_PIXEL);
+		sm.SetConstantBuffer(0, LastBoundFFStateCB, EShaderType::ST_VERTEX);
+		sm.SetConstantBuffer(0, LastBoundFFStateCB, EShaderType::ST_PIXEL);
 
 		sm.SetPixelShader(PS_FixedFunctionEmulator);
 
@@ -804,6 +813,10 @@ public:
 		//InputLayout_XYZ_NRM_T1->CreateInputLayout(VS_XYZ_DIF_T1, layout_XYZ_NRM_T1, ARRAYSIZE(layout_XYZ_NRM_T1));
 		
 		//DrawPrimVertexBuffer = REngine::DynamicBufferCache->GetDataBuffer(EBindFlags::B_VERTEXBUFFER, DRAW_PRIM_VERTEX_BUFFER_SIZE, 1);
+
+		LastBoundFFStateCB = nullptr;
+		LastBoundFFStateHash = 0;
+
 		return S_OK;
 	}
 
@@ -818,9 +831,12 @@ public:
 		REngine::ResourceCache->DeleteResource(VS_XYZRHW_DIF_T1);
 		REngine::ResourceCache->DeleteResource(VS_XYZ_DIF_T1);
 		REngine::ResourceCache->DeleteResource(VS_XYZ_NRM_T1);
-
-		REngine::DynamicBufferCache->DoneWith(FFConstantBuffer);
 		REngine::ResourceCache->DeleteResource(PS_FixedFunctionEmulator);
+
+		for(auto b : FFConstantBufferByHash)
+		{
+			REngine::ResourceCache->DeleteResource<RBuffer>(b.second);
+		}
 	}
 
 	/** Processes a trianglefan of the given vertex-type for drawing. Returns offset to the immediate buffer */
@@ -862,9 +878,10 @@ private:
 	RRasterizerStateInfo RasterizerState;
 	FixedFunctionGraphicsState FixedFunctionStageInfo;
 	size_t LastBoundFFStateHash;
+	RBuffer* LastBoundFFStateCB;
 	RViewport* Viewport;
 	MyDirectDrawSurface7* BoundSurfaces[8];
-	RCachedDynamicBuffer FFConstantBuffer;
+	std::map<size_t, RBuffer*> FFConstantBufferByHash;
 	RInputLayout* InputLayout_XYZ_DIF_T1;
 	RInputLayout* InputLayout_XYZRHW_DIF_T1;
 	RInputLayout* InputLayout_XYZRHW_DIF_SPEC_T1;

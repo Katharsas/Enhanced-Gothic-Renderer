@@ -29,14 +29,6 @@ GVobObject::GVobObject(zCVob* sourceObject) : GzObjectExtension<zCVob, GVobObjec
 		return;
 	}
 
-#ifndef PUBLIC_RELEASE
-	if(m_Visual->GetFileName() == "SKE_BODY2")
-		hInvalidBreakpoint = SetHardwareBreakpoint(GetCurrentThread(), 
-			HWBRK_TYPE_WRITE,HWBRK_SIZE_1,&m_Invalid);
-	//m_ObjectName = ((zCObject*)sourceObject)->GetObjectName();
-#endif
-
-
 	GASSERT(m_Visual->AddVob(this), "GVobObject must not already be registered in its Visual!");
 
 	ReaquireDrawables();

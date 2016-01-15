@@ -48,11 +48,14 @@ GModelVisual::GModelVisual(zCVisual* sourceObject) : GVisual(sourceObject)
 			m_FileName = node->m_NodeVisual->GetObjectName();
 	}
 
+	// Subtract as many matrices as there are too much
+	unsigned int actualCBSize = sizeof(GModelConstantBuffer) - sizeof(Matrix) * (NUM_MAX_NODES - model->GetNumNodes());
+
 	// Create CB
 	m_ModelConstantBuffer = REngine::ResourceCache->CreateResource<RBuffer>();
 	m_ModelConstantBuffer->Init(nullptr,
-		sizeof(GModelConstantBuffer),
-		sizeof(GModelConstantBuffer),
+		actualCBSize,
+		actualCBSize,
 		EBindFlags::B_CONSTANTBUFFER,
 		EUsageFlags::U_DYNAMIC,
 		ECPUAccessFlags::CA_WRITE,
@@ -188,14 +191,16 @@ void GModelVisual::UpdateModel()
 	model->UpdateMeshLibTexAniState();
 	UpdateTextures();
 	
-	Matrix tmp[NUM_MAX_NODES];
-	model->GetNodeTransforms(tmp);
+	static std::vector<Matrix> s_tmp;
+	s_tmp.resize(model->GetNumNodes());
+
+	model->GetNodeTransforms(&s_tmp[0]);
 
 	// TODO: There may is a faster way of doing this
 	// Only update the buffer if the transforms changed
-	if(memcmp(tmp, m_NodeTransforms, sizeof(Matrix) * model->GetNumNodes()) != 0)
+	if(memcmp(&s_tmp[0], m_NodeTransforms, sizeof(Matrix) * model->GetNumNodes()) != 0)
 	{
-		memcpy(m_NodeTransforms, tmp, sizeof(Matrix) * model->GetNumNodes());
+		memcpy(m_NodeTransforms, &s_tmp[0], sizeof(Matrix) * model->GetNumNodes());
 
 		// Get new node-states
 		GModelConstantBuffer* data;

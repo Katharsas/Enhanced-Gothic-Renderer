@@ -18,6 +18,7 @@
 #include <RDynamicBufferCache.h>
 #include "D3D7\MyDirect3DDevice7.h"
 #include "GCamera.h"
+#include <RD3D11SyncCheck.h>
 
 GWorld::GWorld(zCWorld* sourceObject) : GzObjectExtension<zCWorld, GWorld>(sourceObject)
 {
@@ -100,7 +101,7 @@ void GWorld::Render()
 	// Extract render-instances
 	for(GVobObject* vob : m_VobRenderList)
 	{
-		if(vob->HasDynamicDrawState())
+		//if(vob->HasDynamicDrawState())
 		{
 			float3 vobPosition = vob->GetWorldMatrix().TranslationT();
 			double distanceSquared = (vobPosition - activeCameraPosition).LengthSquared();
@@ -233,6 +234,10 @@ void GWorld::Render()
 
 	Engine::Game->AddFrameDebugLine(std::string("Queues: ") + std::to_string(REngine::RenderingDevice->GetNumQueuesInUse()));
 	Engine::Game->AddFrameDebugLine(std::string("DrawCalls: ") + std::to_string(REngine::RenderingDevice->GetNumRegisteredDrawCalls()));
+
+	float tcpu, tgpu;
+	__ctx_sync_check::GlobalSyncCheckStash.GetTimesLostAndReset(tcpu, tgpu);
+	Engine::Game->AddFrameDebugLine(std::string("Buffer Updates: (CPU: ") + std::to_string(tcpu) + "ms) (GPU: " + std::to_string(tgpu) + "ms)");
 }
 
 /**

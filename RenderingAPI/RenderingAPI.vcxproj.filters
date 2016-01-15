@@ -232,6 +232,15 @@
     <ClInclude Include="atomicops.h">
       <Filter>Lib</Filter>
     </ClInclude>
+    <ClInclude Include="RTimer.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="RD3D11SyncCheck.h">
+      <Filter>Renderer\Device</Filter>
+    </ClInclude>
+    <ClInclude Include="RProfiler.h">
+      <Filter>Renderer\Device</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -371,6 +380,9 @@
     </ClCompile>
     <ClCompile Include="RD3D11CommandList.cpp">
       <Filter>Renderer\CommandList</Filter>
+    </ClCompile>
+    <ClCompile Include="RProfiler.cpp">
+      <Filter>Renderer\Device</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

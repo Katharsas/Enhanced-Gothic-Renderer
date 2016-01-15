@@ -446,6 +446,7 @@
     <ClInclude Include="RD3D11RasterizerState.h" />
     <ClInclude Include="RD3D11SamplerState.h" />
     <ClInclude Include="RD3D11Shader.h" />
+    <ClInclude Include="RD3D11SyncCheck.h" />
     <ClInclude Include="RD3D11Texture.h" />
     <ClInclude Include="RD3D11VertexShader.h" />
     <ClInclude Include="RD3D11Viewport.h" />
@@ -460,6 +461,7 @@
     <ClInclude Include="RPipelineState.h" />
     <ClInclude Include="RPixelShader.h" />
     <ClInclude Include="RProdConsBuffer.h" />
+    <ClInclude Include="RProfiler.h" />
     <ClInclude Include="RRasterizerState.h" />
     <ClInclude Include="RResource.h" />
     <ClInclude Include="RResourceCache.h" />
@@ -469,6 +471,7 @@
     <ClInclude Include="RTexture.h" />
     <ClInclude Include="RBufferCollection.h" />
     <ClInclude Include="RThreadPool.h" />
+    <ClInclude Include="RTimer.h" />
     <ClInclude Include="RTools.h" />
     <ClInclude Include="RVertexShader.h" />
     <ClInclude Include="RViewport.h" />
@@ -568,6 +571,7 @@
     <ClCompile Include="REngine.cpp" />
     <ClCompile Include="RInputLayout.cpp" />
     <ClCompile Include="RPixelShader.cpp" />
+    <ClCompile Include="RProfiler.cpp" />
     <ClCompile Include="RRasterizerState.cpp" />
     <ClCompile Include="RResource.cpp" />
     <ClCompile Include="RResourceCache.cpp" />
