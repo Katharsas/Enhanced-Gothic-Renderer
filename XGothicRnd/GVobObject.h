@@ -5,6 +5,8 @@
 // Amount of drawables a GVobObject can cache renderinstances for
 const size_t RENDERINSTANCECACHE_SIZE = 4;
 
+
+
 class zCVob;
 class zCVisual;
 class GBaseDrawable;
@@ -18,7 +20,7 @@ public:
 	void UpdateVob();
 
 	/** Makes a new renderinstances and puts it into the given vector */
-	void MakeRenderInstances(std::vector<RenderInstance>& instances, GConstants::ERenderStage stage = GConstants::RS_WORLD);
+	void MakeRenderInstances(std::vector<RenderInstance>& instances, GConstants::ERenderStage stage = GConstants::RS_WORLD, float lodDistanceNormalized = 0.0f);
 
 	/** Sets the last time this was collected. Returns true if the timestamps mismatched */
 	inline bool UpdateObjectCollectionState(unsigned int timestamp)
@@ -47,17 +49,20 @@ public:
 	/** Reaquires the list of drawables from the visual */
 	void ReaquireDrawables();
 
+	/** Whether this vob needs to talk back to it's visual when rendering */
+	bool HasDynamicDrawState(){return m_DynamicDrawState;}
+
 protected:
 
 	/** Updates the cache of the render-instances */
 	void UpdateRenderInstanceCache();
 
 	// Drawable of this vob
-	std::vector<GBaseDrawable*> m_Drawables;
+	std::vector<GBaseDrawable*> m_Drawables[NUM_VISUAL_LOD_LEVELS];
 
 	// Caches the render-instances of the drawables
 	// pair: informVisual | RenderInstance
-	std::pair<bool, RenderInstance> m_RenderInstanceCache[GConstants::ERenderStage::RS_NUM_STAGES][RENDERINSTANCECACHE_SIZE];
+	std::pair<bool, RenderInstance> m_RenderInstanceCache[NUM_VISUAL_LOD_LEVELS][GConstants::ERenderStage::RS_NUM_STAGES][RENDERINSTANCECACHE_SIZE];
 
 	// Visual this object uses
 	GVisual* m_Visual;
@@ -70,6 +75,9 @@ protected:
 
 	// Last time this was collected in a search
 	unsigned int m_LastTimeCollected;
+
+	// Whether this vob needs to talk back to it's visual when rendering
+	bool m_DynamicDrawState;
 
 #ifndef PUBLIC_RELEASE
 	HANDLE hInvalidBreakpoint;

@@ -15,6 +15,7 @@ private:
 	float m_total;
 	float m_delta[NUM_FRAMES_TO_MIDDLE];
 	float m_deltaAvg;
+	float m_deltaAccurate;
 	int currentMidFrame;
 
 public:
@@ -38,6 +39,7 @@ public:
 		for(int i=0; i<NUM_FRAMES_TO_MIDDLE; i++)
 		{
 			m_delta[i] = 1.0f / 60.0f;
+			m_deltaAccurate = 1.0f / 60.0f;
 		}
 
 		for(int i=0; i<NUM_FRAMES_TO_MIDDLE; i++)
@@ -71,6 +73,7 @@ public:
 		{
 			// If the timer was just reset, report a time delta equivalent to 60Hz frame time.
 			m_delta[currentMidFrame] = 1.0f / 60.0f;
+			m_deltaAccurate = 1.0f / 60.0f;
 		}
 		else
 		{
@@ -82,6 +85,7 @@ public:
 
 			//for(int i=0; i<NUM_FRAMES_TO_MIDDLE; i++)
 			m_delta[currentMidFrame] = d;
+			m_deltaAccurate = d;
 			
 		}
 
@@ -112,6 +116,11 @@ public:
 
 
 		return m_deltaAvg;
+	}
+
+	float GetDeltaAccurate()
+	{
+		return m_deltaAccurate;
 	}
 
 };

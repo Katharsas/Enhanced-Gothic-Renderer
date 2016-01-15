@@ -139,7 +139,7 @@ GVisual::StateCache* GMeshSoftSkin::UpdatePipelineStatesFor(GBaseDrawable* drawa
 }
 
 /** Creates a drawable for this visual */
-void GMeshSoftSkin::CreateDrawables(std::vector<GBaseDrawable*>& v)
+void GMeshSoftSkin::CreateDrawables(std::vector<GBaseDrawable*>& v, int lodLevel)
 {
 	v.push_back(new GMeshSoftSkinDrawable(this));
 	v.back()->ReaquireStateCache();

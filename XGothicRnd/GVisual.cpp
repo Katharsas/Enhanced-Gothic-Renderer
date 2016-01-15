@@ -11,6 +11,8 @@ GVisual::GVisual(zCVisual* sourceObject) : GzObjectExtension<zCVisual, GVisual>(
 {
 	m_FileName = sourceObject->GetObjectName();
 
+	m_VisualSize = sourceObject->GetBBox3D().Size();
+
 #ifndef PUBLIC_RELEASE
 	if(!m_FileName.empty())
 		LogInfo() << "Loading Visual: " << m_FileName;

@@ -99,9 +99,11 @@ GVisual::StateCache* GModelVisual::UpdatePipelineStatesFor(GBaseDrawable* drawab
 }
 
 /** Creates a drawable for this visual */
-void GModelVisual::CreateDrawables(std::vector<GBaseDrawable*>& v)
+void GModelVisual::CreateDrawables(std::vector<GBaseDrawable*>& v, int lodLevel)
 {
 	zCModel* model = (zCModel *)m_SourceObject;
+
+	float lodRange = (float)lodLevel / (float)NUM_VISUAL_LOD_LEVELS;
 
 	v.push_back(new GModelDrawable(this));
 
@@ -116,29 +118,30 @@ void GModelVisual::CreateDrawables(std::vector<GBaseDrawable*>& v)
 	{
 		// Need to clear this, in case this was not the first time of this running
 		//Toolbox::DeleteElements(s.m_Drawables);
-		s.m_Drawables.clear();
+		s.m_Drawables[lodLevel].clear();
 
 		// TODO: Ugly hack, maybe should template CreateDrawables to avoid that ugly cast here
 		// We need to store them in the visual as well, so we can set the constant-buffer!
-		s.m_MeshSoftSkin->CreateDrawables(*(std::vector<GBaseDrawable*>*)&s.m_Drawables);
+		s.m_MeshSoftSkin->CreateDrawables(*(std::vector<GBaseDrawable*>*)&s.m_Drawables[lodLevel], lodLevel);
 
-		for (GMeshSoftSkinDrawable* d : s.m_Drawables)
+		for (GMeshSoftSkinDrawable* d : s.m_Drawables[lodLevel])
 		{
 			d->SetBoneMatricesBuffer(m_ModelConstantBuffer);
 			v.push_back(d);
 		}
 	}
 
+
 	// Create drawables for node attachments
 	for(NodeAttachment& a : m_NodeAttachments)
 	{
 		// Memory freed by the vob
-		a.m_NodeDrawables.clear();
+		a.m_NodeDrawables[lodLevel].clear();
 
 		if(a.m_Visual)
-			a.m_Visual->CreateDrawables(a.m_NodeDrawables);
+			a.m_Visual->CreateDrawables(a.m_NodeDrawables[lodLevel], lodLevel);
 
-		v.insert(v.end(), a.m_NodeDrawables.begin(), a.m_NodeDrawables.end());
+		v.insert(v.end(), a.m_NodeDrawables[lodLevel].begin(), a.m_NodeDrawables[lodLevel].end());
 	}
 }
 
@@ -175,6 +178,7 @@ void GModelVisual::OnDrawableDrawn(GBaseDrawable* drawable)
 /** Updates the node-transforms and constant-data for this model */
 void GModelVisual::UpdateModel()
 {
+
 	zCModel* model = (zCModel *)m_SourceObject;
 
 
@@ -301,16 +305,19 @@ void GModelVisual::RefreshAttachments()
 	{
 		if (a.m_Visual)
 		{
-			for (GBaseDrawable* b : a.m_NodeDrawables)
+			for(int l = 0; l < NUM_VISUAL_LOD_LEVELS; l++)
 			{
-				Matrix nodeWorld = (world * m_NodeTransforms[i]);
-				
-				// Update transforms of the existing instance info
-				VobInstanceInfo vi = vobj->GetInstanceInfo();
-				vi.m_Position = nodeWorld.TranslationT();
-				vi.m_Rotation = Quaternion::CreateFromRotationMatrix(nodeWorld);
+				for(GBaseDrawable* b : a.m_NodeDrawables[l])
+				{
+					Matrix nodeWorld = (world * m_NodeTransforms[i]);
 
-				b->SetInstanceInfo(vi);
+					// Update transforms of the existing instance info
+					VobInstanceInfo vi = vobj->GetInstanceInfo();
+					vi.m_Position = nodeWorld.TranslationT();
+					vi.m_Rotation = Quaternion::CreateFromRotationMatrix(nodeWorld);
+
+					b->SetInstanceInfo(vi);
+				}
 			}
 		}
 
@@ -337,8 +344,11 @@ void GModelVisual::UpdateTextures()
 			// Update all drawables
 			for(auto& s : m_SubMeshes)
 			{
-				for(auto& d : s.m_Drawables)
-					d->ReaquireStateCache();
+				for(int l = 0; l < NUM_VISUAL_LOD_LEVELS; l++)
+				{
+					for(auto& d : s.m_Drawables[l])
+						d->ReaquireStateCache();
+				}
 			}
 
 			return;

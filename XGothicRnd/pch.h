@@ -8,6 +8,7 @@
 #include "../Shared/Logger.h"
 #include "MemoryLocations.h"
 #include <RDevice.h>
+#include <omp.h>
 
 #pragma comment(lib, "RenderingAPI.lib")
 

@@ -18,6 +18,9 @@ RD3D11CommandList::~RD3D11CommandList()
 /** Initializes a commandlist for the given Thread ID */
 bool RD3D11CommandList::InitAPI()
 {
+	// Make sure we have a context
+	REngine::RenderingDevice->RegisterThread(GetCurrentThreadId());
+
 	return true;
 }
 

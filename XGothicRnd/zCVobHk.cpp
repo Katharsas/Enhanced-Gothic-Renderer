@@ -39,8 +39,8 @@ void __fastcall zCVobHk::zCVob__EndMovement(zCVob* thisptr, void* edx, zBOOL tra
 {
 	GVobObject* vobj = thisptr->GetVobObject();
 	GVobObject* vobjq = GVobObject::QueryFromSource(thisptr);
-	if(vobj != vobjq)
-		LogWarn() << "zCVob has wrong pointer to GVobObject!";
+	//if(vobj != vobjq)
+	//	LogWarn() << "zCVob has wrong pointer to GVobObject!";
 
 	// PB didn't use this parameter really carefully. It's way faster to simply check the transform
 	// a couple of times more than needed. Vobs for particles have this set to true for example, even if they 

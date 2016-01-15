@@ -33,7 +33,7 @@ public:
 	virtual StateCache* UpdatePipelineStatesFor(GBaseDrawable* drawable, GConstants::ERenderStage stage);
 
 	/** Creates a drawable for this visual */
-	virtual void CreateDrawables(std::vector<GBaseDrawable*>& v);
+	virtual void CreateDrawables(std::vector<GBaseDrawable*>& v, int lodLevel);
 
 	/** Called when a drawable got drawn. Only if the InformVisual-Flag is set on it, though! */
 	virtual void OnDrawableDrawn(GBaseDrawable* drawable);
@@ -52,7 +52,7 @@ protected:
 	struct SubMesh
 	{
 		GMeshSoftSkin* m_MeshSoftSkin;
-		std::vector<GMeshSoftSkinDrawable*> m_Drawables;
+		std::vector<GMeshSoftSkinDrawable*> m_Drawables[NUM_VISUAL_LOD_LEVELS];
 	};
 
 	// All softskin-meshes
@@ -76,7 +76,7 @@ protected:
 		GVisual* m_Visual;
 
 		// Drawables from the visual
-		std::vector<GBaseDrawable*> m_NodeDrawables;
+		std::vector<GBaseDrawable*> m_NodeDrawables[NUM_VISUAL_LOD_LEVELS];
 	};
 
 	// All attachments to this model

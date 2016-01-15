@@ -126,7 +126,7 @@ GVisual::StateCache* GMorphMesh::UpdatePipelineStatesFor(GBaseDrawable* drawable
 }
 
 /** Creates a drawable for this visual */
-void GMorphMesh::CreateDrawables(std::vector<GBaseDrawable*>& v)
+void GMorphMesh::CreateDrawables(std::vector<GBaseDrawable*>& v, int lodLevel)
 {
 	v.push_back(new GMorphMeshDrawable(this));
 	v.back()->ReaquireStateCache();
@@ -141,6 +141,18 @@ void GMorphMesh::UpdateTextures()
 		for(auto& s : c.second.PipelineStates)
 		{
 			SubMesh& m = m_SubMeshes[i];
+
+			if(!m.m_Material)
+				continue;
+
+			if(m.m_Material->GetSourceObject() != *m.m_SourceMaterial)
+			{
+				m.m_Material = GMaterial::QueryFromSource(*m.m_SourceMaterial);
+				LogWarn() << "Hotswapped GMaterial because a SetMaterial-Call was missed!";
+			}
+
+			if(!m.m_Material)
+				continue;
 
 			m.m_Material->CacheTextures();
 			RTexture* stored = s->Textures[EShaderType::ST_PIXEL].empty() ? nullptr : s->Textures[EShaderType::ST_PIXEL][0];

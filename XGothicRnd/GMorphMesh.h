@@ -25,7 +25,7 @@ public:
 	virtual StateCache* UpdatePipelineStatesFor(GBaseDrawable* drawable, GConstants::ERenderStage stage);
 
 	/** Creates a drawable for this visual */
-	virtual void CreateDrawables(std::vector<GBaseDrawable*>& v);
+	virtual void CreateDrawables(std::vector<GBaseDrawable*>& v, int lodLevel);
 
 	/** Called when a drawable got drawn. Only if the InformVisual-Flag is set on it, though! */
 	virtual void OnDrawableDrawn(GBaseDrawable* drawable);

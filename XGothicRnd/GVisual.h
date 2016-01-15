@@ -2,6 +2,9 @@
 #include "GzObjectExtension.h"
 #include "GConstants.h"
 
+// Number of LOD-Levels a vob should have
+const int NUM_VISUAL_LOD_LEVELS = 4;
+
 /**
  * In our approach visuals only hold the data needed to render. The drawables contain the renderlogic
  * so we don't have to use virtual functions and pointers in our inner rendering-loop
@@ -39,7 +42,7 @@ public:
 	virtual StateCache* UpdatePipelineStatesFor(GBaseDrawable* drawable, GConstants::ERenderStage stage){return nullptr;}
 
 	/** Creates a drawable for this visual */
-	virtual void CreateDrawables(std::vector<GBaseDrawable*>& v) {};
+	virtual void CreateDrawables(std::vector<GBaseDrawable*>& v, int lodLevel) {};
 
 	/** Called when a drawable got drawn. Only if the InformVisual-Flag is set on it, though! */
 	virtual void OnDrawableDrawn(GBaseDrawable* drawable) {};
@@ -71,5 +74,8 @@ protected:
 
 	// Set of vobs using this visual
 	std::set<GVobObject*> m_Vobs;
+
+	// Size of the bounding-box of this visual
+	float m_VisualSize;
 };
 

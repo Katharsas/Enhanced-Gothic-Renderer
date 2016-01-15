@@ -318,7 +318,7 @@ void GBspNode::DrawNodeRecursive(unsigned int lowestLevel, RRenderQueueID queue,
 		return;
 	
 	// Check if we can just draw this. Trivial in?
-	if((m_NodeLevel <= GEOMETRY_MAX_NODE_LEVEL && (lowestLevel == m_NodeLevel || clip == ZTCAM_CLIPTYPE_IN)) // All subnodes visible?
+	if(true || (m_NodeLevel <= GEOMETRY_MAX_NODE_LEVEL && (lowestLevel == m_NodeLevel || clip == ZTCAM_CLIPTYPE_IN)) // All subnodes visible?
 		|| m_IsLeaf)
 	{
 		// Collect vobs while submitting the drawcall

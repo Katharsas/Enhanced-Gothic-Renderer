@@ -12,6 +12,12 @@
     <LocalDebuggerWorkingDirectory>$(G2_SYSTEM_PATH)</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='OriginalRnd|Win32'">
+    <LocalDebuggerCommand>$(G2_SYSTEM_PATH)\Gothic2.exe</LocalDebuggerCommand>
+    <LocalDebuggerCommandArguments>-zWindow -ZNOEXHND</LocalDebuggerCommandArguments>
+    <LocalDebuggerWorkingDirectory>$(G2_SYSTEM_PATH)</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_NoOpt|Win32'">
     <LocalDebuggerCommand>$(G2_SYSTEM_PATH)\Gothic2.exe</LocalDebuggerCommand>
     <LocalDebuggerCommandArguments>-zWindow -ZNOEXHND</LocalDebuggerCommandArguments>

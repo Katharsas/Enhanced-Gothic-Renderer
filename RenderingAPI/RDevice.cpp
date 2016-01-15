@@ -7,7 +7,7 @@
 #include "RCommandList.h"
 #include "RBuffer.h"
 
-#define NO_MULTITHREADED_RENDERING
+//#define NO_MULTITHREADED_RENDERING
 
 const unsigned int MIN_STATES_FOR_THREADED_RENDER = 2;
 

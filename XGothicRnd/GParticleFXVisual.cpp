@@ -142,6 +142,7 @@ void GParticleFXVisual::OnDrawableDrawn(GBaseDrawable* drawable)
 /** Updates the underlaying particle effect to get it ready for rendering */
 void GParticleFXVisual::UpdateEffect()
 {
+
 	zCParticleFX* pfx = (zCParticleFX*)m_SourceObject;
 	zCParticleEmitter* emt = pfx->GetEmitter();
 
@@ -234,8 +235,11 @@ void GParticleFXVisual::UpdateEffect()
 }
 
 /** Creates a drawable for this visual */
-void GParticleFXVisual::CreateDrawables(std::vector<GBaseDrawable*>& v)
+void GParticleFXVisual::CreateDrawables(std::vector<GBaseDrawable*>& v, int lodLevel)
 {
+	if(lodLevel >= NUM_VISUAL_LOD_LEVELS / 2)
+		return; // No lod for far distances, so simply don't render them
+
 	v.push_back(new GParticleFXDrawable(this));
 	v.back()->ReaquireStateCache();
 }

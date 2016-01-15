@@ -65,6 +65,12 @@ struct zTBBox3D
 			return zPLANE_INFRONT;	
 		else return zPLANE_SPANNING;
 	}
+
+	/** Size of this boundingbox */
+	float Size()
+	{
+		return (m_Max - m_Min).Length();
+	}
 };
 
 struct zTPlane

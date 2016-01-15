@@ -17,6 +17,7 @@
 #include <RTools.h>
 #include <RDynamicBufferCache.h>
 #include "D3D7\MyDirect3DDevice7.h"
+#include "GCamera.h"
 
 GWorld::GWorld(zCWorld* sourceObject) : GzObjectExtension<zCWorld, GWorld>(sourceObject)
 {
@@ -56,6 +57,8 @@ void GWorld::OnWorldLoaded(zTWorldLoadMode mode)
  */
 void GWorld::Render()
 {
+	GCamera* activeCamera = GCamera::GetActiveCamera();
+
 	zCSkyController_Outdoor* sky = zCSkyController_Outdoor::GetActiveSkyControllerAsOutdoor();
 	float fogNear = FLT_MAX, fogFar = FLT_MAX;
 	if(sky)
@@ -72,8 +75,10 @@ void GWorld::Render()
 	// Faster than sorting the list of vobs
 
 	static std::vector<RenderInstance> s_sortIndexList;
+	static std::vector<GVobObject*> s_DynamicDrawStateVobs;
 	s_sortIndexList.clear();
 	m_VobRenderList.clear();
+	s_DynamicDrawStateVobs.clear();
 
 	if(m_BspTree)
 		m_BspTree->Draw(worldMeshQueue, m_VobRenderList, fogFar);
@@ -81,11 +86,98 @@ void GWorld::Render()
 	// Done with this queue, process it asynchronously
 	REngine::RenderingDevice->ProcessRenderQueue(worldMeshQueue);
 
-	// TODO: Get rid of this pass?
+
+
+	// Calculate the squared inverse farplane, so we don't have to do all these
+	// expensive square-roots and divisions for LOD-Calculation
+	float3 activeCameraPosition = activeCamera->GetCameraPosition();
+
+	// Scale farZ down. Farplane usually is around 16000. Need to do this so farZ^2 won't get too big
+	double farZSquared = activeCamera->GetFarZ() * activeCamera->GetFarZ();
+	double farZMod = activeCamera->GetFarZ() * 0.00001; 
+	double farPlaneSquaredInv = 1.0f / (farZMod * farZMod);
+
+	// Extract render-instances
 	for(GVobObject* vob : m_VobRenderList)
 	{
-		vob->MakeRenderInstances(s_sortIndexList);
+		if(vob->HasDynamicDrawState())
+		{
+			float3 vobPosition = vob->GetWorldMatrix().TranslationT();
+			double distanceSquared = (vobPosition - activeCameraPosition).LengthSquared();
+
+			if(distanceSquared < farZSquared)
+			{
+				double distanceSquaredMod = distanceSquared * 0.00001 * 0.00001;
+				vob->MakeRenderInstances(s_sortIndexList, GConstants::RS_WORLD, distanceSquaredMod * farPlaneSquaredInv);
+			}
+		}
 	}
+
+	/*static std::vector<std::vector<RenderInstance>> s_sortIndexList_local;
+	s_sortIndexList_local.resize(omp_get_max_threads());
+	for(int i = 0; i < m_VobRenderList.size(); i++)
+		s_sortIndexList_local.clear();
+
+#pragma omp parallel sections
+	{
+	#pragma omp section
+		{
+			auto& list = s_sortIndexList_local[omp_get_thread_num()];
+			list.clear();
+
+			// Extract render-instances
+			for(GVobObject* vob : m_VobRenderList)
+			{
+				if(vob->HasDynamicDrawState())
+				{
+					float3 vobPosition = vob->GetWorldMatrix().TranslationT();
+					double distanceSquared = (vobPosition - activeCameraPosition).LengthSquared();
+
+					if(distanceSquared < farZSquared)
+					{
+						double distanceSquaredMod = distanceSquared * 0.00001 * 0.00001;
+						vob->MakeRenderInstances(list, GConstants::RS_WORLD, distanceSquaredMod * farPlaneSquaredInv);
+					}
+				}
+			}
+
+			#pragma omp critical (s_sortIndexList)
+			s_sortIndexList.insert(s_sortIndexList.end(), list.begin(), list.end());
+		}
+
+	#pragma omp section
+		{
+		// Extract vobs with dynamic drawstates
+	#pragma omp parallel
+			{
+				auto& list = s_sortIndexList_local[omp_get_thread_num()];
+				list.clear();
+
+				// Draw all the others
+		#pragma omp for
+				for(int i = 0; i < m_VobRenderList.size(); i++)
+				{
+					GVobObject* vob = m_VobRenderList[i];
+
+					if(!vob->HasDynamicDrawState())
+					{
+						float3 vobPosition = vob->GetWorldMatrix().TranslationT();
+						double distanceSquared = (vobPosition - activeCameraPosition).LengthSquared();
+
+						if(distanceSquared < farZSquared)
+						{
+							double distanceSquaredMod = distanceSquared * 0.00001 * 0.00001;
+							vob->MakeRenderInstances(list, GConstants::RS_WORLD, distanceSquaredMod * farPlaneSquaredInv);
+						}
+					}
+				}
+
+				// Reduce the lists to s_sortIndexList
+				#pragma omp critical (s_sortIndexList)
+				s_sortIndexList.insert(s_sortIndexList.end(), list.begin(), list.end());
+			}
+		}
+	}*/
 
 	// Sort the list by visual
 	std::sort(s_sortIndexList.begin(), s_sortIndexList.end(),

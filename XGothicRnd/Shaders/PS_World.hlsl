@@ -4,11 +4,17 @@
 
 #include <PerFrameConstantBuffer.h>
 
+#define LAST_TEXTURE_SLOT t1
+
 //--------------------------------------------------------------------------------------
 // Textures and Samplers
 //--------------------------------------------------------------------------------------
 SamplerState SS_Linear : register( s0 );
 Texture2D	TX_Texture0 : register( t0 );
+
+#ifdef LIGHTMAPPING
+Texture2D	TX_Lightmap : register( LAST_TEXTURE_SLOT );
+#endif
 
 //--------------------------------------------------------------------------------------
 // Input / Output structures
@@ -28,9 +34,23 @@ struct PS_INPUT
 //--------------------------------------------------------------------------------------
 float4 PSMain( PS_INPUT Input ) : SV_TARGET
 {
-	float4 color = pow(TX_Texture0.Sample(SS_Linear, Input.vTexcoord), 1.0f);
-	color *= Input.vDiffuse;
+	float4 color = TX_Texture0.Sample(SS_Linear, Input.vTexcoord);
+	
+	// Get sky-color
+	float4 lighting = GetLightCLUT(Input.vDiffuse.r);
+	
+#ifdef LIGHTMAPPING
+	
+	
+	// Sample lightmap
+	float4 lightmap = TX_Lightmap.Sample(SS_Linear, Input.vTexcoord2);
+	lighting *= lightmap;
+	
+#endif
 
+	// Apply lighting
+	color *= lighting;
+	
 #ifdef DO_ALPHATEST
 	// Gothic always uses a value around 0.6
 	// TODO: Get this from FF-State or via other constantbuffers

@@ -34,7 +34,7 @@ public:
 	virtual StateCache* UpdatePipelineStatesFor(GBaseDrawable* drawable, GConstants::ERenderStage stage);
 
 	/** Creates a drawable for this visual */
-	virtual void CreateDrawables(std::vector<GBaseDrawable*>& v);
+	virtual void CreateDrawables(std::vector<GBaseDrawable*>& v, int lodLevel);
 
 protected:
 	// Logical buffers for rendering

@@ -16,7 +16,7 @@ public:
 	virtual void OnDrawableDrawn(GBaseDrawable* drawable);
 
 	/** Creates a drawable for this visual */
-	virtual void CreateDrawables(std::vector<GBaseDrawable*>& v);
+	virtual void CreateDrawables(std::vector<GBaseDrawable*>& v, int lodLevel);
 
 private:
 	/** Updates the underlaying particle effect to get it ready for rendering */

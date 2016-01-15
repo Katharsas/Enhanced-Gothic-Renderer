@@ -102,6 +102,10 @@ public:
 	unsigned int GetNumRegisteredDrawCalls();
 
 	/**
+	 * Flushes actions from the given thread-ID
+	 */
+
+	/**
 	 * Returns the current main output window
 	 */
 	HWND GetOutputWindow();

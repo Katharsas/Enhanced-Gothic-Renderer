@@ -38,9 +38,9 @@ VS_OUTPUT VSMain( VS_INPUT Input )
 	Output.vPosition = mul( float4(positionWorld,1), M_ViewProj);
 	Output.vTexcoord2 = Input.vTex2;
 	Output.vTexcoord = Input.vTex1;
-	Output.vDiffuse  = Input.vDiffuse;
 	Output.vNormalVS = mul(Input.vNormal, (float3x3)M_View);
 	Output.vViewPosition = mul(float4(positionWorld,1), M_View);
+	Output.vDiffuse = Input.vDiffuse;
 	
 	return Output;
 }

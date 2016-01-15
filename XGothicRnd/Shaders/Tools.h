@@ -1,3 +1,6 @@
+#ifndef __TOOLS_H
+#define __TOOLS_H
+
 
 /** Performs the rotation of a vector by a quaternion */
 float3 RotateVectorByQuat(float4 quat, float3 vec)
@@ -14,3 +17,5 @@ float4 DWORDToFloat4(uint color)
 
 	return float4(r,g,b,a);
 }
+
+#endif

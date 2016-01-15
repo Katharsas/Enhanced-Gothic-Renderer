@@ -71,11 +71,14 @@ GVobObject::~GVobObject(void)
 	}
 
 	// Let the drawables know everything is okay
-	for(auto d : m_Drawables)
-		d->SetHomeVob(nullptr);
+	for(int i=0;i<NUM_VISUAL_LOD_LEVELS;i++)
+		for(auto d : m_Drawables[i])
+			d->SetHomeVob(nullptr);
+
 
 	if(GVisual::QueryFromSource(m_SourceObject->GetVisual()))
-		Toolbox::DeleteElements(m_Drawables); // Only delete if the visual wasn't already deleted
+		for(int i=0;i<NUM_VISUAL_LOD_LEVELS;i++)
+			Toolbox::DeleteElements(m_Drawables[i]); // Only delete if the visual wasn't already deleted
 }
 
 /** Called when the underlaying vob moved, for example */
@@ -99,32 +102,38 @@ void GVobObject::UpdateVob()
 	m_WorldMatrix = m;
 
 	// Set new instanceinfo for all drawables
-	for (GBaseDrawable* d : m_Drawables)
+	for(int i = 0; i < NUM_VISUAL_LOD_LEVELS; i++)
 	{
-		d->SetInstanceInfo(m_InstanceInfo);
+		for(GBaseDrawable* d : m_Drawables[i])
+		{
+			d->SetInstanceInfo(m_InstanceInfo);
+		}
 	}
 
 	UpdateRenderInstanceCache();
 }
 
 /** Makes a new renderinstances and puts it into the given vector */
-void GVobObject::MakeRenderInstances(std::vector<RenderInstance>& instances, GConstants::ERenderStage stage)
+void GVobObject::MakeRenderInstances(std::vector<RenderInstance>& instances, GConstants::ERenderStage stage, float lodDistanceNormalized)
 {
+	// Calculate current LOD-Level
+	int lod = std::min((int)(lodDistanceNormalized * NUM_VISUAL_LOD_LEVELS + 0.5f), NUM_VISUAL_LOD_LEVELS-1);
+
 	// Use everything from the cache we can
-	for (unsigned int i = 0; i < std::min(m_Drawables.size(), RENDERINSTANCECACHE_SIZE); i++)
+	for (unsigned int i = 0; i < std::min(m_Drawables[lod].size(), RENDERINSTANCECACHE_SIZE); i++)
 	{
-		auto& inst = m_RenderInstanceCache[stage][i];
+		auto& inst = m_RenderInstanceCache[lod][stage][i];
 		instances.push_back(inst.second);
 
 		// Only follow the pointer if the cache says we have to
 		if (inst.first)
 		{
-			GBaseDrawable* d = m_Drawables[i];
+			GBaseDrawable* d = m_Drawables[lod][i];
 			d->OnDrawn();
 
 			// FIXME: HACK! GModelVisuals will replace the visuals when the attachments change
 			// if we got a new pointer after executing d->OnDrawn() it means our Drawable-List just got deleted and rebuilt!
-			if(d != m_Drawables[i])
+			if(d != m_Drawables[lod][i])
 			{
 				// Remove already pushed drawables
 				for(unsigned int j = 0; j < i+1; j++)
@@ -137,9 +146,9 @@ void GVobObject::MakeRenderInstances(std::vector<RenderInstance>& instances, GCo
 	}
 
 	// Create new states for the drawables that didn't fit into the cache
-	for (unsigned int i = RENDERINSTANCECACHE_SIZE; i<m_Drawables.size(); i++)
+	for (unsigned int i = RENDERINSTANCECACHE_SIZE; i<m_Drawables[lod].size(); i++)
 	{
-		GBaseDrawable* d = m_Drawables[i];
+		GBaseDrawable* d = m_Drawables[lod][i];
 		if (d->HasStatesForStage(stage))
 		{
 			instances.push_back(RenderInstance((uint32_t)d->GetVisual(), &d->GetInstanceInfo(), d, this));
@@ -152,18 +161,29 @@ void GVobObject::MakeRenderInstances(std::vector<RenderInstance>& instances, GCo
 void GVobObject::ReaquireDrawables()
 {
 	// Let the drawables know everything is okay
-	for(auto d : m_Drawables)
-		d->SetHomeVob(nullptr);
+	for(int i = 0; i < NUM_VISUAL_LOD_LEVELS; i++)
+	{
+		for(auto d : m_Drawables[i])
+			d->SetHomeVob(nullptr);
 
-	Toolbox::DeleteElements(m_Drawables);
+		Toolbox::DeleteElements(m_Drawables[i]);
+		m_Visual->CreateDrawables(m_Drawables[i], i);
+	}
 
-	m_Visual->CreateDrawables(m_Drawables);
 	UpdateRenderInstanceCache();
 
-	for(auto d : m_Drawables)
+	m_DynamicDrawState = false;
+
+	for(int i = 0; i < NUM_VISUAL_LOD_LEVELS; i++)
 	{
-		d->SetHomeVob(this);
+		for(auto d : m_Drawables[i])
+		{
+			d->SetHomeVob(this);
+
+			m_DynamicDrawState = d->ShouldInformVisual() ? true : m_DynamicDrawState;
+		}
 	}
+	
 }
 
 /** Updates the cache of the render-instances */
@@ -171,15 +191,18 @@ void GVobObject::UpdateRenderInstanceCache()
 {
 	memset(m_RenderInstanceCache, 0, sizeof(m_RenderInstanceCache));
 
-	for (unsigned int i = 0; i < std::min(m_Drawables.size(), RENDERINSTANCECACHE_SIZE); i++)
+	for(int l = 0; l < NUM_VISUAL_LOD_LEVELS; l++)
 	{
-		GBaseDrawable* d = m_Drawables[i];
-		for(int s = 0; s < GConstants::ERenderStage::RS_NUM_STAGES; s++)
+		for(unsigned int i = 0; i < std::min(m_Drawables[l].size(), RENDERINSTANCECACHE_SIZE); i++)
 		{
-			if(d->HasStatesForStage((GConstants::ERenderStage)s))
+			GBaseDrawable* d = m_Drawables[l][i];
+			for(int s = 0; s < GConstants::ERenderStage::RS_NUM_STAGES; s++)
 			{
-				m_RenderInstanceCache[(GConstants::ERenderStage)s][i].second = (RenderInstance((uint32_t)d->GetVisual(), &d->GetInstanceInfo(), d, this));
-				m_RenderInstanceCache[(GConstants::ERenderStage)s][i].first = d->ShouldInformVisual();
+				if(d->HasStatesForStage((GConstants::ERenderStage)s))
+				{
+					m_RenderInstanceCache[l][(GConstants::ERenderStage)s][i].second = (RenderInstance((uint32_t)d->GetVisual(), &d->GetInstanceInfo(), d, this));
+					m_RenderInstanceCache[l][(GConstants::ERenderStage)s][i].first = d->ShouldInformVisual();
+				}
 			}
 		}
 	}

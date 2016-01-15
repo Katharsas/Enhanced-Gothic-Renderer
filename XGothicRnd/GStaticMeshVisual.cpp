@@ -8,6 +8,8 @@
 #include "GStaticMeshDrawable.h"
 #include <RTools.h>
 
+const std::vector<float> LOD_LEVEL_MIN_SIZES = {0, 400.0f, 700.0f, 1100.0f};
+
 GStaticMeshVisual::GStaticMeshVisual(zCVisual* sourceObject) : GVisual(sourceObject)
 {
 	// This must be a zCProgMeshProto.
@@ -177,8 +179,14 @@ GVisual::StateCache* GStaticMeshVisual::UpdatePipelineStatesFor(GBaseDrawable* d
 }
 
 /** Creates a drawable for this visual */
-void GStaticMeshVisual::CreateDrawables(std::vector<GBaseDrawable*>& v)
+void GStaticMeshVisual::CreateDrawables(std::vector<GBaseDrawable*>& v, int lodLevel)
 {
+	// Don't create drawable if we are too small for a far lod-level
+	float fLodSizeIdx = ((float)lodLevel / (float)NUM_VISUAL_LOD_LEVELS) * LOD_LEVEL_MIN_SIZES.size();
+	int lodSizeIdx = (int)(fLodSizeIdx + 0.5f);
+	if( m_VisualSize < LOD_LEVEL_MIN_SIZES[lodSizeIdx])
+		return;
+
 	v.push_back(new GStaticMeshDrawable(this));
 	v.back()->ReaquireStateCache();
 }
