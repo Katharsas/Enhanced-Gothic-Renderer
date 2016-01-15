@@ -465,18 +465,7 @@ void GBspNode::AddVisibleIndoorVobs(const float3& cameraPosition, std::vector<GV
 			zCBspSector* sector = p->GetMaterial()->GetSectorBack();
 			if (sector)
 			{
-				for (int i = 0; i < sector->m_SectorNodes.GetSize(); i++)
-				{
-					zCBspLeaf* leaf = (zCBspLeaf*)sector->m_SectorNodes.Array[i];
-					for (unsigned int j = 0; j < leaf->LeafVobList.NumInArray; j++)
-					{
-						GVobObject* vob = leaf->LeafVobList.Array[j]->GetVobObject();
-						if (vob && vob->UpdateObjectCollectionState(frame))
-						{
-							visibleVobs.push_back(vob);
-						}
-					}
-				}
+				sector->AddSectorVobsRec(cameraPosition, visibleVobs, frame, nullptr);
 			}
 
 		}
