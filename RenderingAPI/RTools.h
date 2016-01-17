@@ -95,6 +95,30 @@ namespace RTools
 		return shader;
 	}
 
+	/** Shader loading functions, which also cache the objects by using the alias as hash */
+	template<typename T>
+	static T* LoadShaderFromString(const std::string& shadercode, 
+		const std::string& alias, 
+		const std::vector<std::vector<std::string>>& definitions = std::vector<std::vector<std::string>>())
+	{
+		// Check if this was already loaded
+		RResourceCache& cache = *REngine::ResourceCache;
+		T* shader = cache.GetCachedObject<T>(alias);
+
+		if(shader)
+			return shader;
+
+		// Not in cache, load it
+		shader = cache.CreateResource<T>();
+		if(!shader->LoadShaderFromString(file, definitions))
+			return false;
+
+		// Add it to cache
+		cache.AddToCache(alias, shader);
+
+		return shader;
+	}
+
 	/** Creates an InputLayout for the given vertextype an decleration. It will be cached as well, so this
 		is save to be called multiple times for the same layout.
 		The Vertexdesc has to have an INPUT_LAYOUT_DESC static member. */
