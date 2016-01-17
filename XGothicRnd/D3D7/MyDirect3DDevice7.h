@@ -395,6 +395,7 @@ public:
     }
 
     HRESULT STDMETHODCALLTYPE BeginScene() {
+		SetRenderQueueName("D3D7");
 		REngine::RenderingDevice->OnFrameStart();
         return S_OK; 
     }
@@ -497,7 +498,9 @@ public:
 		sm.Invalidate();
 
 		// Get a new queue for each of these, since it's critical that the original code draws in order
-		RRenderQueueID q = REngine::RenderingDevice->AcquireRenderQueue();
+		RRenderQueueID q = REngine::RenderingDevice->AcquireRenderQueue(false, RenderQueueName + " #" + std::to_string(RenderQueueIndex));
+		RenderQueueIndex++;
+
 		REngine::RenderingDevice->QueuePipelineState(drawcall, q);
 		REngine::RenderingDevice->ProcessRenderQueue(q);
 
@@ -557,7 +560,8 @@ public:
 		sm.Invalidate();
 
 		// Get a new queue for each of these, since it's critical that the original code draws in order
-		RRenderQueueID q = REngine::RenderingDevice->AcquireRenderQueue();
+		RRenderQueueID q = REngine::RenderingDevice->AcquireRenderQueue(false, RenderQueueName + " #" + std::to_string(RenderQueueIndex));
+		RenderQueueIndex++;
 		REngine::RenderingDevice->QueuePipelineState(drawcall, q);
 		REngine::RenderingDevice->ProcessRenderQueue(q);
 
@@ -860,6 +864,13 @@ public:
 		return Viewport;
 	}
 
+	/** Sets the name the renderqueues should use */
+	void SetRenderQueueName(const std::string& name)
+	{
+		RenderQueueName = name;
+		RenderQueueIndex = 0;
+	}
+
 	/** Singleton-like accessor to the currently active fake-device */
 	static MyDirect3DDevice7* GetActiveDevice()
 	{
@@ -903,4 +914,8 @@ private:
 
 	// List of all rendered pipelinestates. Cleared at frame-end.
 	std::vector<RPipelineState*> FramePipelineStates;
+
+	// Name to use for current RenderingQueues. These will get an index appended for each new queue
+	std::string RenderQueueName;
+	unsigned int RenderQueueIndex;
 };

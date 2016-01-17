@@ -65,12 +65,11 @@ void GWorld::Render()
 	if(sky)
 		sky->GetFogPlanes(fogNear, fogFar);
 
-
 	// Draw the first parts of the sky before getting the queues
 	DrawSkyPre();
 
-	RRenderQueueID worldMeshQueue = REngine::RenderingDevice->AcquireRenderQueue(true);
-	RRenderQueueID vobsQueue = REngine::RenderingDevice->AcquireRenderQueue(true);
+	RRenderQueueID worldMeshQueue = REngine::RenderingDevice->AcquireRenderQueue(true, "WorldMesh");
+	RRenderQueueID vobsQueue = REngine::RenderingDevice->AcquireRenderQueue(true, "Vobs");
 
 	// Push indices to the vobs and their sorting creterium into this list
 	// Faster than sorting the list of vobs
@@ -235,9 +234,9 @@ void GWorld::Render()
 	Engine::Game->AddFrameDebugLine(std::string("Queues: ") + std::to_string(REngine::RenderingDevice->GetNumQueuesInUse()));
 	Engine::Game->AddFrameDebugLine(std::string("DrawCalls: ") + std::to_string(REngine::RenderingDevice->GetNumRegisteredDrawCalls()));
 
-	float tcpu, tgpu;
-	__ctx_sync_check::GlobalSyncCheckStash.GetTimesLostAndReset(tcpu, tgpu);
-	Engine::Game->AddFrameDebugLine(std::string("Buffer Updates: (CPU: ") + std::to_string(tcpu) + "ms) (GPU: " + std::to_string(tgpu) + "ms)");
+
+	Engine::Game->AddFrameDebugLine(Engine::Game->FormatProfilerData());
+
 }
 
 /**
@@ -255,6 +254,9 @@ void GWorld::DrawSkyPre()
 	// Enter new clear-color for the main buffers
 	// TODO: Move this, when MRTs are needed
 	REngine::RenderingDevice->SetMainClearValues(RTools::DWORDToFloat4(sky->GetBackgroundColor()));
+
+	// Debugging...
+	MyDirect3DDevice7::GetActiveDevice()->SetRenderQueueName("Sky");
 
 	sky->RenderSkyPre();
 }
@@ -380,7 +382,7 @@ void GWorld::RenderInventoryCell()
 	GASSERT(m_VobSet.size() == 1, "InventoryWorld contains a different number of vobs than 1!");
 
 	// Queue for this single vob
-	RRenderQueueID queue = REngine::RenderingDevice->AcquireRenderQueue();
+	RRenderQueueID queue = REngine::RenderingDevice->AcquireRenderQueue(false, "Inventory Cell");
 
 	// Dynamic buffer for the frame information of this vob
 	RCachedDynamicBuffer frameBuffer = REngine::DynamicBufferCache->GetDataBuffer(EBindFlags::B_CONSTANTBUFFER, sizeof(ConstantBuffers::PerFrameConstantBuffer), sizeof(ConstantBuffers::PerFrameConstantBuffer));

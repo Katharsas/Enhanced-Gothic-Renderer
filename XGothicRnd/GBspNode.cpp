@@ -33,6 +33,9 @@ void GBspNode::Init(zCBspBase* sourceNode, GBspTree* sourceTree)
 	m_NodeLevel = 0;
 	m_BBox = sourceNode->m_BBox3D;
 
+	// Calculate ground-size of this node. Leafs will not cover the world an the Y-Axis
+	m_NodeSizeXZ = (float2(m_BBox.m_Min.x, m_BBox.m_Min.z) - float2(m_BBox.m_Max.x, m_BBox.m_Max.z)).Length();
+
 	if (sourceNode->m_NodeType == zTBspNodeType::zBSP_NODE)
 		m_SeperationPlane = ((zCBspNode*)sourceNode)->m_Plane;
 
@@ -307,7 +310,7 @@ void GBspNode::UpdateMeshPartPipelineState(WorldMeshPart& part)
 }
 
 /** Does frustumculling and draws this node if it is the lowest acceptable */
-void GBspNode::DrawNodeRecursive(unsigned int lowestLevel, RRenderQueueID queue, BSPRenderInfo info, std::vector<GVobObject*>& visibleVobs)
+void GBspNode::DrawNodeRecursive(float minNodeSizeXZ, RRenderQueueID queue, BSPRenderInfo info, std::vector<GVobObject*>& visibleVobs)
 {
 	// If the BBox is inside the frustum, we can just draw the contents of this node here
 	zTCam_ClipType clip = zCCamera::BBox3DInFrustumCached(m_BBox, info.FrustumPlanes, info.FrustumSignBits, m_FrustumTestCache, info.ClipFlags);
@@ -317,8 +320,9 @@ void GBspNode::DrawNodeRecursive(unsigned int lowestLevel, RRenderQueueID queue,
 	if (clip == ZTCAM_CLIPTYPE_OUT)
 		return;
 	
+
 	// Check if we can just draw this. Trivial in?
-	if((m_NodeLevel <= GEOMETRY_MAX_NODE_LEVEL && (lowestLevel == m_NodeLevel || clip == ZTCAM_CLIPTYPE_IN)) // All subnodes visible?
+	if( (m_NodeLevel < GEOMETRY_MAX_NODE_LEVEL && (m_NodeSizeXZ < minNodeSizeXZ || clip == ZTCAM_CLIPTYPE_IN)) // All subnodes visible?
 		|| m_IsLeaf)
 	{
 		// Collect vobs while submitting the drawcall
@@ -336,8 +340,8 @@ void GBspNode::DrawNodeRecursive(unsigned int lowestLevel, RRenderQueueID queue,
 
 	// Node is just crossing the frustum. Break it further down if possible.
 
-	if (m_Front)m_Front->DrawNodeRecursive(lowestLevel, queue, info, visibleVobs);
-	if (m_Back)m_Back->DrawNodeRecursive(lowestLevel, queue, info, visibleVobs);
+	if (m_Front)m_Front->DrawNodeRecursive(minNodeSizeXZ, queue, info, visibleVobs);
+	if (m_Back)m_Back->DrawNodeRecursive(minNodeSizeXZ, queue, info, visibleVobs);
 	/*
 
 	// Check which side of the node the camera is on

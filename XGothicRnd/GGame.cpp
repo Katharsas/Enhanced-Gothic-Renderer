@@ -29,6 +29,10 @@
 #include "zEngineHooks.h"
 #include "zCSkyController.h"
 #include "zClassDef.h"
+#include "D3D7\MyDirect3DDevice7.h"
+
+// Max number of profile results to show on screen
+const int MAX_PROFILE_RESULTS = 6;
 
 GGame::GGame(void)
 {
@@ -290,6 +294,8 @@ void GGame::OnRender()
 
 #endif
 	
+	// Debugging...
+	MyDirect3DDevice7::GetActiveDevice()->SetRenderQueueName("D3D7-HUD");
 }
 
 /**
@@ -466,4 +472,40 @@ void GGame::ExecuteSaveFunctions()
 	}
 
 	m_SaveFunctions.clear();
+}
+
+/** Gets the current profiler-data and formats it into a string */
+std::string GGame::FormatProfilerData()
+{
+	std::vector<std::pair<std::string, RProfiler::RProfileResult>> l = REngine::RenderingDevice->GetProfilerResults();
+
+	std::stringstream ss;
+	ss << "Profiler results:\n";
+
+	// Sort after GPU time
+	std::sort(l.begin(),l.end(), [](const std::pair<std::string, RProfiler::RProfileResult>& a, const std::pair<std::string, RProfiler::RProfileResult>& b)
+		{return a.second.GPUTime > b.second.GPUTime;}
+	);
+
+	int i=0;
+	for(auto r : l)
+	{	
+		if(i > MAX_PROFILE_RESULTS)
+			break;
+
+		ss << " - " << r.first << ": " << r.second.GPUTime << "ms\n";
+
+		i++;
+	}
+
+	// Sum GPU-Time
+	double totalGPUms = !l.empty() ? l[0].second.GPUTime : 0.0;
+	double totalCPUms = 1000.0f / GetFramesPerSecond();
+
+	ss << " - ... (" << l.size() - MAX_PROFILE_RESULTS << " more)\n";
+
+	ss << "~Total GPU: " << totalGPUms << ", Total CPU: " << totalCPUms << "\n";
+	ss << " >> " << 100 * totalGPUms / totalCPUms << "% GPU Time";
+
+	return ss.str();
 }

@@ -99,6 +99,9 @@ public:
 	{
 		return m_ActiveWorld;
 	}
+
+	/** Gets the current profiler-data and formats it into a string */
+	std::string FormatProfilerData();
 private:
 
 	/**

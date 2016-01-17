@@ -55,7 +55,7 @@ public:
 	void Init(zCBspBase* sourceNode, GBspTree* sourceTree);
 
 	/** Does frustumculling and draws this node if it is the lowest acceptable */
-	void DrawNodeRecursive(unsigned int lowestLevel, RRenderQueueID queue, BSPRenderInfo info, std::vector<GVobObject*>& visibleVobs);
+	void DrawNodeRecursive(float minNodeSizeXZ, RRenderQueueID queue, BSPRenderInfo info, std::vector<GVobObject*>& visibleVobs);
 
 	/** Generates the mesh-information of this and all child-nodes */
 	void BuildTriangleList(std::vector<ExTVertexStruct>& vertices);
@@ -111,6 +111,7 @@ private:
 	GBspNode* m_Back;
 	Plane m_SeperationPlane;
 	zTBBox3D m_BBox;
+	float m_NodeSizeXZ;
 
 	//List of all Portals
 	std::vector<zCPolygon*> m_PortalList;

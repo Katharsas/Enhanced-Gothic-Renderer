@@ -87,7 +87,8 @@ void GBspTree::Draw(RRenderQueueID queue, std::vector<GVobObject*>& visibleVobs,
 	info.ClipFlags = CLIP_FLAGS_FULL;
 	info.ObjectFarplane = objectFarplane;
 
-	m_RootNode->DrawNodeRecursive(std::max(0U, GEOMETRY_MAX_NODE_LEVEL - 4), queue, info, visibleVobs);
+	float minNodeSizeXZ = 8000.0f;
+	m_RootNode->DrawNodeRecursive(minNodeSizeXZ, queue, info, visibleVobs);
 
 	// DEBUG
 	zCBspSector* startSector = m_SourceTree->GetCurrentCameraSector();
