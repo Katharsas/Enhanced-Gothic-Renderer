@@ -17,11 +17,12 @@
 #include "RViewport.h"
 #include "REngine.h"
 #include "RThreadPool.h"
+#include "RProfiler.h"
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "dxgi.lib")
 
-//#define DEBUG_D3D11
+#define DEBUG_D3D11
 
 const ETextureFormat DEFAULT_BACKBUFFER_FORMAT = ETextureFormat::TF_R8G8B8A8;
 
@@ -80,6 +81,9 @@ bool RD3D11Device::CreateDeviceAPI()
 		return false;
 
 	ImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	// Tell the profiler...
+	Profiler.InitializeAPI(Device, ImmediateContext);
 
 	return true;
 }
@@ -241,6 +245,7 @@ bool RD3D11Device::PresentAPI()
 
 	// Present the frame
 	// TODO: VSync! DXGISwapChain->Present(1, 0)
+
 	DXGISwapChain->Present(0, 0); 
 
 	FrameCounter++;
