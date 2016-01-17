@@ -6,7 +6,12 @@
 #define RDEVICEBASE_API RD3D11Device
 #endif
 
+// Whether to profile the rendering queues. This will store the queues timing in a map per name.
+// If no name is present, the queue won't be profiled. If enabled, multithreading will not be used, if enabled.
+#define R_PROFILE_QUEUES
 
+// Whether to use multithreading to draw the queues
+#define NO_MULTITHREADED_RENDERING
 
 class RDevice :
 	public RDEVICEBASE_API
@@ -79,7 +84,7 @@ public:
 	/**
 	 * Registers a renderingqueue in the device. Registration will be cleared every frame, so you have to
 	 * get one every frame you want to use it.  */
-	RRenderQueueID AcquireRenderQueue(bool sortable = false);
+	RRenderQueueID AcquireRenderQueue(bool sortable = false, const std::string& name = "");
 
 	/** 
 	 * Returns the Counter of how many frames since the start of the program have been rendered 
@@ -109,6 +114,11 @@ public:
 	 * Returns the current main output window
 	 */
 	HWND GetOutputWindow();
+
+	/**
+	 * Returns a list of all result the profiler has gathered 
+	 */
+	std::vector<std::pair<std::string, RProfiler::RProfileResult>> GetProfilerResults();
 
 #ifndef PUBLIC_RELEASE
 	/**

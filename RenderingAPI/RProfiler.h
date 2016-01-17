@@ -14,56 +14,37 @@
 #include "RTimer.h"
 
 #ifdef RND_D3D11
+#include "RD3D11Profiler.h"
+#define RPROFILERBASE_API RD3D11Profiler
+#endif
 
-class RProfiler
+
+class RProfiler : public RPROFILERBASE_API
 {
 
 public:
 
-	// Constants
-	static const UINT64 QueryLatency = 5;
+	struct RProfileResult
+	{
+		double GPUTime;
+	};
 
     static RProfiler GlobalProfiler;
 
-	struct ProfileData
-	{
-		ID3D11Query* DisjointQuery[QueryLatency];
-		ID3D11Query* TimestampStartQuery[QueryLatency];
-		ID3D11Query* TimestampEndQuery[QueryLatency];
-		BOOL QueryStarted;
-		BOOL QueryFinished;
-
-		double GPUDelta[QueryLatency];
-		double CPUStart[QueryLatency];
-		double CPUEnd[QueryLatency];
-
-		ProfileData() : QueryStarted(FALSE), QueryFinished(FALSE) {}
-	};
-
-
-    void Initialize(ID3D11Device* device, ID3D11DeviceContext* immContext);
-
+	/** Starts/Ends a profile-block */
     void StartProfile(const std::string& name);
     void EndProfile(const std::string& name);
 
+	/** Has to be called once on frame-end */
     void EndFrame(std::string& output);
 
-	const ProfileData& GetProfileData(const std::string& name)
-	{
-		return profiles[name];
-	}
+	/** Returns a single profile-result. If not yet present, the GPUTime will be 0. */
+	RProfileResult GetLastProfileResult(const std::string& name);
+
+	/** Returns a list of all finished profile results */
+	std::vector<std::pair<std::string, RProfileResult>> GetAllProfileResults();
 
 protected:
-
-    typedef std::map<std::string, ProfileData> ProfileMap;
-
-    ProfileMap profiles;
-    UINT64 currFrame;
-
-    ID3D11Device* device;
-    ID3D11DeviceContext* context;
-
-    RTimer timer;
 };
 
 class RProfileBlock
@@ -80,4 +61,3 @@ protected:
     std::string name;
 };
 
-#endif

@@ -7,7 +7,9 @@
 #include "RCommandList.h"
 #include "RBuffer.h"
 
+#if !defined(NO_MULTITHREADED_RENDERING) && defined(R_PROFILE_QUEUES)
 #define NO_MULTITHREADED_RENDERING
+#endif
 
 const unsigned int MIN_STATES_FOR_THREADED_RENDER = 2;
 
@@ -76,6 +78,8 @@ bool RDevice::OnFrameStart()
 	// Prepare for new frame
 	StateMachine.Invalidate();
 
+	Profiler.StartProfile("Frame");
+
 	// Grab all finished commandlists
 	return OnFrameStartAPI();
 }
@@ -94,11 +98,13 @@ bool RDevice::OnFrameEnd()
 			PrepareCommandlists(i);
 	}
 
+	Profiler.StartProfile("Flush total");
 	for(unsigned int i=0;i<RenderQueue.size();i++)
 	{
 		if(RenderQueue[i]->InUse)
 			FlushRenderQueue(i);
 	}
+	Profiler.EndProfile("Flush total");
 
 	return OnFrameEndAPI();
 }
@@ -108,7 +114,15 @@ bool RDevice::OnFrameEnd()
 */
 bool RDevice::Present()
 {
-	return PresentAPI();
+	Profiler.StartProfile("Present");
+	bool r = PresentAPI();
+	Profiler.EndProfile("Present");
+	Profiler.EndProfile("Frame");
+
+	std::string profilerOutput;
+
+	Profiler.EndFrame(profilerOutput);
+	return r;
 }
 
 /**
@@ -189,6 +203,9 @@ bool RDevice::FlushRenderQueue(RRenderQueueID queue)
 {
 	RRenderQueue* q = RenderQueue[queue];
 
+	if(!q->Name.empty())
+		Profiler.StartProfile(q->Name);
+
 	// Check if we have commandlists to do
 	if (q->QueueCommandLists.empty())
 	{
@@ -198,6 +215,9 @@ bool RDevice::FlushRenderQueue(RRenderQueueID queue)
 	{
 		LEB(FlushQueueCmdLists(queue))
 	}
+
+	if(!q->Name.empty())
+		Profiler.EndProfile(q->Name);
 
 	QueueCounter--;
 	QueuedDrawCallCounter -= RenderQueue[queue]->Queue.size();
@@ -262,7 +282,7 @@ bool RDevice::FlushQueueCmdLists(RRenderQueueID queue)
 /**
  * Registers a renderingqueue in the device. Registration will be cleared every frame, so you have to
  * get one every frame you want to use it */
-unsigned int RDevice::AcquireRenderQueue(bool sortable)
+unsigned int RDevice::AcquireRenderQueue(bool sortable, const std::string& name)
 {
 	QueueCounter++;
 
@@ -272,6 +292,7 @@ unsigned int RDevice::AcquireRenderQueue(bool sortable)
 		{
 			RenderQueue[i]->InUse = true;
 			RenderQueue[i]->SortQueue = sortable;		
+			RenderQueue[i]->Name = name;
 			return i;
 		}
 	}
@@ -281,6 +302,7 @@ unsigned int RDevice::AcquireRenderQueue(bool sortable)
 
 	RenderQueue.back()->InUse = true;
 	RenderQueue.back()->SortQueue = sortable;
+	RenderQueue.back()->Name = name;
 
 	return RenderQueue.size()-1;
 }
@@ -435,8 +457,7 @@ bool RDevice::PrepareCommandlists(RRenderQueueID queue)
 		if (i + 1 == REngine::ThreadPool->getNumThreads())
 			num = q1.Queue.size() - start;
 
-		if (q1.QueueCommandLists.empty())
-			__debugbreak();
+		assert(!q1.Queue.empty());
 
 		// Push to threadpool
 		q1.QueueCommandListFutures[i] = std::move(REngine::ThreadPool->enqueue(threadfunc, queue, i, start, num));
@@ -467,4 +488,12 @@ unsigned int RDevice::GetNumRegisteredDrawCalls()
 HWND RDevice::GetOutputWindow()
 {
 	return OutputWindow;
+}
+
+/**
+* Returns a list of all result the profiler has gathered 
+*/
+std::vector<std::pair<std::string, RProfiler::RProfileResult>> RDevice::GetProfilerResults()
+{
+	return Profiler.GetAllProfileResults();
 }

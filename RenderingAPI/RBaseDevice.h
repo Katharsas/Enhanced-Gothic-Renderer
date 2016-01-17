@@ -2,6 +2,7 @@
 #include "pch.h"
 #include "RResourceCache.h"
 #include "RStateMachine.h"
+#include "RProfiler.h"
 
 /**
  * Simple renderqueue to hold states for a stage 
@@ -33,6 +34,9 @@ struct RRenderQueue
 
 	// Generation of changes and commandlists can be multithreaded. Use this to determine if the process was completed.
 	std::future<void> ProcessedFuture;
+
+	// Name of this queue
+	std::string Name;
 };
 
 typedef unsigned int RRenderQueueID;
@@ -87,5 +91,9 @@ protected:
 	// Values to clear the main buffers with when a new frame is started
 	float4 MainColorBufferClearColor;
 	float MainDepthBufferClearZ;
+
+	// Main profiler
+	RProfiler Profiler;
+
 };
 
