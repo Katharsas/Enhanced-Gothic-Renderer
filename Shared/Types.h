@@ -323,9 +323,18 @@ enum EShaderType
 	ST_NUM_SHADER_TYPES
 };
 
+// Values for D3D11. // Hint: #ifdef this to match your own rendering API if you want
+enum EPrimitiveType
+{
+	PT_TRIANGLE_LIST = 4,
+	PT_TRIANGLE_STRIP = 5,
+	PT_LINE_LIST = 2,
+	PT_LINE_STRIP = 3
+};
+
 enum EDrawCallType
 {
-	DCT_DrawTriangleList = 0,
+	DCT_Draw = 0,
 	DCT_DrawIndexed = 1,
 	DCT_DrawInstanced = 2,
 	DCT_DrawIndexedInstanced = 3

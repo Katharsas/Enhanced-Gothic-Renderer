@@ -117,6 +117,7 @@ bool GGame::Initialize()
 	// Create default pipeline states
 	RStateMachine& sm = REngine::RenderingDevice->GetStateMachine();
 
+	sm.SetPrimitiveTopology(EPrimitiveType::PT_TRIANGLE_LIST);
 	sm.SetBlendState(defaultBS);
 	sm.SetRasterizerState(defaultRS);
 	sm.SetSamplerState(defaultSS);

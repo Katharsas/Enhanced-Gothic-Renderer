@@ -427,6 +427,7 @@
     <ClInclude Include="RBaseDepthStencilState.h" />
     <ClInclude Include="RBaseDevice.h" />
     <ClInclude Include="RBaseInputLayout.h" />
+    <ClInclude Include="RBaseProfiler.h" />
     <ClInclude Include="RBaseRasterizerState.h" />
     <ClInclude Include="RBaseSamplerState.h" />
     <ClInclude Include="RBaseShader.h" />
@@ -443,6 +444,7 @@
     <ClInclude Include="RD3D11Device.h" />
     <ClInclude Include="RD3D11InputLayout.h" />
     <ClInclude Include="RD3D11PixelShader.h" />
+    <ClInclude Include="RD3D11Profiler.h" />
     <ClInclude Include="RD3D11RasterizerState.h" />
     <ClInclude Include="RD3D11SamplerState.h" />
     <ClInclude Include="RD3D11Shader.h" />
@@ -532,6 +534,7 @@
     <ClCompile Include="RBaseDepthStencilState.cpp" />
     <ClCompile Include="RBaseDevice.cpp" />
     <ClCompile Include="RBaseInputLayout.cpp" />
+    <ClCompile Include="RBaseProfiler.cpp" />
     <ClCompile Include="RBaseRasterizerState.cpp" />
     <ClCompile Include="RBaseSamplerState.cpp" />
     <ClCompile Include="RBaseShader.cpp" />
@@ -559,6 +562,7 @@
     <ClCompile Include="RD3D11Device.cpp" />
     <ClCompile Include="RD3D11InputLayout.cpp" />
     <ClCompile Include="RD3D11PixelShader.cpp" />
+    <ClCompile Include="RD3D11Profiler.cpp" />
     <ClCompile Include="RD3D11RasterizerState.cpp" />
     <ClCompile Include="RD3D11SamplerState.cpp" />
     <ClCompile Include="RD3D11Shader.cpp" />

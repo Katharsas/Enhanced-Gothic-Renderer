@@ -36,6 +36,12 @@ void RStateMachine::SetFromPipelineState(const RPipelineState* state)
 {
 	RResourceCache* cache = REngine::ResourceCache;
 
+	if(state->IDs.PrimitiveType != State.BoundIDs.PrimitiveType)
+	{
+		Changes.PrimitiveType = true;
+		ChangesCount.PrimitiveType++;
+	}
+
 	if(state->IDs.BlendState != State.BoundIDs.BlendState)
 	{
 		State.BlendState = cache->GetFromID<RBlendState>(state->IDs.BlendState);
@@ -315,7 +321,7 @@ RPipelineState* RStateMachine::MakeDrawCall(unsigned int numVertices, unsigned i
 
 	s->NumDrawElements = numVertices;
 	s->StartVertexOffset = startVertexOffset;
-	s->IDs.DrawFunctionID = EDrawCallType::DCT_DrawTriangleList;
+	s->IDs.DrawFunctionID = EDrawCallType::DCT_Draw;
 
 	return s;
 }
@@ -393,6 +399,11 @@ void RStateMachine::SetDepthStencilState(RDepthStencilState* state)
 {
 	State.DepthStencilState = state;
 	State.BoundIDs.DepthStencilState = state->GetID();
+}
+
+void RStateMachine::SetPrimitiveTopology(EPrimitiveType type)
+{
+	State.BoundIDs.PrimitiveType = type;
 }
 
 void RStateMachine::SetTexture(unsigned int slot, RTexture* texture, EShaderType stage)

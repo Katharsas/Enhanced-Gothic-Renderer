@@ -75,6 +75,7 @@ public:
 
 	struct ChangesStruct
 	{
+		bool PrimitiveType;
 		bool RasterizerState;
 		bool BlendState;
 		bool DepthStencilState;
@@ -101,6 +102,7 @@ public:
 
 	struct ChangesCountStruct
 	{
+		int PrimitiveType;
 		int RasterizerState;
 		int BlendState;
 		int DepthStencilState;
@@ -197,6 +199,7 @@ public:
 	void SetSamplerState(RSamplerState* state);
 	void SetBlendState(RBlendState* state);
 	void SetDepthStencilState(RDepthStencilState* state);
+	void SetPrimitiveTopology(EPrimitiveType type);
 
 	void SetTexture(unsigned int slot, RTexture* texture, EShaderType stage);
 

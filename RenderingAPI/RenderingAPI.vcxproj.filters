@@ -59,6 +59,9 @@
     <Filter Include="Renderer\CommandList">
       <UniqueIdentifier>{237ee50a-dbfe-4b0e-aaa4-d7dd4e4caef1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Renderer\Profiler">
+      <UniqueIdentifier>{944b3ad6-6957-4e1f-a4ab-175828af854d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -239,7 +242,13 @@
       <Filter>Renderer\Device</Filter>
     </ClInclude>
     <ClInclude Include="RProfiler.h">
-      <Filter>Renderer\Device</Filter>
+      <Filter>Renderer\Profiler</Filter>
+    </ClInclude>
+    <ClInclude Include="RD3D11Profiler.h">
+      <Filter>Renderer\Profiler</Filter>
+    </ClInclude>
+    <ClInclude Include="RBaseProfiler.h">
+      <Filter>Renderer\Profiler</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -382,7 +391,13 @@
       <Filter>Renderer\CommandList</Filter>
     </ClCompile>
     <ClCompile Include="RProfiler.cpp">
-      <Filter>Renderer\Device</Filter>
+      <Filter>Renderer\Profiler</Filter>
+    </ClCompile>
+    <ClCompile Include="RD3D11Profiler.cpp">
+      <Filter>Renderer\Profiler</Filter>
+    </ClCompile>
+    <ClCompile Include="RBaseProfiler.cpp">
+      <Filter>Renderer\Profiler</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

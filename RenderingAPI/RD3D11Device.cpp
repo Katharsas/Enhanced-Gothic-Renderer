@@ -378,16 +378,13 @@ bool RD3D11Device::DrawPipelineStateAPI(const struct RPipelineState& state, cons
 	// TODO: Slow? Profile!
 	ID3D11DeviceContext* context = GetThreadContext(GetCurrentThreadId());
 
-	if(state.NumDrawElements == 0xcdcdcdcd)
-		LogInfo() << "meh";
-
 	// Bind everything
 	BindPipelineState(state, changes, context, stateMachine);
 
 	// Perform drawcall
 	switch(state.IDs.DrawFunctionID)
 	{
-	case EDrawCallType::DCT_DrawTriangleList:
+	case EDrawCallType::DCT_Draw:
 		context->Draw(state.NumDrawElements, state.StartVertexOffset);
 		break;
 
@@ -424,6 +421,9 @@ bool RD3D11Device::BindPipelineState(const RPipelineState& state, const RStateMa
 {
 	stateMachine.SetFromPipelineState(&state, changes);
 	const RPipelineStateFull& fs = stateMachine.GetCurrentState();
+
+	if(changes.PrimitiveType)
+		context->IASetPrimitiveTopology((D3D11_PRIMITIVE_TOPOLOGY)state.IDs.PrimitiveType);
 
 	if(changes.RasterizerState && fs.RasterizerState)
 		context->RSSetState(fs.RasterizerState->GetState());

@@ -28,15 +28,6 @@ struct RPipelineState : public RResource
 		DO_ALPHA_BLEND
 	};
 
-	// Values for D3D11
-	enum EPrimitiveType
-	{
-		PT_TRIANGLE_LIST = 4,
-		PT_TRIANGLE_STRIP = 5,
-		PT_LINE_LIST = 2,
-		PT_LINE_STRIP = 3
-	};
-
 	// Struct to access the resource-ids
 	struct IDStruct
 	{

@@ -25,6 +25,7 @@
 #include <set>
 #include <thread>
 #include <future>
+#include <numeric>
 #include "../Shared/Types.h"
 
 
