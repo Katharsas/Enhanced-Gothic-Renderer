@@ -8,7 +8,7 @@ struct RPipelineState : public RResource
 {
 	RPipelineState()
 	{
-		memset(&IDs, 0xFF, sizeof(IDs));
+		memset(&Key, 0xFF, sizeof(Key));
 		Locked = false;
 	}
 
@@ -28,9 +28,21 @@ struct RPipelineState : public RResource
 		DO_ALPHA_BLEND
 	};
 
+	// Values for D3D11
+	enum EPrimitiveType
+	{
+		PT_TRIANGLE_LIST = 4,
+		PT_TRIANGLE_STRIP = 5,
+		PT_LINE_LIST = 2,
+		PT_LINE_STRIP = 3
+	};
+
 	// Struct to access the resource-ids
 	struct IDStruct
 	{
+		// -- 3
+		EPrimitiveType PrimitiveType;
+
 		// -- 32
 		unsigned int RasterizerState : 8;
 		unsigned int BlendState : 8;
