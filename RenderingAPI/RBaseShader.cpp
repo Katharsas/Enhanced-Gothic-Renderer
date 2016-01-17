@@ -4,6 +4,7 @@
 
 RBaseShader::RBaseShader()
 {
+	IsFromMemory = false;
 }
 
 

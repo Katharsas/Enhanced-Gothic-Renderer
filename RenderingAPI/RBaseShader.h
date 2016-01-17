@@ -17,5 +17,7 @@ protected:
 	// Vector of different #defines for the shaders
 	std::vector<std::vector<std::string>> Definitions;
 
+	// Whether this shader comes directly from memory (ShaderFile is the actual code in this case)
+	bool IsFromMemory;
 };
 

@@ -46,8 +46,18 @@ HRESULT RD3D11Shader::CompileShaderFromFile(const CHAR* szFileName, LPCSTR szEnt
 	mvec.push_back(m);
 
 	ID3DBlob* pErrorBlob;
-	hr = D3DX11CompileFromFileA(szFileName, &mvec[0], NULL, szEntryPoint, szShaderModel,
-		dwShaderFlags, 0, NULL, ppBlobOut, &pErrorBlob, NULL);
+
+	if(!IsFromMemory)
+	{
+		hr = D3DX11CompileFromFileA(szFileName, &mvec[0], NULL, szEntryPoint, szShaderModel,
+			dwShaderFlags, 0, NULL, ppBlobOut, &pErrorBlob, NULL);
+	}
+	else
+	{
+		hr = D3DX11CompileFromMemory(ShaderFile.c_str(), ShaderFile.size(), "ShaderFromMemory", &mvec[0], NULL, szEntryPoint, szShaderModel,
+			dwShaderFlags, 0, NULL, ppBlobOut, &pErrorBlob, NULL);
+	}
+
 	if (FAILED(hr))
 	{
 		LogInfo() << "Shader compilation failed for: " << szFileName;

@@ -16,5 +16,6 @@ public:
 	* Loads the given shader
 	*/
 	bool LoadShader(const std::string& file, const std::vector<std::vector<std::string>>& definitions = std::vector<std::vector<std::string>>());
+	bool LoadShaderFromString(const std::string& shadercode, const std::vector<std::vector<std::string>>& definitions = std::vector<std::vector<std::string>>());
 };
 
