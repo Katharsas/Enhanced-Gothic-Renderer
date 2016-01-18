@@ -10,6 +10,7 @@
 #include "RBlendState.h"
 #include "RDepthStencilState.h"
 #include "RSamplerState.h"
+#include "RLineRenderer.h"
 
 /**
  * Useful function for handling rendering specific things
@@ -25,6 +26,9 @@ struct RBlendStateInfo;
 struct RSamplerStateInfo;
 namespace RTools
 {
+	/** Line renderer */
+	__declspec(selectany) RLineRenderer LineRenderer;
+
 	/** Shader loading functions, which also cache the objects by using the alias as hash */
 	//static RVertexShader* LoadVertexShader(const std::string& file, 
 	//	const std::string& alias, 
@@ -110,7 +114,7 @@ namespace RTools
 
 		// Not in cache, load it
 		shader = cache.CreateResource<T>();
-		if(!shader->LoadShaderFromString(file, definitions))
+		if(!shader->LoadShaderFromString(shadercode, definitions))
 			return false;
 
 		// Add it to cache
