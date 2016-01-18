@@ -32,14 +32,14 @@ bool RVertexShader::LoadShader(const std::string & file, const std::vector<std::
 	return LoadShaderAPI();
 }
 
-bool RVertexShader::LoadShaderFromString(const std::string& shadercode, const std::vector<std::vector<std::string>>& definitions = std::vector<std::vector<std::string>>())
+bool RVertexShader::LoadShaderFromString(const std::string& shadercode, const std::vector<std::vector<std::string>>& definitions)
 {
 	LogInfo() << "Compilling shader: " << shadercode;
 
 	// Make sure this is only used once
 	if(!ShaderFile.empty())
 	{
-		LogWarn() << "Shader '" << ShaderFile << "' already loaded. Can't overwrite with: " << file << ". Create a new object!";
+		LogWarn() << "Shader '" << ShaderFile << "' already loaded. Can't overwrite with: " << shadercode << ". Create a new object!";
 		return false;
 	}
 
