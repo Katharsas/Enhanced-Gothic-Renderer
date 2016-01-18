@@ -252,6 +252,10 @@ void GGame::OnFrameEnd()
 	// Update timer
 	m_FPSTimer.Update();
 
+	// Draw lines
+	if(zCCamera::GetActiveCamera())
+		RTools::LineRenderer.Flush(zCCamera::GetActiveCamera()->GetViewProjMatrix());
+
 	DrawStatistics();
 }
 
