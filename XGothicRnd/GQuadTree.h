@@ -27,19 +27,26 @@ public:
 		{
 			// Get sector where the most points are in
 			// TODO: Very large polygons could be completely outside. That would be bad.
-			std::set<int> sectors = { GetSector(std::get(0, t)), GetSector(std::get(1, t)), GetSector(std::get(2, t)) };
+			std::set<int> sectors = { GetSector(std::get<0>(t)), GetSector(std::get<1>(t)), GetSector(std::get<2>(t)) };
 
 			// Put it in all sectors it wants. This will cause some overdraw, but it shouldn't be too bad.
 			// TODO: Profile!
 			for(int s : sectors)
 			{
 				m_SubNodes[s]->AddTriangle(t, onSuccess);
+
+				m_BBox3D.m_Min.y = std::min(m_BBox3D.m_Min.y, m_SubNodes[s]->m_BBox3D.m_Min.y);
+				m_BBox3D.m_Max.y = std::max(m_BBox3D.m_Max.y, m_SubNodes[s]->m_BBox3D.m_Max.y);
 			}
 		}
 		else
 		{
 			// Down at the bottom, notify the caller
 			onSuccess(this);
+
+			// Adjust boundingbox.y
+			m_BBox3D.m_Min.y = std::min(std::min(std::get<0>(t).y, std::get<1>(t).y), std::get<2>(t).y);
+			m_BBox3D.m_Max.y = std::max(std::max(std::get<0>(t).y, std::get<1>(t).y), std::get<2>(t).y);
 		}
 	}
 
@@ -52,7 +59,7 @@ public:
 	/** Returns the index of the sub-node the given position is in */
 	int GetSector(const float3& p)
 	{
-		float3 a = p - (m_BBox3D.m_Max - m_BBox3D.m_Min) * 0.5f;
+		float3 a = p - (m_BBox3D.m_Max + m_BBox3D.m_Min) * 0.5f;
 
 		
 		if(a.x < 0) // Left
@@ -83,19 +90,26 @@ public:
 	/** Creates sub-nodes down to the specified level */
 	void Subdivde(unsigned int numLevels)
 	{
-		float2 midPoint = (m_BBox3D.m_Max - m_BBox3D.m_Min) * 0.5f;
+		float3 midPoint = (m_BBox3D.m_Max + m_BBox3D.m_Min) * 0.5f;
 		m_NodeLevel = numLevels;
 
 		if(!numLevels)
 			return;
+
+		// 0 1
+		// 2 3
 
 		zTBBox3D subBB[4] = {	{{m_BBox3D.m_Min},{midPoint}},
 								{{float3(midPoint.x,0,m_BBox3D.m_Min.z)},{float3(m_BBox3D.m_Max.x,0,midPoint.z)}},
 								{{float3(m_BBox3D.m_Min.x,0,midPoint.z)},{float3(midPoint.x,0,m_BBox3D.m_Max.z)}},
 								{{midPoint},{m_BBox3D.m_Max}} };
 
+		
+
 		for(int i = 0; i < 4; i++)
 		{
+			subBB[i].m_Min.y = 0.0f;
+			subBB[i].m_Max.y = 0.0f;
 			m_SubNodes[i] = new GQuadTree<T>(this, subBB[i]);
 			m_SubNodes[i]->Subdivde(numLevels-1);
 		}
@@ -111,8 +125,26 @@ public:
 				m_SubNodes[i]->MapTree(fn);
 	}
 
+	/** Executes a function at the root (=this object) of the tree. However,
+		you can call WalkSubs() on this node to Walk further into the subtree. */
+	void WalkTree(std::function<void(GQuadTree<T>*)> fn)
+	{
+		fn(this);
+	}
+
+	/** Executes the given function on all subnodes. See WalkTree() for more information */
+	void WalkSubs(std::function<void(GQuadTree<T>*)> fn)
+	{
+		if(!IsLeaf())
+			for(int i = 0; i < 4; i++)
+				m_SubNodes[i]->WalkTree(fn);
+	}
+
 	/** Returns the userdata */
 	T& GetData(){return m_Data;}
+
+	/** Returns the boundingbox */
+	const zTBBox3D& GetBBox(){return m_BBox3D;}
 
 private:
 	// Sub-nodes this node has. If one of them is zero (checking first is enough!),
