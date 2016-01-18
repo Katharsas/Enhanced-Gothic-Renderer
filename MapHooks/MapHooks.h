@@ -8,6 +8,13 @@
 class MapHooks
 {
 public:
+
+	enum ECodeType
+	{
+		CT_DAEDALUS,
+		CT_CPP
+	};
+
 	MapHooks(void);
 	~MapHooks(void);
 
@@ -30,7 +37,7 @@ public:
 	/**
 	 * Writes a C++-header with the found values
 	 */
-	static bool WriteCppHeader(const char* file);
+	static bool WriteCppHeader(const char* file, ECodeType codeType = CT_CPP);
 
 	/**
 	 * Hooks a function of the given name. Returns a pointer to the original function.

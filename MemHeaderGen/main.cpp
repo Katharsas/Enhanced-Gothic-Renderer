@@ -4,7 +4,7 @@
 const char* INFO_TEXT = "/**	\n"
 " * Small tool to generate a C++-Header from a modified .MAP-File from IDA.\n"
 " *	\n"
-" * Usage: MemHeaderGen <.map-File> <optional:outputfile-name> <namespace>\n"
+" * Usage: MemHeaderGen <.map-File> <outputfile-name> <namespace>\n"
 " *	\n"
 " * Notice: You will need to clean the file from IDA.\n"
 " * RegEx is your friend.\n"
@@ -28,7 +28,7 @@ int main(int argc, char** argv)
 		return 0;
 	}
 
-	if(!(argc > 4))
+	if(argc > 4)
 	{
 		printf("Too many arguments. Re-run without arguments for help.\n");
 	}
