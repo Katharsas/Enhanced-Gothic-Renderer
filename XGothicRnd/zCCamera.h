@@ -40,7 +40,7 @@ public:
 	static zCCamera* GetActiveCamera()
 	{
 		oCGame* game = oCGame::GetGame();
-		return game->GetSessionCamera();
+		return game ? game->GetSessionCamera() : nullptr;
 		//return *(zCCamera**)MemoryLocations::Gothic::zCCamera_p_zCCamera__activeCam;
 	}
 
@@ -86,10 +86,18 @@ public:
 		return m_CameraWorldMatrix.Forward();
 	}
 
-	/** Returns the currently active projection matrix */
+	/** Returns the currently active projection matrix.
+		You often need to transpose this! This and ViewMatrix 
+		have different formats... Only PB knows why. */
 	const Matrix& GetProjectionMatrix()
 	{
 		return m_ProjectionMatrix;
+	}
+
+	/** Returns the combined view-proj matrix */
+	Matrix GetViewProjMatrix()
+	{
+		return m_ProjectionMatrix.Transpose() * m_ViewMatrix;
 	}
 
 	/** Return far and nearplane */
@@ -98,7 +106,7 @@ public:
 
 
 	/** Checks whether a given boundingbox is inside the given frustum. The index in "cache" is tested first, if it isn't set to -1 */
-	static zTCam_ClipType BBox3DInFrustumCached(const zTBBox3D& bbox3D, zTPlane* frustumPlanes, byte* signbits, int& cache, int& clipFlags)
+	static zTCam_ClipType BBox3DInFrustumCached(const zTBBox3D& bbox3D, const zTPlane* frustumPlanes, const byte* signbits, int& cache, int& clipFlags)
 	{
 		// This resembles gothics method for checking the frustum, but with enancements
 
