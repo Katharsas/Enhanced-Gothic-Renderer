@@ -1,9 +1,10 @@
 #pragma once
 #include "zCBspTree.h"
 #include "VertexTypes.h"
+#include "GBspTree.h"
 
 // Only generate geometry-cache for the levels from this to zero.
-const unsigned int GEOMETRY_MAX_NODE_LEVEL = 9;
+const unsigned int GEOMETRY_MAX_NODE_LEVEL = 5;
 
 class GVobObject;
 class GBspTree;
@@ -18,36 +19,6 @@ class RBufferCollection;
 class GBspNode
 {
 public:
-
-	struct BSPRenderInfo
-	{
-		float3 CameraPostion;
-		float3 CameraDirection;
-		zTPlane FrustumPlanes[6];
-		byte FrustumSignBits[6];
-		int ClipFlags;
-		float ObjectFarplane;
-	};
-
-	struct WorldMeshPart
-	{
-		WorldMeshPart()
-		{
-			m_Mesh = nullptr;
-			m_Material = nullptr;
-			m_PipelineState = nullptr;
-			m_Lightmap = nullptr;
-		}
-
-		GMeshIndexed* m_Mesh;
-		GMaterial* m_Material;
-		GTexture* m_Lightmap;
-		RPipelineState* m_PipelineState;
-
-		// Indices to the indices of the full mesh
-		std::vector<unsigned int> m_IndexIndices;
-	};
-
 	GBspNode();
 	~GBspNode(void);
 
@@ -55,10 +26,11 @@ public:
 	void Init(zCBspBase* sourceNode, GBspTree* sourceTree);
 
 	/** Does frustumculling and draws this node if it is the lowest acceptable */
-	void DrawNodeRecursive(float minNodeSizeXZ, RRenderQueueID queue, BSPRenderInfo info, std::vector<GVobObject*>& visibleVobs);
+	void DrawNodeRecursive(float minNodeSizeXZ, RRenderQueueID queue, GBspTree::BSPRenderInfo info, std::vector<GVobObject*>& visibleVobs);
 
-	/** Generates the mesh-information of this and all child-nodes */
-	void BuildTriangleList(std::vector<ExTVertexStruct>& vertices);
+	/** Generates the mesh-information of this and all child-nodes.
+		For each triangle (That is, 3 vertices), the polygon is put into the given vector. */
+	void BuildTriangleList(std::vector<ExTVertexStruct>& vertices, std::vector<zCPolygon*>& polygons);
 
 	/** Should be called right after BuildTriangleLists to generate an indexed mesh for 
 		all nodes, as well as initializing the buffers */
@@ -71,12 +43,6 @@ public:
 	const std::vector<GBspNode*>& GetLeafList() const
 	{
 		return m_LeafList;
-	}
-
-	/** Returns a reference to the map containing the mesh-info for this node */
-	const std::map<std::pair<zCLightmap*, zCMaterial*>, WorldMeshPart>& GetMeshesByMaterial()
-	{
-		return m_MeshParts;
 	}
 
 	/** Returns whether this is a leaf or not */
@@ -92,12 +58,6 @@ public:
 	const zTBBox3D& GetBBox(){return m_BBox;}
 
 private:
-
-	/** Updates the pipeline-state of one meshpart */
-	void UpdateMeshPartPipelineState(WorldMeshPart& part);
-
-	/** Renderlogic for this specific node */
-	void DrawNodeExplicit(RRenderQueueID queue);
 
 	/** Collects all vobs from the underlaying leaf-nodes */
 	void CollectVobs(std::vector<GVobObject*>& visibleVobs, const float3& cameraPosition, float objectFarplane);
@@ -121,10 +81,6 @@ private:
 
 	// Last frustum-plane this faild the test against. -1 if visible last frame
 	int m_FrustumTestCache;
-
-	// Vector meshes inside this node
-	std::map<std::pair<zCLightmap*, zCMaterial*>, WorldMeshPart> m_MeshParts;
-	//std::unordered_map<zCMaterial*, WorldMeshPart> m_MeshParts;
 
 	// List of all further leafs
 	std::vector<GBspNode*> m_LeafList;

@@ -78,18 +78,13 @@ void GBspNode::Init(zCBspBase* sourceNode, GBspTree* sourceTree)
 
 GBspNode::~GBspNode(void)
 {
-	// Delete allocated memory from parts
-	for(auto& pair : m_MeshParts)
-	{
-		delete pair.second.m_Mesh;
-		REngine::ResourceCache->DeleteResource(pair.second.m_PipelineState);
-	}
+
 }
 
 
 /** Generates the mesh-information of this and all child-nodes
 	and stores it as triangle-list in the vertices-vector.*/
-void GBspNode::BuildTriangleList(std::vector<ExTVertexStruct>& vertices)
+void GBspNode::BuildTriangleList(std::vector<ExTVertexStruct>& vertices, std::vector<zCPolygon*>& polygons)
 {
 	// If this is a leaf, generate the vertexdata right away
 	if(m_SourceNode->m_NodeType == zTBspNodeType::zBSP_LEAF)
@@ -160,181 +155,50 @@ void GBspNode::BuildTriangleList(std::vector<ExTVertexStruct>& vertices)
 					// This doesn't exist, add to final list
 					for(int j=0;j<3;j++)
 						validVertices.push_back(packed[i+j]);
+
+					// Add the polygon of this triangle
+					polygons.push_back(poly);
 				}
 			}
 
-			zCMaterial* mat = poly->GetMaterial();
-			zCLightmap* lightmap = poly->GetLightmap();
-			WorldMeshPart& p = m_MeshParts[std::make_pair(lightmap, mat)];
-
-			// Store indices to the real vertex indices so in case they change,
-			// we still can read out the real index-values for the buffer
-			for(unsigned int i=0;i<validVertices.size();i++)
-				p.m_IndexIndices.push_back(vertices.size() + i);
-
 			// Put at the back of the vertices-vector
 			vertices.insert(vertices.end(), validVertices.begin(), validVertices.end());
-
 		}
 
 	}else
 	{
 		// Build the triangle-lists for all subnodes, eventually reaching the leafs
 		if(m_Front)
-			m_Front->BuildTriangleList(vertices);
+			m_Front->BuildTriangleList(vertices, polygons);
 
 		if(m_Back)
-			m_Back->BuildTriangleList(vertices);
-
-		if(m_NodeLevel <= GEOMETRY_MAX_NODE_LEVEL)
-		{
-			// Get all indices out of the leafs now and put them together
-			for each (GBspNode* leaf in m_LeafList)
-			{
-				auto& map = leaf->GetMeshesByMaterial();
-				for each (auto& pair in map)
-				{
-					// Fetch the material and append the indices of the node
-					auto& indices = m_MeshParts[pair.first].m_IndexIndices;
-					indices.insert(indices.end(), pair.second.m_IndexIndices.begin(), pair.second.m_IndexIndices.end());
-				}
-			}
-		}
+			m_Back->BuildTriangleList(vertices, polygons);
 	}
 }
 
-/** Should be called right after BuildTriangleLists to generate an indexed mesh for 
-		all nodes, as well as initializing the buffers */
-void GBspNode::GenerateIndexedMesh(const std::vector<unsigned int>& indices, 
-								   RBuffer* vertexBuffer, 
-								   RBufferCollection<unsigned int>* indexBufferCollection)
-{
-	if(m_NodeLevel <= GEOMETRY_MAX_NODE_LEVEL || m_IsLeaf)
-	{
-		// Get real indices to ours
-		for(auto& pair : m_MeshParts)
-		{
-			// Get real indices
-			std::vector<unsigned int> actualIndices;
-			actualIndices.reserve(pair.second.m_IndexIndices.size());
-			for each (unsigned int idx in pair.second.m_IndexIndices)
-			{
-				actualIndices.push_back(indices[idx]);
-			}
 
-			// Add data to buffer-collection and get offset
-			unsigned int start = indexBufferCollection->AddData(&actualIndices[0], actualIndices.size());
-
-			// Make a mesh from this
-			pair.second.m_Mesh = new GMeshIndexed(vertexBuffer,
-				indexBufferCollection->GetBuffer(),
-				pair.second.m_IndexIndices.size(),
-				0,
-				start);
-
-			// Get GMaterial- and Lightmap instances
-			pair.second.m_Material = GMaterial::GetFromSource(pair.first.second);
-
-			if(pair.first.first)
-				pair.second.m_Lightmap = GTexture::GetFromSource(pair.first.first->GetTexture());
-		}
-
-		// We can now create our statecache
-		BuildPipelineStateCache();
-	}
-
-	// Do the same for child-nodes
-	if (m_Front)m_Front->GenerateIndexedMesh(indices, vertexBuffer, indexBufferCollection);
-	if (m_Back)m_Back->GenerateIndexedMesh(indices, vertexBuffer, indexBufferCollection);
-}
-
-/** (Re)builds the pipeline-state cache for this node */
-void GBspNode::BuildPipelineStateCache()
-{
-	for(auto& pair : m_MeshParts)
-	{
-		UpdateMeshPartPipelineState(pair.second);
-	}
-}
-
-/** Updates the pipeline-state of one meshpart */
-void GBspNode::UpdateMeshPartPipelineState(WorldMeshPart& part)
-{
-	// Delete old state, in case this is a recreation
-	REngine::ResourceCache->DeleteResource(part.m_PipelineState);
-
-	// Get base-state for worldmeshes. This contains objects like the needed shaders.
-	RPipelineState* defState = REngine::ResourceCache->GetCachedObject<RPipelineState>(GConstants::PipelineStates::BPS_WORLDMESH);
-	RStateMachine& sm = REngine::RenderingDevice->GetStateMachine();
-
-	// Assign default values
-	sm.SetFromPipelineState(defState);
-
-	// Now ours...
-	GMeshIndexed* msh = part.m_Mesh;
-	sm.SetVertexBuffer(0, msh->GetMeshVertexBuffer());
-	sm.SetIndexBuffer(msh->GetMeshIndexBuffer());
-
-	if (part.m_Material->GetDiffuse())
-	{
-		UINT mFlags = MPS_NONE;
-
-		sm.SetTexture(0, part.m_Material->GetDiffuse()->GetTexture(), EShaderType::ST_PIXEL);
-
-		// Set lightmap if we have one
-		if(part.m_Lightmap)
-		{
-			part.m_Lightmap->CacheIn(false);
-			sm.SetTexture(1, part.m_Lightmap->GetTexture(), EShaderType::ST_PIXEL);
-
-			mFlags |= MPS_LIGHTMAPPED;
-		}
-
-		// Force a cache-in because we need to know if the texture uses alpha-testing
-		// TODO: Maybe this is possible with threading. But is it even worth it?
-		part.m_Material->GetDiffuse()->CacheIn(false);
-		
-
-		//if (part.m_Material->GetDiffuse()->GetSourceObject()->GetTextureFlags().HasAlpha)
-		//	LogInfo() << "Alphatest on: " << part.m_Material->GetDiffuse()->GetSourceObject()->GetObjectName();
-
-		// Get the right pixelshader for the mesh-part
-		RPixelShader* ps = part.m_Material->GetMaterialPixelShader(GConstants::RS_WORLD, mFlags);
-		sm.SetPixelShader(ps);
-	}
-	
-
-
-	// Construct drawcall
-	part.m_PipelineState = sm.MakeDrawCallIndexed(msh->GetNumIndices(), msh->GetMeshIndexStart(), 0);
-}
 
 /** Does frustumculling and draws this node if it is the lowest acceptable */
-void GBspNode::DrawNodeRecursive(float minNodeSizeXZ, RRenderQueueID queue, BSPRenderInfo info, std::vector<GVobObject*>& visibleVobs)
+void GBspNode::DrawNodeRecursive(float minNodeSizeXZ, RRenderQueueID queue, GBspTree::BSPRenderInfo info, std::vector<GVobObject*>& visibleVobs)
 {
+	// PB does something really weird with the tree. They are stacking Leafs?
+	// Anyways, they seem to do something with the nodes BBox.y here, so do as they do...
+	// Attention: This could also lead to the bug which happens when you look at the sky and all the vobs disappear?
+	zTBBox3D nodeBox = m_BBox;
+	nodeBox.m_Max.y = std::max(std::min(info.CameraPostion.y, info.WorldMaxY), m_BBox.m_Max.y); // TODO: Could compute the min part outside...
+	
 	// If the BBox is inside the frustum, we can just draw the contents of this node here
-	zTCam_ClipType clip = zCCamera::BBox3DInFrustumCached(m_BBox, info.FrustumPlanes, info.FrustumSignBits, m_FrustumTestCache, info.ClipFlags);
+	zTCam_ClipType clip = zCCamera::BBox3DInFrustumCached(nodeBox, info.FrustumPlanes, info.FrustumSignBits, m_FrustumTestCache, info.ClipFlags);
 	//zTCam_ClipType clip = zCCamera::GetActiveCamera()->BBox3DInFrustum(m_BBox, info.ClipFlags);
 
 	// Trivial out?
 	if (clip == ZTCAM_CLIPTYPE_OUT)
 		return;
 	
-
 	// Check if we can just draw this. Trivial in?
-	if( (m_NodeLevel < GEOMETRY_MAX_NODE_LEVEL && (m_NodeSizeXZ < minNodeSizeXZ || clip == ZTCAM_CLIPTYPE_IN)) // All subnodes visible?
-		|| m_IsLeaf)
+	if(clip == ZTCAM_CLIPTYPE_IN || m_IsLeaf)
 	{
-		// Collect vobs while submitting the drawcall
-		// TODO: Profile: Is this really faster?
-		//#pragma omp parallel sections num_threads(2)
-		{
-		//	#pragma omp section
-			DrawNodeExplicit(queue);
-
-		//	#pragma omp section
-			CollectVobs(visibleVobs, info.CameraPostion, info.ObjectFarplane);
-		}
+		CollectVobs(visibleVobs, info.CameraPostion, info.ObjectFarplane);
 		return;
 	}
 
@@ -342,72 +206,6 @@ void GBspNode::DrawNodeRecursive(float minNodeSizeXZ, RRenderQueueID queue, BSPR
 
 	if (m_Front)m_Front->DrawNodeRecursive(minNodeSizeXZ, queue, info, visibleVobs);
 	if (m_Back)m_Back->DrawNodeRecursive(minNodeSizeXZ, queue, info, visibleVobs);
-	/*
-
-	// Check which side of the node the camera is on
-	// dot( (a,b,c,d), (x,y,z,1) ) > 0 where positive dot product is in front of the plane and negative is behind
-	GBspNode* inside, *other;
-	if (m_SeperationPlane.DotCoordinate(info.CameraPostion) > 0)
-	{
-		// Camera in front
-		inside = m_Front;
-		other = m_Back;
-	}
-	else 
-	{
-		// Camera in back
-		inside = m_Back;
-		other = m_Front;
-	}
-
-	// Continue with the node the camera is in
-	if(inside)
-		inside->DrawNodeRecursive(lowestLevel, queue, info);
-
-	// For the other node, check if it faces away from the seperation-plane
-	if (other && m_SeperationPlane.DotNormal(info.CameraDirection) > 0)
-	{
-		// Camera is facing the plane, draw the other node as well
-		other->DrawNodeRecursive(lowestLevel, queue, info);
-	}
-	*/
-
-	// TODO: Do better than this!
-	/*if(m_Front)
-		m_Front->DrawNodeRecursive(lowestLevel, queue);
-
-	if(m_Back)
-		m_Back->DrawNodeRecursive(lowestLevel, queue);*/
-}
-
-/** Renderlogic for this specific node */
-void GBspNode::DrawNodeExplicit(RRenderQueueID queue)
-{
-	// Push all cached pipeline states if we have everything loaded
-	for(auto& pair : m_MeshParts)
-	{
-		WorldMeshPart& part = pair.second;
-		// Make sure we have textures
-		if(part.m_Material->CacheTextures())
-		{
-			// Make sure the lightmap is loaded
-			if(part.m_Lightmap)
-				part.m_Lightmap->CacheIn(false);
-
-			// Check if the state is valid and the texture still the same
-			if(!part.m_PipelineState 
-				|| part.m_PipelineState->IDs.MainTexture != part.m_Material->GetDiffuse()->GetTexture()->GetID())
-			{
-				// Assign new state
-				UpdateMeshPartPipelineState(part);
-			}
-
-			if(part.m_PipelineState) // Catch failed states
-			{
-				REngine::RenderingDevice->QueuePipelineState(part.m_PipelineState, queue);
-			}
-		}
-	}
 }
 
 /** Collects all vobs from the underlaying leaf-nodes */
