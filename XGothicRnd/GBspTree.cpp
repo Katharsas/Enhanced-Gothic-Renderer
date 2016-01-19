@@ -258,13 +258,18 @@ void GBspTree::DrawWorldMeshPart(WorldMeshPart& part, RRenderQueueID queue)
 /** Draws the pipeline-states from the visible quad-tree nodes */
 void GBspTree::DrawQuadTreeNodes(BSPRenderInfo& info, RRenderQueueID queue)
 {
-	info.ClipFlags = CLIP_FLAGS_FULL;
+	info.ClipFlags = CLIP_FLAGS_FULL_WO_FAR;
 
 	// Lambda to traverse to the leafs and draw them
 	std::function<void(GQuadTree<QuadTreeNode>*)> fnDraw = [&](GQuadTree<QuadTreeNode>* n)
 	{
+		if(n->NodeEmpty())
+			return;
+
 		if(n->IsLeaf())
 		{
+			RTools::LineRenderer.AddAABBMinMax(n->GetBBox().m_Min, n->GetBBox().m_Max, float4(0,1,0,1));
+
 			// Draw all parts of this node
 			for(auto& pair : n->GetData().m_MeshParts)
 			{
@@ -281,14 +286,20 @@ void GBspTree::DrawQuadTreeNodes(BSPRenderInfo& info, RRenderQueueID queue)
 	// Lambda to traverse the tree and clip invisible nodes
 	std::function<void(GQuadTree<QuadTreeNode>*)> fnClip = [&](GQuadTree<QuadTreeNode>* n)
 	{
-		// Check if this node is inside the bounding frustum
-		zTCam_ClipType clip = zCCamera::BBox3DInFrustumCached(n->GetBBox(), info.FrustumPlanes, info.FrustumSignBits, n->GetData().m_FrustumTestCache, info.ClipFlags);
+		if(n->NodeEmpty())
+			return;
 
-		RTools::LineRenderer.AddAABBMinMax(n->GetBBox().m_Min, n->GetBBox().m_Max, float4(1,0,0,1));
+		// Check if this node is inside the bounding frustum
+		zTCam_ClipType clip = zCCamera::GetActiveCamera()->BBox3DInFrustum(n->GetBBox(), info.ClipFlags);
+		//zTCam_ClipType clip = zCCamera::BBox3DInFrustumCached(n->GetBBox(), info.FrustumPlanes, info.FrustumSignBits, n->GetData().m_FrustumTestCache, info.ClipFlags);
+
+
 
 		if(clip == ZTCAM_CLIPTYPE_OUT)
+		{
+			RTools::LineRenderer.AddAABBMinMax(n->GetBBox().m_Min, n->GetBBox().m_Max, float4(1,0,0,1));
 			return; // Don't go futher into the tree, entire node is invisible
-
+		}
 		
 		if(clip == ZTCAM_CLIPTYPE_IN || n->IsLeaf())
 			n->WalkTree(fnDraw); // Draw everything in here and below, if the full node is inside or we are at the bottom
@@ -298,12 +309,15 @@ void GBspTree::DrawQuadTreeNodes(BSPRenderInfo& info, RRenderQueueID queue)
 
 	std::function<void(GQuadTree<QuadTreeNode>*)> fnDebug = [&](GQuadTree<QuadTreeNode>* n)
 	{
+		if(n->NodeEmpty())
+			return;
+
 		RTools::LineRenderer.AddAABBMinMax(n->GetBBox().m_Min, n->GetBBox().m_Max, float4(1,0,0,1));
 
 		n->WalkSubs(fnDebug);
 	};
 
 	//m_QuadTree->WalkTree(fnDraw);
-	m_QuadTree->WalkTree(fnDebug);
+	//m_QuadTree->WalkTree(fnDebug);
 	m_QuadTree->WalkTree(fnClip);
 }

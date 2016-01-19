@@ -45,8 +45,8 @@ public:
 			onSuccess(this);
 
 			// Adjust boundingbox.y
-			m_BBox3D.m_Min.y = std::min(std::min(std::get<0>(t).y, std::get<1>(t).y), std::get<2>(t).y);
-			m_BBox3D.m_Max.y = std::max(std::max(std::get<0>(t).y, std::get<1>(t).y), std::get<2>(t).y);
+			m_BBox3D.m_Min.y = std::min(m_BBox3D.m_Min.y, std::min(std::min(std::get<0>(t).y, std::get<1>(t).y), std::get<2>(t).y));
+			m_BBox3D.m_Max.y = std::max(m_BBox3D.m_Max.y, std::max(std::max(std::get<0>(t).y, std::get<1>(t).y), std::get<2>(t).y));
 		}
 	}
 
@@ -61,28 +61,31 @@ public:
 	{
 		float3 a = p - (m_BBox3D.m_Max + m_BBox3D.m_Min) * 0.5f;
 
-		
+		//   x
+		// z 0 1
+		//   2 3
+
 		if(a.x < 0) // Left
 		{
 			
-			if(a.z < 0) // Left/Bottom
-			{
-				return 2;
-			}
-			else // Left/Top
+			if(a.z < 0) // Left/Top
 			{
 				return 0;
+			}
+			else // Left/Bottom
+			{
+				return 2;
 			}
 		}
 		else // Right
 		{
-			if(a.z < 0) // Right/Bottom
-			{
-				return 3;
-			}
-			else // Right/Top
+			if(a.z < 0) // Right/Top
 			{
 				return 1;
+			}
+			else // Right/Bottom
+			{
+				return 3;
 			}
 		}
 	}
@@ -108,8 +111,9 @@ public:
 
 		for(int i = 0; i < 4; i++)
 		{
-			subBB[i].m_Min.y = 0.0f;
-			subBB[i].m_Max.y = 0.0f;
+			subBB[i].m_Min.y = FLT_MAX;
+			subBB[i].m_Max.y = FLT_MIN;
+
 			m_SubNodes[i] = new GQuadTree<T>(this, subBB[i]);
 			m_SubNodes[i]->Subdivde(numLevels-1);
 		}
@@ -145,6 +149,12 @@ public:
 
 	/** Returns the boundingbox */
 	const zTBBox3D& GetBBox(){return m_BBox3D;}
+
+	/** Returns if this BBox was untouched, that is, nothing was added to this node */
+	bool NodeEmpty()
+	{
+		return m_BBox3D.m_Min.y == FLT_MIN && m_BBox3D.m_Max.y == FLT_MIN;
+	}
 
 private:
 	// Sub-nodes this node has. If one of them is zero (checking first is enough!),
