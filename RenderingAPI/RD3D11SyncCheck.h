@@ -6,7 +6,7 @@
 #include "../Shared/hwbrk.h"
 
 #ifndef D3D11_GPU_SYNC_CHECK
-#define D3D11_GPU_SYNC_CHECK
+//#define D3D11_GPU_SYNC_CHECK
 #endif
 
 #ifdef RND_D3D11
@@ -165,7 +165,7 @@ namespace __ctx_sync_check
 
 			std::stringstream out;
 			//out << "GPU-Sync summary for '0x" << std::hex << addr << "':\n";
-			OutputDebugStringA(out.str().c_str());
+			//OutputDebugStringA(out.str().c_str());
 
 			for(auto& r : results)
 			{
@@ -225,5 +225,6 @@ namespace __ctx_sync_check
 #define RD3D11_CTX_SYNC_CHECK_R(x){RD3D11_CTX_SYNC_CHECK(x, REngine::RenderingDevice->GetDevice(), REngine::RenderingDevice->GetThreadContext(GetCurrentThreadId()));}
 #else
 #define RD3D11_CTX_SYNC_CHECK(x, device, ctx) {x;}
+#define RD3D11_CTX_SYNC_CHECK_R(x){x;}
 #endif
 #endif
