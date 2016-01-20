@@ -1,5 +1,6 @@
 #pragma once
 #include "zCArray.h"
+#include "zEngineHooks.h"
 
 class zCWorld;
 class zCOption;
