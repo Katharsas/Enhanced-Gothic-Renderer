@@ -93,7 +93,7 @@ public:
 	/** Creates sub-nodes down to the specified level */
 	void Subdivde(unsigned int numLevels)
 	{
-		float3 midPoint = (m_BBox3D.m_Max + m_BBox3D.m_Min) * 0.5f;
+		m_BBoxMid = (m_BBox3D.m_Max + m_BBox3D.m_Min) * 0.5f;
 		m_NodeLevel = numLevels;
 
 		if(!numLevels)
@@ -102,10 +102,10 @@ public:
 		// 0 1
 		// 2 3
 
-		zTBBox3D subBB[4] = {	{{m_BBox3D.m_Min},{midPoint}},
-								{{float3(midPoint.x,0,m_BBox3D.m_Min.z)},{float3(m_BBox3D.m_Max.x,0,midPoint.z)}},
-								{{float3(m_BBox3D.m_Min.x,0,midPoint.z)},{float3(midPoint.x,0,m_BBox3D.m_Max.z)}},
-								{{midPoint},{m_BBox3D.m_Max}} };
+		zTBBox3D subBB[4] = {	{{m_BBox3D.m_Min},{m_BBoxMid}},
+								{{float3(m_BBoxMid.x,0,m_BBox3D.m_Min.z)},{float3(m_BBox3D.m_Max.x,0,m_BBoxMid.z)}},
+								{{float3(m_BBox3D.m_Min.x,0,m_BBoxMid.z)},{float3(m_BBoxMid.x,0,m_BBox3D.m_Max.z)}},
+								{{m_BBoxMid},{m_BBox3D.m_Max}} };
 
 		
 
@@ -156,6 +156,12 @@ public:
 		return m_BBox3D.m_Min.y == FLT_MIN && m_BBox3D.m_Max.y == FLT_MIN;
 	}
 
+	/** Returns the midpoint of the bbox */
+	const float3& GetMidpoint()
+	{
+		return m_BBoxMid;
+	}
+
 private:
 	// Sub-nodes this node has. If one of them is zero (checking first is enough!),
 	// then this is a leaf.
@@ -163,6 +169,7 @@ private:
 	// 2 3
 	GQuadTree<T>* m_SubNodes[4];
 	zTBBox3D m_BBox3D;
+	float3 m_BBoxMid;
 	unsigned int m_NodeLevel;
 
 	// Parent node. nullptr on root.
