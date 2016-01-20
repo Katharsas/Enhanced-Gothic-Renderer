@@ -584,6 +584,12 @@ public:
 		}
 		FramePipelineStates.clear();
 
+		for(auto b : FFConstantBufferByHash)
+		{
+			REngine::ResourceCache->DeleteResource<RBuffer>(b.second);
+		}
+		FFConstantBufferByHash.clear();
+
 		REngine::DynamicBufferCache->OnFrameEnded();
 	
 	return S_OK;
