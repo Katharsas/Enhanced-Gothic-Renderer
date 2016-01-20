@@ -104,6 +104,12 @@ public:
 	std::string FormatProfilerData();
 private:
 
+	/** Called when a log-message was sent */
+	static void OnLogMessage(const std::string& message);
+
+	/** Updates the window-caption with statistics */
+	void UpdateWindowCaptionStatistics();
+
 	/**
 	 * Puts the sky-parameters into the constantbuffer 
 	 */
@@ -139,6 +145,9 @@ private:
 	 * The debugoutput to draw at the end of this frame. 
 	 * This string will be cleared when a new frame starts. Push text to it using AddFrameDebugLine()! */
 	std::string m_FrameDebugLines;
+
+	/** Last string passed to the logger */
+	std::string m_LastLogString;
 
 	/**
 	 * Code to execute when we got to a safe position

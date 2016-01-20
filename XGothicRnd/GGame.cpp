@@ -39,6 +39,7 @@ GGame::GGame(void)
 	m_ActiveWorld = nullptr;
 	m_MainResources = new GMainResources();
 	
+	Log::SetLogCallback(GGame::OnLogMessage);
 }
 
 
@@ -375,14 +376,12 @@ void GGame::DrawStatistics()
 
 	if ((s % 35) == 0)
 	{
-		std::stringstream stat;
-		stat << "FPS: " << std::fixed << std::setprecision(2) << GetFramesPerSecond() << " (" << 1000.0f / GetFramesPerSecond() << "ms)" << "\n";
-		SetWindowText(REngine::RenderingDevice->GetOutputWindow(), stat.str().c_str());
+		UpdateWindowCaptionStatistics();
 	}
 
 	// Only draw if we're ingame. Crashes otehrwise. // TODO: fix this
-	if (zCView::GetSessionView() && m_ActiveWorld)
-		zCView::GetSessionView()->Print(INT2(0,0), m_FrameDebugLines);
+	//if (zCView::GetSessionView() && m_ActiveWorld)
+	//	zCView::GetSessionView()->Print(INT2(0,0), m_FrameDebugLines);
 
 	return;
 	/*std::stringstream stat;
@@ -398,6 +397,15 @@ void GGame::DrawStatistics()
 
 	if (zCView::GetSessionView())
 		zCView::GetSessionView()->Print(INT2(0,0), stat.str());*/
+}
+
+/** Updates the window-caption with statistics */
+void GGame::UpdateWindowCaptionStatistics()
+{
+	std::stringstream stat;
+	stat << "FPS: " << std::fixed << std::setprecision(2) << GetFramesPerSecond() << " (" << 1000.0f / GetFramesPerSecond() << "ms)"
+		<< " - LastLog: '" << m_LastLogString << "'";
+	SetWindowText(REngine::RenderingDevice->GetOutputWindow(), stat.str().c_str());
 }
 
 /**
@@ -513,4 +521,12 @@ std::string GGame::FormatProfilerData()
 	ss << " >> " << 100 * totalGPUms / totalCPUms << "% GPU Time";
 
 	return ss.str();
+}
+
+/** Called when a log-message was sent */
+void GGame::OnLogMessage(const std::string& message)
+{
+	Engine::Game->m_LastLogString = message;
+
+	Engine::Game->UpdateWindowCaptionStatistics();
 }
