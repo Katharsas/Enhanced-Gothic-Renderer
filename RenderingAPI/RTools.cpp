@@ -17,30 +17,20 @@ namespace RTools
 	void MakeDefaultStates(RDepthStencilState** defDSS, RSamplerState** defSS, RBlendState** defBS, RRasterizerState** defRS)
 	{
 		// Create the default versions of the states
-		RDepthStencilState* dss = REngine::ResourceCache->CreateResource<RDepthStencilState>();
-		RDepthStencilStateInfo dssinfo = RDepthStencilStateInfo().SetDefault();
-		dss->CreateState(dssinfo);
+		REngine::ResourceCache->AddToCache("default", GetState(RDepthStencilStateInfo().SetDefault()));
+		REngine::ResourceCache->AddToCache("default", GetState(RSamplerStateInfo().SetDefault()));
+		REngine::ResourceCache->AddToCache("default", GetState(RBlendStateInfo().SetDefault()));
+		REngine::ResourceCache->AddToCache("default", GetState(RRasterizerStateInfo().SetDefault()));
 
-		RSamplerState* ss = REngine::ResourceCache->CreateResource<RSamplerState>();
-		ss->CreateState(RSamplerStateInfo().SetDefault());
-
-		RBlendState* bs = REngine::ResourceCache->CreateResource<RBlendState>();
-		bs->CreateState(RBlendStateInfo().SetDefault());
-
-		RRasterizerState* rs = REngine::ResourceCache->CreateResource<RRasterizerState>();
+		// Create some specific ones
 		RRasterizerStateInfo rsinfo = RRasterizerStateInfo().SetDefault();
-		rs->CreateState(rsinfo);
-
-		// Now cache them all
-		REngine::ResourceCache->AddToCache("default", dss);
-		REngine::ResourceCache->AddToCache("default", ss);
-		REngine::ResourceCache->AddToCache("default", bs);
-		REngine::ResourceCache->AddToCache("default", rs);
+		rsinfo.CullMode = RRasterizerStateInfo::CM_CULL_NONE;
+		REngine::ResourceCache->AddToCache("twosided", GetState(rsinfo));
 
 		// And output
-		*defDSS = dss;
-		*defSS = ss;
-		*defRS = rs;
-		*defBS = bs;
+		*defDSS = GetState(RDepthStencilStateInfo().SetDefault());
+		*defSS  = GetState(RSamplerStateInfo().SetDefault());
+		*defRS  = GetState(RRasterizerStateInfo().SetDefault());
+		*defBS  = GetState(RBlendStateInfo().SetDefault());
 	}
 };
