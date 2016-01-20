@@ -4,6 +4,10 @@
 #include <RResourceCache.h>
 #include "zCTexture.h"
 #include "zCResourceManager.h"
+#include "Engine.h"
+#include "GGame.h"
+#include "GMainResources.h"
+#include <RTextureAtlas.h>
 
 int g_TotalSize = 0;
 
@@ -35,13 +39,14 @@ GTexture::~GTexture(void)
 /** Called just after the game created locked the underlaying surface. */
 void GTexture::OnSurfaceLocked(MyDirectDrawSurface7* surface)
 {
-
+	m_CurrentSurface = surface;
 }
 
 /** Called when the game decided to cache out the surface */
 void GTexture::OnSurfaceDeleted()
 {
-	g_TotalSize -= m_Texture->GetSizeInBytes();
+	if(m_Texture->IsInitialized())
+		g_TotalSize -= m_Texture->GetSizeInBytes();
 
 	// Game cached the texture out, deallocate...
 	//LogInfo() << "Deallocating texture: " << m_SourceObject->GetObjectName();
@@ -59,12 +64,12 @@ void GTexture::OnSurfaceUnlocked(void* imageData, unsigned int sizeInBytes, std:
 	DDSURFACEDESC2 ddsd;
 	m_CurrentSurface->GetSurfaceDesc(&ddsd);
 
+	// Make sure the texture is clean
+	m_Texture->Deallocate();
+
 	g_TotalSize += sizeInBytes;
 	LogInfo() << "Initializing texture: " << m_SourceObject->GetObjectName() << " (" << sizeInBytes << " bytes)"
 		<< " (Total: " << g_TotalSize / (1024 * 1024) << " mb)";
-
-	// Make sure the texture is clean
-	m_Texture->Deallocate();
 
 	// Create the texture on the GPU
 	LEB(m_Texture->CreateTexture(imageData, 
@@ -76,6 +81,13 @@ void GTexture::OnSurfaceUnlocked(void* imageData, unsigned int sizeInBytes, std:
 		U_DEFAULT,
 		1,
 		mipData));
+
+	// TODO: This is a hack, find a better way to figure out if this is a lightmap! | There is "IsLightmap" on zCTexture!
+	// If this is a lightmap, add to lightmap-atlas cache
+	if(ddsd.dwMipMapCount == 1 && ddsd.dwWidth == ddsd.dwHeight && m_CurrentSurface->GetInternalTextureFormat() == ETextureFormat::TF_R8G8B8A8)
+	{
+		Engine::Game->GetMainResources()->GetLightmapAtlas(INT2(ddsd.dwWidth, ddsd.dwHeight))->StoreTexture((byte*)imageData, sizeInBytes, m_SourceObject);
+	}
 }
 
 /** Returns a pointer to the surface associated with this object,
