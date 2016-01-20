@@ -45,6 +45,9 @@ struct ExVertexStruct
 		if (fabs(p1.first.TexCoord.x-p2.first.TexCoord.x) > eps) return p1.first.TexCoord.x < p2.first.TexCoord.x;
 		if (fabs(p1.first.TexCoord.y-p2.first.TexCoord.y) > eps) return p1.first.TexCoord.y < p2.first.TexCoord.y;
 
+		if (fabs(p1.first.TexCoord2.x-p2.first.TexCoord2.x) > eps) return p1.first.TexCoord2.x < p2.first.TexCoord2.x;
+		if (fabs(p1.first.TexCoord2.y-p2.first.TexCoord2.y) > eps) return p1.first.TexCoord2.y < p2.first.TexCoord2.y;
+
         return false;
     }
 

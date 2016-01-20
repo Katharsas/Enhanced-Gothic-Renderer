@@ -79,7 +79,7 @@ void GBaseDrawable::PushRenderStateCache(GConstants::ERenderStage stage, RRender
 
 #ifndef PUBLIC_RELASE
 			// Helps to find broken pipeline-states
-			REngine::RenderingDevice->__GetRenderQueueByID(queue)->Sources.push_back(this);
+			//REngine::RenderingDevice->__GetRenderQueueByID(queue)->Sources.push_back(this);
 #endif
 		}
 	}

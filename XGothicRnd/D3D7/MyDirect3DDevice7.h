@@ -761,6 +761,7 @@ public:
 		sm.SetPixelShader(PS_FixedFunctionEmulator);
 
 		sm.SetViewport(Viewport);
+		sm.SetPrimitiveTopology(EPrimitiveType::PT_TRIANGLE_LIST);
 	}
 
 	/** Initializes resources needed by the renderer */
