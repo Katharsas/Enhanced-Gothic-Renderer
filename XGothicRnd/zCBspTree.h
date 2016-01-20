@@ -206,6 +206,12 @@ public:
 		XCALL(MemoryLocations::Gothic::zCBspTree__TraceRay_zVEC3_const_r_zVEC3_const_r_int_zVEC3_r_zCPolygon_p_r_zCArrayzCVob_p_p);
 	}
 
+	/** Returns the number of polygons in the tree */
+	size_t GetNumPolygons(){return m_NumPolys;}
+
+	/** Returns the polygon-array of the tree */
+	zCPolygon** GetPolygons(){return m_TreePolyList;}
+
 private:
 	zCBspNode* m_ActiveNodePtr;
 	zCBspLeaf* m_ActiveLeafPtr;
