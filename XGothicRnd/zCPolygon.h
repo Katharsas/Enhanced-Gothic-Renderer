@@ -62,7 +62,7 @@ struct PolyFlags
 		vx.Color = m_Lightmap ? 0xFFFFFFFF : GetFeatures()[idx]->m_LightStatic;
 
 		// Calculate UV-Coords from the lightmap
-		vx.TexCoord2 = m_Lightmap ? m_Lightmap->GetLightmapTexCoords(vx.Position) : float2(0,0);
+		vx.TexCoord2 = float2(0,0);
 	}
 
 	/** Size of the vertices-array */
