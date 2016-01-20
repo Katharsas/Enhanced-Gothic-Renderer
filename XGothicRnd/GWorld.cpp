@@ -315,6 +315,9 @@ void GWorld::AddVob(zCVob* vob)
 /** Removes a zCVob from the world */
 bool GWorld::RemoveVob(zCVob* vob)
 {
+	if(!vob)
+		return false;
+
 	if(m_SourceObject->IsInventoryWorld())
 		return false; // TODO: Need to render the inventory!
 
