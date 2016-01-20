@@ -31,6 +31,9 @@ GWorld::~GWorld(void)
 {
 	delete m_BspTree;
 	m_BspTree = nullptr;
+
+	// Clear loaded lightmaps
+	Engine::Game->GetMainResources()->ClearLightmapAtlases();
 }
 
 /** 
