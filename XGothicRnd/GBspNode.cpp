@@ -16,6 +16,11 @@
 #include "zCCamera.h"
 #include "GVobObject.h"
 #include "zCMaterial.h"
+#include <RTexture.h>
+#include <RTextureAtlas.h>
+#include "Engine.h"
+#include "GGame.h"
+#include "GMainResources.h"
 
 GBspNode::GBspNode()
 {
@@ -103,6 +108,35 @@ void GBspNode::BuildTriangleList(std::vector<ExTVertexStruct>& vertices, std::ve
 			if (poly->GetPolyFlags().PortalIndoorOutdoor)
 				m_PortalList.push_back(poly);
 
+			// Check for lightmap and the it's atlas if present
+			RTextureAtlas* atlas = nullptr;
+			std::pair<float2, float2> lightmapUVMod;
+
+			// Make sure the lightmap is loaded...
+			if(poly->GetLightmap() && poly->GetLightmap()->GetTexture())
+				poly->GetLightmap()->GetTexture()->CacheIn(-1);
+
+			// Make sure the texture is loaded
+			if(poly->GetMaterial()->GetTexture())
+				poly->GetMaterial()->GetTexture()->CacheIn(-1);
+
+			// Get lightmap atlas if needed and also get the lightmap modifier
+			if(poly->GetLightmap() && poly->GetLightmap()->GetTexture() && poly->GetLightmap()->GetTexture()->GetSurface())
+			{
+				DDSURFACEDESC2 ddsd;
+				poly->GetLightmap()->GetTexture()->GetSurface()->GetSurfaceDesc(&ddsd);
+
+				if(ddsd.dwHeight == ddsd.dwWidth)
+				{
+					atlas = Engine::Game->GetMainResources()->GetLightmapAtlas(INT2(ddsd.dwWidth, ddsd.dwHeight));
+					lightmapUVMod = atlas->GetModifiedUV(poly->GetLightmap()->GetTexture());
+				}
+				else
+				{
+					LogWarn() << "Ignoring non-quadratic shaped lightmap";
+				}
+			}
+
 			// Pack all vertices into a better datastructure
 			std::vector<ExTVertexStruct> packed;
 
@@ -112,6 +146,19 @@ void GBspNode::BuildTriangleList(std::vector<ExTVertexStruct>& vertices, std::ve
 				{
 					ExTVertexStruct vx;
 					poly->PackVertex(j, vx);
+
+					if(poly->GetLightmap())
+						vx.TexCoord2 = poly->GetLightmap()->GetLightmapTexCoords(vx.Position);
+					else
+						vx.TexCoord2 = float2(0,0);
+
+					// Apply atlas-transform to the Lightmap-UV
+					if(atlas)
+					{
+						vx.TexCoord2.x /= lightmapUVMod.second.x;
+						vx.TexCoord2.y /= lightmapUVMod.second.y;
+						vx.TexCoord2 += lightmapUVMod.first;
+					}
 					packed.push_back(vx);
 				}
 			}
@@ -121,6 +168,20 @@ void GBspNode::BuildTriangleList(std::vector<ExTVertexStruct>& vertices, std::ve
 				{
 					ExTVertexStruct vx;
 					poly->PackVertex(j, vx);
+
+					if(poly->GetLightmap())
+						vx.TexCoord2 = poly->GetLightmap()->GetLightmapTexCoords(vx.Position);
+					else
+						vx.TexCoord2 = float2(0,0);
+
+					// Apply atlas-transform to the Lightmap-UV
+					if(atlas)
+					{
+						vx.TexCoord2.x /= lightmapUVMod.second.x;
+						vx.TexCoord2.y /= lightmapUVMod.second.y;
+						vx.TexCoord2 += lightmapUVMod.first;
+					}
+
 					packed.push_back(vx);
 				}
 
