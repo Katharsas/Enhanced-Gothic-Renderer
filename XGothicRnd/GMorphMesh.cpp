@@ -186,3 +186,12 @@ void GMorphMesh::OnDrawableDrawn(GBaseDrawable* drawable)
 	morphMesh->GetTexAniState()->UpdateTexList();
 	UpdateTextures();
 }
+
+/** Caches the textures used by this visual */
+void GMorphMesh::CacheTextures(bool force)
+{
+	for(SubMesh& m : m_SubMeshes)
+	{
+		m.m_Material->CacheTextures();
+	}
+}

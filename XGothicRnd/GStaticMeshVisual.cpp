@@ -190,3 +190,12 @@ void GStaticMeshVisual::CreateDrawables(std::vector<GBaseDrawable*>& v, int lodL
 	v.push_back(new GStaticMeshDrawable(this));
 	v.back()->ReaquireStateCache();
 }
+
+/** Caches the textures used by this visual */
+void GStaticMeshVisual::CacheTextures(bool force)
+{
+	for(SubMesh& m : m_SubMeshes)
+	{
+		m.m_Material->CacheTextures();
+	}
+}

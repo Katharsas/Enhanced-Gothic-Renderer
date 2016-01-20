@@ -58,6 +58,8 @@ public:
 		Returns true, if found. */
 	virtual bool RemoveVob(GVobObject* vob);
 
+	/** Caches the textures used by this visual */
+	virtual void CacheTextures(bool force = false){}
 protected:
 	/** Destroys the pipelinestates of the given drawable */
 	void DestroyDrawableStates(GBaseDrawable* drawable);

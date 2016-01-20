@@ -36,6 +36,8 @@ public:
 	/** Creates a drawable for this visual */
 	virtual void CreateDrawables(std::vector<GBaseDrawable*>& v, int lodLevel);
 
+	/** Caches the textures used by this visual */
+	virtual void CacheTextures(bool force = false);
 protected:
 	// Logical buffers for rendering
 	RLogicalBuffer<ExTVertexStruct>* m_LogicalVertexBuffer;

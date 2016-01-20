@@ -179,3 +179,12 @@ void GMeshSoftSkin::UpdateTextures()
 		}
 	}
 }
+
+/** Caches the textures used by this visual */
+void GMeshSoftSkin::CacheTextures(bool force)
+{
+	for(SubMesh& m : m_SubMeshes)
+	{
+		m.m_Material->CacheTextures();
+	}
+}

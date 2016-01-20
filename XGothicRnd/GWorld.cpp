@@ -214,6 +214,9 @@ void GWorld::Render()
 			|| instance.m_SortKey != s_sortIndexList[i + 1].m_SortKey
 			|| !instance.m_Drawable->SupportsInstancing())
 		{
+			// Make sure the textures are loaded
+			instance.m_Drawable->GetVisual()->CacheTextures();
+
 			// Push instances of the drawable with the right amount of instances
 			instance.m_Drawable->PushRenderStateCache(GConstants::ERenderStage::RS_WORLD,
 				vobsQueue,

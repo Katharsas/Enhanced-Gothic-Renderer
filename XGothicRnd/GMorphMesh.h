@@ -33,6 +33,8 @@ public:
 	/** Updates the textures for the created pipelinestates */
 	void UpdateTextures();
 
+	/** Caches the textures used by this visual */
+	virtual void CacheTextures(bool force = false);
 private:
 	// Logical buffers for rendering
 	RBuffer* m_VertexBuffer;
