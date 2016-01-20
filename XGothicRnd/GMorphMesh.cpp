@@ -192,6 +192,7 @@ void GMorphMesh::CacheTextures(bool force)
 {
 	for(SubMesh& m : m_SubMeshes)
 	{
-		m.m_Material->CacheTextures();
+		if(m.m_Material)
+			m.m_Material->CacheTextures();
 	}
 }
