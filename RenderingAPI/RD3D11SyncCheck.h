@@ -163,17 +163,17 @@ namespace __ctx_sync_check
 			std::vector<QueryResult> results;
 			CheckResults(ctx, addr, results);
 
-			std::stringstream out;
+			//std::stringstream out;
 			//out << "GPU-Sync summary for '0x" << std::hex << addr << "':\n";
 			//OutputDebugStringA(out.str().c_str());
 
 			for(auto& r : results)
 			{
-				std::stringstream out;
+				/*std::stringstream out;
 
 				out << std::fixed << " - CPU: " << r.CPUElapsed << ", GPU: " << r.GPUElapsed << "\n";
-				//OutputDebugStringA(out.str().c_str());
-				out.clear();
+				OutputDebugStringA(out.str().c_str());
+				out.clear();*/
 
 				s_largestCPU = std::max(s_largestCPU, r.CPUElapsed);
 				s_largestGPU = std::max(s_largestGPU, r.GPUElapsed);
@@ -194,8 +194,8 @@ namespace __ctx_sync_check
 
 		void GetTimesLostAndReset(float& tcpu, float& tgpu)
 		{
-			tcpu = CPUTimeLost;
-			tgpu = GPUTimeLost;
+			tcpu = (float)CPUTimeLost;
+			tgpu = (float)GPUTimeLost;
 
 			CPUTimeLost = 0;
 			GPUTimeLost = 0;
