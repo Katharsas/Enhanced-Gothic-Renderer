@@ -116,7 +116,7 @@ RPixelShader* GMaterial::GetMaterialPixelShader(GConstants::ERenderStage stage, 
 		if((flags & MPS_LIGHTMAPPED) != 0)
 			return REngine::ResourceCache->GetCachedObject<RPixelShader>(ShaderAliases::PS_DEFAULT_WORLD_LIGHTMAPPED);
 
-		if(!IsMaterialUsingAlphaTest() || (flags & MPS_FORCE_ALPHA_TEST) == 0)
+		if(!IsMaterialUsingAlphaTest() && (flags & MPS_FORCE_ALPHA_TEST) == 0)
 			return REngine::ResourceCache->GetCachedObject<RPixelShader>(ShaderAliases::PS_DEFAULT_WORLD);
 		else
 			return REngine::ResourceCache->GetCachedObject<RPixelShader>(ShaderAliases::PS_MASKED_WORLD);
