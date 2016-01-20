@@ -69,8 +69,13 @@ bool RD3D11Texture::CreateTextureAPI(const void* textureData,
 		}
 	}
 
+	size_t size = SizeInBytes;
+
 	// Clean up first, so we can keep these texture-objects
 	CleanAPI();
+
+	// Restore size, as CleanAPI set it to 0
+	SizeInBytes = size;
 
 	CD3D11_TEXTURE2D_DESC textureDesc(
 		(DXGI_FORMAT)TextureFormat,
@@ -240,6 +245,17 @@ bool RD3D11Texture::CreateAdditionalResources()
 		if((BindFlags & D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE) != 0)
 			LE(REngine::RenderingDevice->GetDevice()->CreateShaderResourceView(Texture2D, nullptr, &TextureSRV));
 	}
+
+	return true;
+}
+
+/** 
+* Tries to save this texture to a file. Only works for RGBA8-Format.
+*/
+bool RD3D11Texture::SaveToFileAPI(const std::string& file)
+{
+	HRESULT hr;
+	LE_RB(D3DX11SaveTextureToFile(REngine::RenderingDevice->GetImmediateContext(), Texture2D, D3DX11_IFF_PNG, file.c_str()));
 
 	return true;
 }

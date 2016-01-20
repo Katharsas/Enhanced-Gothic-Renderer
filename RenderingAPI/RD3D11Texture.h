@@ -51,6 +51,11 @@ public:
 	 */
 	void DeallocateAPI();
 
+	/** 
+	 * Tries to save this texture to a file. Only works for RGBA8-Format.
+	 */
+	bool SaveToFileAPI(const std::string& file);
+
 	/**
 	 * Getters
 	 */
