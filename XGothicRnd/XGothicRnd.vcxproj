@@ -515,6 +515,7 @@ call "$(ProjectDir)\PatchSmartHeap.bat"</Command>
     <ClInclude Include="GMorphMeshDrawable.h" />
     <ClInclude Include="GParticleFXDrawable.h" />
     <ClInclude Include="GParticleFXVisual.h" />
+    <ClInclude Include="GQuadTree.h" />
     <ClInclude Include="GStaticMeshDrawable.h" />
     <ClInclude Include="GStaticMeshVisual.h" />
     <ClInclude Include="GTexture.h" />

@@ -51,7 +51,7 @@ void RStateMachine::SetFromPipelineState(const RPipelineState* state)
 
 	if(state->IDs.RasterizerState != State.BoundIDs.RasterizerState)
 	{
-		State.RasterizerState = cache->GetFromID<RRasterizerState>(state->IDs.DepthStencilState);
+		State.RasterizerState = cache->GetFromID<RRasterizerState>(state->IDs.RasterizerState);
 		Changes.RasterizerState	= true;
 		ChangesCount.RasterizerState++;
 	}

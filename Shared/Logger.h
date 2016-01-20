@@ -41,6 +41,7 @@ __declspec( selectany ) std::string LOGFILE;
 #define XLE(x) { XRESULT xr = (x); if(xr != XRESULT::XR_SUCCESS){ LogError() << ##x << " failed with code: " << xr << " (" + Toolbox::MakeErrorString(xr) + ")";}}
 
 #define LEB(x) {if(!x){LogError() << #x " failed!";}}
+#define LEB_R(x) {if(!x){LogError() << #x " failed!"; return false;}}
 
 /** Checks for errors and logs them, HRESULT hr needs to be declared */
 #define LE(x) { hr = (x); if(FAILED(hr)){LogError() << #x " failed with code: " << hr << "!"; }/*else{ LogInfo() << L#x << L" Succeeded."; }*/ }
@@ -93,6 +94,7 @@ namespace LogCache
 {
 	__declspec(selectany) std::vector<std::string> Cache;
 	__declspec(selectany) std::mutex LogMutex;
+
 	struct LogFlush
 	{
 		~LogFlush()
@@ -200,6 +202,12 @@ public:
 			fclose(f);
 
 			OutputDebugString((Info.str() + Message.str() + "\n").c_str());
+
+			// Do callback
+			if(LogCallback)
+			{
+				LogCallback(Message.str());
+			}
 		}
 
 		/*if(strnicmp(Info.str().c_str(), "Error", sizeof("Error")) == 0)
@@ -230,7 +238,15 @@ public:
 		}
 	}
 
+	/** Sets the function to be called when a log should be printed */
+	static void SetLogCallback(std::function<void(const std::string&)> fn)
+	{
+		LogCallback = fn;
+	}
+
 private:
+
+	static std::function<void(const std::string&)> LogCallback;
 
 	std::stringstream Info; // Contains an information like "Info", "Warning" or "Error"
 	std::stringstream Message; // Text to write into the logfile
@@ -278,6 +294,11 @@ public:
 	}
 
 private:
+
+	static std::function<void(const std::string&)> LogCallback;
 };
 
 #endif
+
+// Definition of the static log callback
+__declspec(selectany) std::function<void(const std::string&)> Log::LogCallback;

@@ -458,6 +458,7 @@
     <ClInclude Include="readerwriterqueue.h" />
     <ClInclude Include="REngine.h" />
     <ClInclude Include="RInputLayout.h" />
+    <ClInclude Include="RLineRenderer.h" />
     <ClInclude Include="RObservable.h" />
     <ClInclude Include="RPagedBuffer.h" />
     <ClInclude Include="RPipelineState.h" />
@@ -472,6 +473,7 @@
     <ClInclude Include="RStateMachine.h" />
     <ClInclude Include="RTexture.h" />
     <ClInclude Include="RBufferCollection.h" />
+    <ClInclude Include="RTextureAtlas.h" />
     <ClInclude Include="RThreadPool.h" />
     <ClInclude Include="RTimer.h" />
     <ClInclude Include="RTools.h" />
@@ -574,6 +576,7 @@
     <ClCompile Include="RDynamicBufferCache.cpp" />
     <ClCompile Include="REngine.cpp" />
     <ClCompile Include="RInputLayout.cpp" />
+    <ClCompile Include="RLineRenderer.cpp" />
     <ClCompile Include="RPixelShader.cpp" />
     <ClCompile Include="RProfiler.cpp" />
     <ClCompile Include="RRasterizerState.cpp" />
@@ -582,6 +585,7 @@
     <ClCompile Include="RSamplerState.cpp" />
     <ClCompile Include="RStateMachine.cpp" />
     <ClCompile Include="RTexture.cpp" />
+    <ClCompile Include="RTextureAtlas.cpp" />
     <ClCompile Include="RTools.cpp" />
     <ClCompile Include="RVertexShader.cpp" />
     <ClCompile Include="RViewport.cpp" />

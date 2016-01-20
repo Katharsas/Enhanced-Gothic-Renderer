@@ -62,6 +62,9 @@
     <Filter Include="Renderer\Profiler">
       <UniqueIdentifier>{944b3ad6-6957-4e1f-a4ab-175828af854d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Renderer\Debug">
+      <UniqueIdentifier>{811cf85a-7e6f-431a-a98c-a2f45fdb546f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -250,6 +253,12 @@
     <ClInclude Include="RBaseProfiler.h">
       <Filter>Renderer\Profiler</Filter>
     </ClInclude>
+    <ClInclude Include="RLineRenderer.h">
+      <Filter>Renderer\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="RTextureAtlas.h">
+      <Filter>Renderer\Textures</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -398,6 +407,12 @@
     </ClCompile>
     <ClCompile Include="RBaseProfiler.cpp">
       <Filter>Renderer\Profiler</Filter>
+    </ClCompile>
+    <ClCompile Include="RLineRenderer.cpp">
+      <Filter>Renderer\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="RTextureAtlas.cpp">
+      <Filter>Renderer\Textures</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -6,6 +6,8 @@
 
 #define GEN_DAEDALUS
 
+const int MAX_DAEDALUS_NAME_SIZE = 128;
+
 // Windows.h, needed by detours
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
@@ -250,7 +252,7 @@ void* MapHooks::PerformHook(const char* mapAlias, const char* function, void* ho
 /**
  * Writes a C++-header with the found values
  */
-bool MapHooks::WriteCppHeader(const char* file, ECodeType codeType = CT_CPP)
+bool MapHooks::WriteCppHeader(const char* file, ECodeType codeType)
 {
 	FILE* f;
 	fopen_s(&f, file, "w");
@@ -346,7 +348,7 @@ bool MapHooks::WriteCppHeader(const char* file, ECodeType codeType = CT_CPP)
 			// Construct constant
 			if(codeType == CT_CPP) 
 				ss << "\t\tstatic const void* " << name << " = (void*)0x" << std::hex << loc.second << ";\n";
-			else		
+			else if(name.size() < MAX_DAEDALUS_NAME_SIZE)
 				ss << "\t\const int " << name << " = " << loc.second << ";\n";	
 			
 			fputs(ss.str().c_str(), f);

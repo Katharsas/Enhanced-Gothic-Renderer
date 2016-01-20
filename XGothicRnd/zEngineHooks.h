@@ -2,4 +2,8 @@
 
 #define HOOK_RENDERING
 
-#define GASSERT(x, m) {if(!(x)){LogErrorBox() << "Assertion failed: " << #x << " | " << m;}}
+#ifndef PUBLIC_RELEASE
+#define GASSERT(x, m) {if(!(x)){__debugbreak(); LogErrorBox() << "Assertion failed: " << #x << " | " << m;}}
+#else
+#define GASSERT(x, m) {if(!(x)){LogError() << "Assertion failed: " << #x << " | " << m;}}
+#endif

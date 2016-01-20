@@ -420,6 +420,9 @@
     <ClInclude Include="zCSkyController.h">
       <Filter>zEngine</Filter>
     </ClInclude>
+    <ClInclude Include="GQuadTree.h">
+      <Filter>Wrappers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="ddraw.def">
