@@ -9,9 +9,14 @@
 #include "GMaterial.h"
 #include "GTexture.h"
 #include "GMeshIndexed.h"
+#include "GMainResources.h"
+#include <RTextureAtlas.h>
 
 // Number of subdivides the quadtree should do
 const int QUAD_TREE_NUM_SUBLEVELS = 3;
+
+// Distance to the last node to draw lightmaps in
+const float LIGHTMAP_MAX_RENDER_DISTANCE = 16000.0f;
 
 GBspTree::GBspTree(zCBspTree* sourceTree) : GzObjectExtension<zCBspTree, GBspTree>(sourceTree)
 {
@@ -29,9 +34,23 @@ GBspTree::GBspTree(zCBspTree* sourceTree) : GzObjectExtension<zCBspTree, GBspTre
 	std::vector<ExTVertexStruct> indicedVertices;
 	std::vector<zCPolygon*> trianglePolys;
 
+	// Load all the lightmaps
+	for(int i = 0; i < m_SourceTree->GetNumPolygons(); i++)
+	{
+		zCPolygon* p = m_SourceTree->GetPolygons()[i];
+
+		if(p->GetLightmap() && p->GetLightmap()->GetTexture())
+			p->GetLightmap()->GetTexture()->CacheIn(-1);
+	}
+
+	// Create the lightmap atlases
+	Engine::Game->GetMainResources()->ConstructLightmapAtlases();
+
 	LogInfo() << "Building node triangle-lists";
 	// Generate vertex-lists for each node
 	m_RootNode->BuildTriangleList(vertices, trianglePolys);
+
+	
 
 	LogInfo() << "Indexing worldmesh...";
 	// Create indexed mesh
@@ -99,7 +118,25 @@ void GBspTree::BuildQuadTreeVertexData(const std::vector<ExTVertexStruct>& verti
 		std::function<void(GQuadTree<QuadTreeNode>*)> suc = [&](GQuadTree<QuadTreeNode>* n)
 		{
 			zCPolygon* poly = trianglePolys[i / 3];
-			WorldMeshPart& p = n->GetData().m_MeshParts[std::make_pair(poly->GetLightmap(), poly->GetMaterial())];
+
+			
+			RTexture* lightmap = nullptr;
+			
+			// Get lightmap atlas if needed
+			// TODO: This should be rather slow, here, in an inner loop. Profile and optimize!
+			if(poly->GetLightmap() && poly->GetLightmap()->GetTexture() && poly->GetLightmap()->GetTexture()->GetSurface())
+			{
+				DDSURFACEDESC2 ddsd;
+				poly->GetLightmap()->GetTexture()->GetSurface()->GetSurfaceDesc(&ddsd);
+
+				// Get lightmap from atlas, if size is even. Otherwise just use the regular lightmap
+				if(ddsd.dwWidth == ddsd.dwHeight)
+					lightmap = Engine::Game->GetMainResources()->GetLightmapAtlas(INT2(ddsd.dwWidth, ddsd.dwHeight))->GetTexture();
+				else
+					lightmap = GTexture::GetFromSource(poly->GetLightmap()->GetTexture())->GetTexture();
+			}
+
+			WorldMeshPart& p = n->GetData().m_MeshParts[std::make_pair(lightmap, poly->GetMaterial())];
 
 			// Add indices to mesh-part
 			p.m_Indices.push_back(indices[i]);
@@ -123,7 +160,7 @@ void GBspTree::BuildQuadTreeVertexData(const std::vector<ExTVertexStruct>& verti
 			part.m_Material = GMaterial::GetFromSource(pair.first.second);
 
 			if(pair.first.first)
-				part.m_Lightmap = GTexture::GetFromSource(pair.first.first->GetTexture());
+				part.m_Lightmap = pair.first.first;
 
 			// Add data to global index buffer
 			unsigned int start = m_WorldIndexBuffer->AddData(&part.m_Indices[0], part.m_Indices.size());
@@ -161,6 +198,9 @@ void GBspTree::UpdateMeshPartPipelineState(WorldMeshPart& part)
 	sm.SetVertexBuffer(0, msh->GetMeshVertexBuffer());
 	sm.SetIndexBuffer(msh->GetMeshIndexBuffer());
 
+	RRasterizerState* twosidedRS = REngine::ResourceCache->GetCachedObject<RRasterizerState>("twosided");
+	RRasterizerState* defaultRS = REngine::ResourceCache->GetCachedObject<RRasterizerState>("default");
+
 	if (part.m_Material->GetDiffuse())
 	{
 		UINT mFlags = MPS_NONE;
@@ -170,8 +210,7 @@ void GBspTree::UpdateMeshPartPipelineState(WorldMeshPart& part)
 		// Set lightmap if we have one
 		if(part.m_Lightmap)
 		{
-			part.m_Lightmap->CacheIn(false);
-			sm.SetTexture(1, part.m_Lightmap->GetTexture(), EShaderType::ST_PIXEL);
+			sm.SetTexture(1, part.m_Lightmap, EShaderType::ST_PIXEL);
 
 			mFlags |= MPS_LIGHTMAPPED;
 		}
@@ -180,6 +219,11 @@ void GBspTree::UpdateMeshPartPipelineState(WorldMeshPart& part)
 		// TODO: Maybe this is possible with threading. But is it even worth it?
 		part.m_Material->GetDiffuse()->CacheIn(false);
 
+		// Apply a twosided rasterizer-state if this is using a texture with alphatest
+		if (part.m_Material->GetDiffuse()->GetSourceObject()->GetTextureFlags().HasAlpha)
+			sm.SetRasterizerState(twosidedRS);
+		else
+			sm.SetRasterizerState(defaultRS);
 
 		//if (part.m_Material->GetDiffuse()->GetSourceObject()->GetTextureFlags().HasAlpha)
 		//	LogInfo() << "Alphatest on: " << part.m_Material->GetDiffuse()->GetSourceObject()->GetObjectName();
@@ -236,10 +280,6 @@ void GBspTree::DrawWorldMeshPart(WorldMeshPart& part, RRenderQueueID queue)
 	// Make sure we have textures
 	if(part.m_Material->CacheTextures())
 	{
-		// Make sure the lightmap is loaded
-		if(part.m_Lightmap)
-			part.m_Lightmap->CacheIn(false);
-
 		// Check if the state is valid and the texture still the same
 		if(!part.m_PipelineState 
 			|| part.m_PipelineState->IDs.MainTexture != part.m_Material->GetDiffuse()->GetTexture()->GetID())
@@ -270,10 +310,19 @@ void GBspTree::DrawQuadTreeNodes(BSPRenderInfo& info, RRenderQueueID queue)
 		{
 			RTools::LineRenderer.AddAABBMinMax(n->GetBBox().m_Min, n->GetBBox().m_Max, float4(0,1,0,1));
 
+			// Decide whether to use lightmapping
+			/*bool lightmapping = (float2(info.CameraPostion.x,info.CameraPostion.z)
+				- float2(n->GetMidpoint().x, n->GetMidpoint().z)).LengthSquared()
+				< LIGHTMAP_MAX_RENDER_DISTANCE * LIGHTMAP_MAX_RENDER_DISTANCE;*/
+
+			bool lightmapping = true;
+
 			// Draw all parts of this node
 			for(auto& pair : n->GetData().m_MeshParts)
 			{
-				DrawWorldMeshPart(pair.second, queue);
+				// Only use lightmapping when close
+				if(!pair.first.first || lightmapping)
+					DrawWorldMeshPart(pair.second, queue);
 			}
 		}
 		else

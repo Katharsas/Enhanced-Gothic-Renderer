@@ -17,6 +17,7 @@ struct RPipelineState;
 class zCLightmap;
 class zCMaterial;
 class zCPolygon;
+class RTextureAtlas;
 
 template<typename T>
 class RBufferCollection;
@@ -53,7 +54,7 @@ public:
 
 		GMeshIndexed* m_Mesh;
 		GMaterial* m_Material;
-		GTexture* m_Lightmap;
+		RTexture* m_Lightmap;
 		RPipelineState* m_PipelineState;
 
 		// Indices of the full mesh
@@ -68,7 +69,8 @@ public:
 			m_FrustumTestCache = -1;
 		}
 
-		std::map<std::pair<zCLightmap*, zCMaterial*>, WorldMeshPart> m_MeshParts;
+		// Map of lightmaps, material and vertex-data
+		std::map<std::pair<RTexture*, zCMaterial*>, WorldMeshPart> m_MeshParts;
 		int m_FrustumTestCache;
 	};
 
