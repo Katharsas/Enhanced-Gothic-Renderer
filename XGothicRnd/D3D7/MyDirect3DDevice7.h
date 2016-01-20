@@ -725,7 +725,7 @@ public:
 				&& BoundSurfaces[i]->GetEngineTexture()
 				&& BoundSurfaces[i]->GetEngineTexture()->GetTexture()->IsInitialized())
 				sm.SetTexture(i, BoundSurfaces[i]->GetEngineTexture()->GetTexture(), EShaderType::ST_PIXEL);
-			else
+			else if(BoundSurfaces[i])
 				sm.SetTexture(i, nullptr, EShaderType::ST_PIXEL);
 		}
 
