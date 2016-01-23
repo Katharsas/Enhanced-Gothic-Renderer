@@ -8,7 +8,7 @@
 
 // Whether to profile the rendering queues. This will store the queues timing in a map per name.
 // If no name is present, the queue won't be profiled. If enabled, multithreading will not be used, if enabled.
-#define R_PROFILE_QUEUES
+//#define R_PROFILE_QUEUES
 
 // Whether to use multithreading to draw the queues
 #define NO_MULTITHREADED_RENDERING
