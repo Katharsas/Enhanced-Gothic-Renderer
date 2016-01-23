@@ -50,6 +50,9 @@ void __fastcall zCWorldHk::zCWorld__VobRemovedFromWorld(zCWorld* thisptr, void* 
 */
 void __fastcall zCWorldHk::zCWorld__DisposeWorld(zCWorld* thisptr, void* edx)
 {
+	// Clear our world
+	GWorld::GetFromSource(thisptr)->DisposeWorld();
+
 	GET_HOOK(zCWorldHk).m_DisposeWorld(thisptr);
 }
 

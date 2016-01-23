@@ -19,13 +19,11 @@ zCObjectHk::zCObjectHk()
 void __fastcall zCObjectHk::zCObject__Destructor(zCObject* thisptr)
 {
 	// Template-magic is needed to call that function for zCObject
-	// TODO: Improve
 	auto obj = GObject::QueryFromSource(thisptr);
 
-	if(obj)
-	{
-		obj->DeleteSafe();
-	}
+	// Clear extension-object as well. The objects must be aware themselfes that
+	// they could be deleted at any time.
+	delete obj;
 
 	GET_HOOK(zCObjectHk).m_Destructor(thisptr);
 }

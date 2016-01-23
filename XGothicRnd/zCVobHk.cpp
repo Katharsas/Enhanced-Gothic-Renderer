@@ -45,10 +45,10 @@ void __fastcall zCVobHk::zCVob__EndMovement(zCVob* thisptr, void* edx, zBOOL tra
 	// PB didn't use this parameter really carefully. It's way faster to simply check the transform
 	// a couple of times more than needed. Vobs for particles have this set to true for example, even if they 
 	// don't really need it!
-	/*if(transformChanged && vobj && vobj->GetWorldMatrix() == thisptr->GetWorldMatrix())
+	if(transformChanged && vobj && vobj->GetWorldMatrix() == thisptr->GetWorldMatrix())
 	{
 		transformChanged = FALSE;	
-	}*/
+	}
 
 	GET_HOOK(zCVobHk).m_EndMovement(thisptr, transformChanged);
 

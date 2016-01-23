@@ -26,6 +26,8 @@ zCVisual* zCVisualHk::zCVisual__LoadVisual(const zSTRING& name)
 	// Models are handled differently
 	if(r && r->GetVisualType() != zCVisual::VT_MODEL)
 	{
+		GVisual* vis = GVisual::QueryFromSource(r);
+
 		// Create and register the extension-visual
 		GVisual::CreateExtensionVisual(r);
 	}
