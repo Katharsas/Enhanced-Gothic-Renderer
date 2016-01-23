@@ -30,6 +30,7 @@
 #include "zCSkyController.h"
 #include "zClassDef.h"
 #include "D3D7\MyDirect3DDevice7.h"
+#include "zCVisual.h"
 
 // Max number of profile results to show on screen
 const int MAX_PROFILE_RESULTS = 6;
@@ -171,12 +172,20 @@ void GGame::OnLoadWorld(zCWorld* world, const std::string& file, zTWorldLoadMode
 	// Disable input while loading so I can use the mouse
 	zCInput::SetInputEnabled(false);
 
+	// Copy map, so we can delete from the internal one
+	/*std::unordered_map<size_t, GVisual*> visuals = GVisual::GetFullCacheMap();
+	for(auto& a : visuals)
+	{
+		if(a.second->GetVisualType() == zCVisual::VT_MODEL
+			|| a.second->GetVisualType() == zCVisual::VT_MESHSOFTSKIN)
+		{
+			delete a.second;
+		}
+	}*/
+
 	// If the current world is completely different, switch it (STAT/STARTUP only happens at initial loading of a world
 	if(mode == zTWorldLoadMode::ZTW_LOAD_GAME_SAVED_STAT || mode == zTWorldLoadMode::ZTW_LOAD_GAME_STARTUP)
 	{
-		// Everything is being reloaded. Not critically needed, but better to get rid of all potentially old data
-		// DeleteLoadedVisualExtensions();
-
 		// Everything is being reloaded
 		//DeleteLoadedVisualExtensions();
 
@@ -336,6 +345,7 @@ void GGame::ExtractSkyParameters(ConstantBuffers::PerFrameConstantBuffer& cb)
 	}
 
 	cb.PF_SceneParams.S_FogRange = cb.PF_SceneParams.S_FogEnd - cb.PF_SceneParams.S_FogStart;
+	cb.PF_SceneParams.S_Time = m_FPSTimer.GetTotal();
 
 	// Copy CLUT
 	memcpy(cb.PF_SceneParams.S_LightCLUT, sky->GetPolyLightCLUT(), sizeof(DWORD) * 256);
@@ -526,7 +536,9 @@ std::string GGame::FormatProfilerData()
 /** Called when a log-message was sent */
 void GGame::OnLogMessage(const std::string& message)
 {
+#ifndef PUBLIC_RELEASE
 	Engine::Game->m_LastLogString = message;
 
 	Engine::Game->UpdateWindowCaptionStatistics();
+#endif
 }
