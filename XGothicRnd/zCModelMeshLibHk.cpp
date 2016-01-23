@@ -11,6 +11,9 @@ void InitMeshLib(zCModelMeshLib* lib)
 	for (unsigned int i = 0; i < lib->GetMeshSoftSkinList()->GetSize(); i++)
 	{
 		zCMeshSoftSkin* mesh = lib->GetMeshSoftSkinList()->Array[i];
+		GVisual* vis = GVisual::QueryFromSource(mesh);
+		delete vis;
+
 		GVisual::CreateExtensionVisual(mesh);
 	}
 }
