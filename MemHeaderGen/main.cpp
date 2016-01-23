@@ -65,7 +65,7 @@ int main(int argc, char** argv)
 		return -1;
 	}
 
-	if(!MapHooks::WriteCppHeader(target.c_str(), MapHooks::CT_DAEDALUS))
+	if(!MapHooks::WriteCppHeader(target.c_str(), MapHooks::CT_CPP))
 	{
 		printf("Failed to write header-file!\n");
 		return -1;

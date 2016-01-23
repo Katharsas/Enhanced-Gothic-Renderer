@@ -5,7 +5,7 @@ struct SceneParams
 	float S_FogStart;
 	float S_FogEnd;
 	float S_FogRange; // = FogEnd - FogStart
-	float S_pad0;
+	float S_Time;
 	float4 S_FogColor;
 	
 	// CLUT from gothic. Packed in uint4 because otherwiese every uint in the array would get 16-byte aligned

@@ -31,8 +31,8 @@ struct RPipelineState : public RResource
 	// Struct to access the resource-ids
 	struct IDStruct
 	{
-		// -- 3
-		EPrimitiveType PrimitiveType;
+		// -- 4
+		EPrimitiveType PrimitiveType : 4;
 
 		// -- 32
 		unsigned int RasterizerState : 8;

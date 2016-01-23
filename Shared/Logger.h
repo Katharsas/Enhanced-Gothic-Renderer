@@ -201,6 +201,7 @@ public:
 
 			fclose(f);
 
+#ifndef PUBLIC_RELEASE
 			OutputDebugString((Info.str() + Message.str() + "\n").c_str());
 
 			// Do callback
@@ -208,6 +209,7 @@ public:
 			{
 				LogCallback(Message.str());
 			}
+#endif
 		}
 
 		/*if(strnicmp(Info.str().c_str(), "Error", sizeof("Error")) == 0)

@@ -48,7 +48,7 @@ struct VS_OUTPUT
 VS_OUTPUT VSMain( VS_INPUT Input )
 {
 	VS_OUTPUT Output;
-	
+		
 	// Transform the local vertex to world-coords
 	float3 positionWorld = RotateVectorByQuat(Input.qInstanceRotation, Input.vPosition) + Input.vInstancePosition;
 
