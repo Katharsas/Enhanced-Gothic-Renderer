@@ -134,6 +134,18 @@ struct PolyFlags
 		return m_PolyPlane;
 	}
 
+	/** Sets the last time this polygon was drawn */
+	void SetLastTimeDrawn(unsigned int lastTimeDrawn)
+	{
+		m_LastTimeDrawn = lastTimeDrawn;
+	}
+
+	/** Returns the last time this polygon was drawn */
+	unsigned int GetLastTimeDrawn()
+	{
+		return m_LastTimeDrawn;
+	}
+
 private:
 	float3 __GetLightStatAtPos(const float3& pos)
 	{
