@@ -182,7 +182,7 @@ bool RD3D11Device::OnResizeAPI()
 	vp.Height = (float)OutputResolution.y;
 	vp.Width = (float)OutputResolution.x;
 	vp.MaxDepth = 1.0f;
-	vp.MinDepth = 1.0f;
+	vp.MinDepth = 0.0f;
 	vp.TopLeftX = 0;
 	vp.TopLeftY = 0;
 	ImmediateContext->RSSetViewports(1, &vp);
