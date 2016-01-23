@@ -26,7 +26,9 @@ GModelVisual::GModelVisual(zCVisual* sourceObject) : GVisual(sourceObject)
 		for (unsigned int s = 0; s < lib->GetMeshSoftSkinList()->GetSize(); s++)
 		{
 			zCMeshSoftSkin* zMesh = lib->GetMeshSoftSkinList()->Array[s];
-			GMeshSoftSkin* gMesh = (GMeshSoftSkin*)GMeshSoftSkin::GetFromSource(zMesh);
+			GMeshSoftSkin* gMesh = (GMeshSoftSkin*)GMeshSoftSkin::QueryFromSource(zMesh);
+
+			GASSERT(gMesh, "ModelMeshLib does not seem to be initialized");
 
 			m_SubMeshes.push_back(SubMesh());
 			m_SubMeshes.back().m_MeshSoftSkin = gMesh;
@@ -77,8 +79,13 @@ GModelVisual::~GModelVisual(void)
 {
 	REngine::ResourceCache->DeleteResource(m_ModelConstantBuffer);
 
-	zCModel* model = (zCModel *)m_SourceObject;
+	GASSERT(GVisual::QueryFromSource((zCVisual*)m_SourceObject) == this, "Deleted zCModel had different pointer in cache!");
+
+
+
+	/*zCModel* model = (zCModel *)m_SourceObject;
 	GVobObject* vob = GVobObject::QueryFromSource(model->GetHomeVob());
+
 
 	if(vob)
 	{
@@ -88,7 +95,7 @@ GModelVisual::~GModelVisual(void)
 	if(Engine::Game->GetActiveWorld()->RemoveVob(model->GetHomeVob()))
 	{
 		//LogWarn() << "Vob of deleted Model-Visual was still in the world!";
-	}
+	}*/
 }
 
 
@@ -106,7 +113,7 @@ void GModelVisual::CreateDrawables(std::vector<GBaseDrawable*>& v, int lodLevel)
 {
 	zCModel* model = (zCModel *)m_SourceObject;
 
-	float lodRange = (float)lodLevel / (float)NUM_VISUAL_LOD_LEVELS;
+	//float lodRange = (float)lodLevel / (float)NUM_VISUAL_LOD_LEVELS;
 
 	v.push_back(new GModelDrawable(this));
 
