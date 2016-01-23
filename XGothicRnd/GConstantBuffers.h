@@ -8,7 +8,7 @@ namespace ConstantBuffers
 		float S_FogStart;
 		float S_FogEnd;
 		float S_FogRange; // = FogEnd - FogStart
-		float S_pad0;
+		float S_Time;
 		float4 S_FogColor;
 
 		DWORD S_LightCLUT[256]; // CLUT from gothic
