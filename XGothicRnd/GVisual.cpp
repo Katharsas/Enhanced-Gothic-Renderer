@@ -13,6 +13,8 @@ GVisual::GVisual(zCVisual* sourceObject) : GzObjectExtension<zCVisual, GVisual>(
 
 	m_VisualSize = sourceObject->GetBBox3D().Size();
 
+	m_VisualType = sourceObject->GetVisualType();
+
 #ifndef PUBLIC_RELEASE
 	if(!m_FileName.empty())
 		LogInfo() << "Loading Visual: " << m_FileName;
@@ -85,7 +87,28 @@ void GVisual::UnregisterDrawable(GBaseDrawable* drawable)
 void GVisual::DestroyDrawableStates(GBaseDrawable* drawable)
 {
 	auto& set = m_CreatedPipelineStates[drawable];
-	Toolbox::DeleteElements(set.PipelineStates);
+
+	for(RPipelineState* s : set.PipelineStates)
+	{
+		// Only delete when currently not in use
+		if(s->Locked)
+		{
+			// Delete this later
+			LogInfo() << "Queuing currentlly locked pipeline-state for deletion: 0x" << s;;
+			Engine::Game->QueueSafeFunction([s](){
+
+				LogInfo() << "Deleting queued pipeline-state: 0x" << s;
+
+				delete s;
+			});
+		}
+		else
+		{
+			delete s;
+		}
+	}
+
+	set.PipelineStates.clear();
 
 	// Also remove from map, since it's empty anyways
 	m_CreatedPipelineStates.erase(drawable);

@@ -1,6 +1,7 @@
 #pragma once
 #include "GzObjectExtension.h"
 #include "GConstants.h"
+#include "zCVisual.h"
 
 // Number of LOD-Levels a vob should have
 const int NUM_VISUAL_LOD_LEVELS = 4;
@@ -58,8 +59,15 @@ public:
 		Returns true, if found. */
 	virtual bool RemoveVob(GVobObject* vob);
 
+	/** Returns whether this is currently used or not */
+	bool IsInUse(){return !m_Vobs.empty(); }
+
 	/** Caches the textures used by this visual */
 	virtual void CacheTextures(bool force = false){}
+
+	/** Returns the type of this visual */
+	zCVisual::EVisualType GetVisualType(){return m_VisualType;}
+
 protected:
 	/** Destroys the pipelinestates of the given drawable */
 	void DestroyDrawableStates(GBaseDrawable* drawable);
@@ -79,5 +87,8 @@ protected:
 
 	// Size of the bounding-box of this visual
 	float m_VisualSize;
+
+	// Type of this visual
+	zCVisual::EVisualType m_VisualType;
 };
 
