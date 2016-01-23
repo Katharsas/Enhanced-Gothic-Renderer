@@ -294,19 +294,31 @@ void GWorld::AddVob(zCVob* vob)
 	if(vob->GetHomeWorld() != m_SourceObject)
 		return; // Don't need inventory vobs
 
-	if(!GVisual::QueryFromSource(vob->GetVisual()))
+	GVisual* vis = GVisual::QueryFromSource(vob->GetVisual());
+	if(!vis)
 	{
 		//return;
 		//LogInfo() << "Loaded visual (Deferred): " << vob->GetVisual()->GetObjectName() << " (0x" << vob->GetVisual() << ")";
 
 		// Create our extension-object from this and add it to cache
-		GVisual* vis = Engine::Game->GetMainResources()->CreateVisualFrom(vob->GetVisual());
+		vis = Engine::Game->GetMainResources()->CreateVisualFrom(vob->GetVisual());
 
 		if(!vis)
 			return; // Don't take vobs with unsupported visuals
 		
 		REngine::ResourceCache->AddToCache(Toolbox::HashObject(vob->GetVisual()), vis);		
 	}
+	else
+	{
+		if(vis->GetVisualType() == zCVisual::VT_MODEL)
+		{
+			// Update GModel. Each zCModel has only one oCNpc it is used by. Has to be done after the vob was removed, so the vob 
+			// doesn't operate on a deleted visual
+			delete vis;
+			GVisual::CreateExtensionVisual(vob->GetVisual());
+		}
+	}
+
 	GVobObject* vobj = GVobObject::GetFromSource(vob);
 
 	m_VobSet.insert(vobj);
@@ -368,6 +380,15 @@ bool GWorld::RemoveVob(zCVob* vob)
 			return false; // Couldn't find it in the level
 
 		//delete vobj;
+
+		// TODO: Fix this hack!
+		// Delete the visual if this is a zCModel because sometimes there seem to be some spare ones laying around
+		// with invalid m_SourceObject...
+		if(vob->GetVisual() && vob->GetVisual()->GetVisualType() == zCVisual::VT_MODEL)
+		{
+			delete vobj;
+			delete GVisual::QueryFromSource(vob->GetVisual());		
+		}
 	}
 
 	return true;
@@ -434,4 +455,17 @@ void GWorld::RenderInventoryCell()
 
 	// Mark as free for next frame
 	REngine::DynamicBufferCache->DoneWith(frameBuffer);
+}
+
+/** Deletes all vobs of this world */
+void GWorld::DisposeWorld()
+{
+	std::set<GVobObject*> cpy = m_VobSet;
+	
+	// Remove and delete all vobs, no safe deletion.
+	for(GVobObject* vob : cpy)
+	{
+		RemoveVob(vob->GetSourceObject());
+		delete vob;
+	}
 }

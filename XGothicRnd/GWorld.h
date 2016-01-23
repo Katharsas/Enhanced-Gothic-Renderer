@@ -52,6 +52,9 @@ public:
 	 */
 	bool IsFullyLoaded(){return m_IsFullyLoaded;}
 
+	/** Deletes all vobs of this world */
+	void DisposeWorld();
+
 private:
 	/** Draws the vobs in this scene */
 	void DrawVobs();
