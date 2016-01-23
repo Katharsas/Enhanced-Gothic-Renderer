@@ -95,7 +95,7 @@ GVisual* GMainResources::CreateVisualFrom(zCVisual* sourceVisual)
 		break;
 
 	case zCVisual::VT_PARTICLE_FX:
-		//return new GParticleFXVisual(sourceVisual);
+		return new GParticleFXVisual(sourceVisual);
 		break;
 	/*
 	case zCVisual::VT_DECAL:
