@@ -37,6 +37,7 @@ GMeshSoftSkin::GMeshSoftSkin(zCVisual* sourceObject) : GVisual(sourceObject)
 		m_SubMeshes.back().m_Material = GMaterial::GetFromSource(m_SubMeshes.back().m_SourceMaterial);
 		m_SubMeshes.back().m_SubMeshIndexStart = submeshIndexStarts[i];
 		m_SubMeshes.back().m_NumIndices = softSkin->GetSubmesh(i).m_TriangleList.m_NumInArray * 3;
+		m_SubMeshes.back().m_SourceMesh = softSkin;
 	}
 }
 
@@ -100,6 +101,15 @@ GVisual::StateCache* GMeshSoftSkin::UpdatePipelineStatesFor(GBaseDrawable* drawa
 
 	// Make sure we have enough space
 	cache.PipelineStates.resize(m_SubMeshes.size());
+
+	
+	GASSERT(m_SubMeshes.size() == softSkin->GetNumSubmeshes(), "GMeshSoftSkin has a different number of submeshes registered than its source!");
+	// TODO: This is a hack. Find out why this happens after world-switch! Also remove the code for recreating this in zCModel then!
+	/*if(m_SubMeshes.size() != softSkin->GetNumSubmeshes())
+	{
+		return nullptr;
+	}*/
+
 
 	// Create a pipeline-state for each submesh
 	unsigned int i = 0;

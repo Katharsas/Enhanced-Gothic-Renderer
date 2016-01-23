@@ -19,6 +19,7 @@ public:
 		zCMaterial* m_SourceMaterial;
 		unsigned int m_SubMeshIndexStart;
 		unsigned int m_NumIndices;
+		zCMeshSoftSkin* m_SourceMesh;
 	};
 
 	/**
