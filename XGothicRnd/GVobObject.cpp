@@ -69,8 +69,9 @@ GVobObject::~GVobObject(void)
 
 
 	if(GVisual::QueryFromSource(m_SourceObject->GetVisual()))
-		for(int i=0;i<NUM_VISUAL_LOD_LEVELS;i++)
+		for(int i = 0; i < NUM_VISUAL_LOD_LEVELS; i++)
 			Toolbox::DeleteElements(m_Drawables[i]); // Only delete if the visual wasn't already deleted
+		
 }
 
 /** Called when the underlaying vob moved, for example */
