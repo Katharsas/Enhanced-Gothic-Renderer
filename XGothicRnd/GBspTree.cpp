@@ -30,7 +30,10 @@ GBspTree::GBspTree(zCBspTree* sourceTree) : GzObjectExtension<zCBspTree, GBspTre
 	m_RootNode = AddBspNode(sourceTree->GetRootNode());
 
 	std::vector<ExTVertexStruct> vertices;
+	std::vector<ExTVertexStruct> verticesFull;
+	std::vector<ExTVertexStruct> verticesFullIndexed;
 	std::vector<unsigned int> indices;
+	std::vector<unsigned int> indicesFull;
 	std::vector<ExTVertexStruct> indicedVertices;
 	std::vector<zCPolygon*> trianglePolys;
 
@@ -50,11 +53,10 @@ GBspTree::GBspTree(zCBspTree* sourceTree) : GzObjectExtension<zCBspTree, GBspTre
 	// Generate vertex-lists for each node
 	m_RootNode->BuildTriangleList(vertices, trianglePolys);
 
-	
-
 	LogInfo() << "Indexing worldmesh...";
 	// Create indexed mesh
 	RTools::IndexVertices<ExTVertexStruct, ExTVertexStruct, unsigned int>(&vertices[0], vertices.size(), indicedVertices, indices);
+	//RTools::IndexVertices<ExTVertexStruct, ExTVertexStruct, unsigned int>(&verticesFull[0], verticesFull.size(), indicedVertices, indices);
 
 	// Create buffers
 	m_WorldMeshBuffer = REngine::ResourceCache->CreateResource<RBuffer>();
@@ -308,7 +310,7 @@ void GBspTree::DrawQuadTreeNodes(BSPRenderInfo& info, RRenderQueueID queue)
 
 		if(n->IsLeaf())
 		{
-			RTools::LineRenderer.AddAABBMinMax(n->GetBBox().m_Min, n->GetBBox().m_Max, float4(0,1,0,1));
+			//RTools::LineRenderer.AddAABBMinMax(n->GetBBox().m_Min, n->GetBBox().m_Max, float4(0,1,0,1));
 
 			// Decide whether to use lightmapping
 			/*bool lightmapping = (float2(info.CameraPostion.x,info.CameraPostion.z)
@@ -339,14 +341,14 @@ void GBspTree::DrawQuadTreeNodes(BSPRenderInfo& info, RRenderQueueID queue)
 			return;
 
 		// Check if this node is inside the bounding frustum
-		zTCam_ClipType clip = zCCamera::GetActiveCamera()->BBox3DInFrustum(n->GetBBox(), info.ClipFlags);
-		//zTCam_ClipType clip = zCCamera::BBox3DInFrustumCached(n->GetBBox(), info.FrustumPlanes, info.FrustumSignBits, n->GetData().m_FrustumTestCache, info.ClipFlags);
+		//zTCam_ClipType clip = zCCamera::GetActiveCamera()->BBox3DInFrustum(n->GetBBox(), info.ClipFlags);
+		zTCam_ClipType clip = zCCamera::BBox3DInFrustumCached(n->GetBBox(), info.FrustumPlanes, info.FrustumSignBits, n->GetData().m_FrustumTestCache, info.ClipFlags);
 
 
 
 		if(clip == ZTCAM_CLIPTYPE_OUT)
 		{
-			RTools::LineRenderer.AddAABBMinMax(n->GetBBox().m_Min, n->GetBBox().m_Max, float4(1,0,0,1));
+			//RTools::LineRenderer.AddAABBMinMax(n->GetBBox().m_Min, n->GetBBox().m_Max, float4(1,0,0,1));
 			return; // Don't go futher into the tree, entire node is invisible
 		}
 		

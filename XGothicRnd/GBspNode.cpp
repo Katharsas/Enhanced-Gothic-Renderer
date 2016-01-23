@@ -108,6 +108,11 @@ void GBspNode::BuildTriangleList(std::vector<ExTVertexStruct>& vertices, std::ve
 			if (poly->GetPolyFlags().PortalIndoorOutdoor)
 				m_PortalList.push_back(poly);
 
+			if(poly->GetLastTimeDrawn() == 12345)
+				continue;
+			
+			poly->SetLastTimeDrawn(12345);
+
 			// Check for lightmap and the it's atlas if present
 			RTextureAtlas* atlas = nullptr;
 			std::pair<float2, float2> lightmapUVMod;
@@ -245,11 +250,11 @@ void GBspNode::DrawNodeRecursive(float minNodeSizeXZ, RRenderQueueID queue, GBsp
 	// PB does something really weird with the tree. They are stacking Leafs?
 	// Anyways, they seem to do something with the nodes BBox.y here, so do as they do...
 	// Attention: This could also lead to the bug which happens when you look at the sky and all the vobs disappear?
-	zTBBox3D nodeBox = m_BBox;
-	nodeBox.m_Max.y = std::max(std::min(info.CameraPostion.y, info.WorldMaxY), m_BBox.m_Max.y); // TODO: Could compute the min part outside...
+	//zTBBox3D nodeBox = m_BBox;
+	//nodeBox.m_Max.y = std::max(std::min(info.CameraPostion.y, info.WorldMaxY), m_BBox.m_Max.y); // TODO: Could compute the min part outside...
 	
 	// If the BBox is inside the frustum, we can just draw the contents of this node here
-	zTCam_ClipType clip = zCCamera::BBox3DInFrustumCached(nodeBox, info.FrustumPlanes, info.FrustumSignBits, m_FrustumTestCache, info.ClipFlags);
+	zTCam_ClipType clip = zCCamera::BBox3DInFrustumCached(m_BBox, info.FrustumPlanes, info.FrustumSignBits, m_FrustumTestCache, info.ClipFlags);
 	//zTCam_ClipType clip = zCCamera::GetActiveCamera()->BBox3DInFrustum(m_BBox, info.ClipFlags);
 
 	// Trivial out?
@@ -259,6 +264,8 @@ void GBspNode::DrawNodeRecursive(float minNodeSizeXZ, RRenderQueueID queue, GBsp
 	// Check if we can just draw this. Trivial in?
 	if(clip == ZTCAM_CLIPTYPE_IN || m_IsLeaf)
 	{
+		//RTools::LineRenderer.AddAABBMinMax(m_BBox.m_Min, m_BBox.m_Max, float4(1,0,0,1));
+
 		CollectVobs(visibleVobs, info.CameraPostion, info.ObjectFarplane);
 		return;
 	}
