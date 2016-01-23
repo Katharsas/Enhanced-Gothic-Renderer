@@ -35,14 +35,16 @@ void UpdateModel(oCNpc* npc)
 
 	if(wld && vob)
 	{
-		wld->RemoveVob(npc);
+		if(!wld->RemoveVob(npc))
+			return; // Vob wasn't in the world
 
-		if(vob)	vob->DeleteSafe();
+		vob = GVobObject::QueryFromSource(npc);
 	}
 
 	// Update GModel. Each zCModel has only one oCNpc it is used by. Has to be done after the vob was removed, so the vob 
 	// doesn't operate on a deleted visual
-	if(vis) vis->DeleteSafe();
+	vis = (GModelVisual*)GModelVisual::QueryFromSource(npc->GetVisual());
+	delete vis;
 	vis = (GModelVisual*)GVisual::CreateExtensionVisual(npc->GetVisual());
 
 	if(wld)
@@ -63,7 +65,7 @@ void oCNpcHk::oCNpc__InitModel(oCNpc* thisptr, void* edx)
 
 	UpdateModel(thisptr);
 
-	GASSERT((GVobObject::QueryFromSource(thisptr) != nullptr), "NPC-Vob not in the world after InitModel!");
+	//GASSERT((GVobObject::QueryFromSource(thisptr) != nullptr), "NPC-Vob not in the world after InitModel!");
 	GASSERT((GModelVisual::QueryFromSource(thisptr->GetVisual()) != nullptr), "NPC-Visual not created after InitModel!");
 }
 
@@ -92,11 +94,12 @@ void __fastcall oCNpcHk::oCNPC__Disable(oCNpc* thisptr, void* unknwn)
 		
 		// Delete, in case RemoveVob didn't already do it
 		vob = GVobObject::QueryFromSource(thisptr);
-		if(vob) vob->DeleteSafe();
+		delete vob;
 
 		// Update GModel. Each zCModel has only one oCNpc it is used by. Has to be done after the vob was removed, so the vob 
 		// doesn't operate on a deleted visual
-		if(vis) vis->DeleteSafe();
+		vis = (GModelVisual*)GModelVisual::QueryFromSource(thisptr->GetVisual());
+		delete vis;
 	
 		GASSERT((GVobObject::QueryFromSource(thisptr) == nullptr), "NPC-Vob not deleted after Disable!");
 		GASSERT((GModelVisual::QueryFromSource(thisptr->GetVisual()) == nullptr), "NPC-Visual not deleted after Disable!");
