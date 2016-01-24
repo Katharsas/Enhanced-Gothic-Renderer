@@ -8,10 +8,21 @@ class MyDynamicDirect3DVertexBuffer7 : public MyDirect3DVertexBuffer7
 public:
 	MyDynamicDirect3DVertexBuffer7(const D3DVERTEXBUFFERDESC& originalDesc) : MyDirect3DVertexBuffer7(originalDesc)
 	{
+		ProxyLockedData = nullptr;
 	}
 
 	HRESULT STDMETHODCALLTYPE Lock(DWORD dwFlags, LPVOID* lplpData, LPDWORD lpdwSize) 
 	{
+		/*if(!Engine::Game->GetRenderSettings().m_AllowD3D7Proxy)
+		{
+			*lplpData = new byte[OriginalDesc.dwSize];
+			ProxyLockedData = (byte*)*lplpData;
+
+			if(lpdwSize)
+				*lpdwSize = OriginalDesc.dwSize;
+			return S_OK;
+		}*/
+
 		// Get new buffer
 		auto newBuffer = REngine::DynamicBufferCache->GetDataBuffer(EBindFlags::B_VERTEXBUFFER, ComputeFVFSize(OriginalDesc.dwFVF) * OriginalDesc.dwNumVertices, ComputeFVFSize(OriginalDesc.dwFVF));
 
@@ -38,6 +49,12 @@ public:
 
 	HRESULT STDMETHODCALLTYPE Unlock() 
 	{
+		/*if(!Engine::Game->GetRenderSettings().m_AllowD3D7Proxy)
+		{
+			delete[] ProxyLockedData;
+			return S_OK;
+		}*/
+
 		if(!DynamicBuffer.Buffer)
 		{
 			LogWarn() << "Unlock called on corrupted dynamic vertexbuffer!";
@@ -58,4 +75,7 @@ public:
 private:
 	/** Current dynamic buffer. This is managed by the dynamic buffer-cache. */
 	RCachedDynamicBuffer DynamicBuffer;
+
+	/** Only used when d3d7-proxy is disabled */
+	byte* ProxyLockedData;
 };

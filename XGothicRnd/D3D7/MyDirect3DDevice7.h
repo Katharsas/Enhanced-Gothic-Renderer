@@ -457,6 +457,9 @@ public:
 			return S_OK;
 		}
 
+		if(!Engine::Game->GetRenderSettings().m_AllowD3D7Proxy)
+			return S_OK;
+
 		RStateMachine& sm = REngine::RenderingDevice->GetStateMachine();
 
 		//sm.Invalidate();
@@ -517,6 +520,9 @@ public:
 		{
 			return S_OK;
 		}
+
+		if(!Engine::Game->GetRenderSettings().m_AllowD3D7Proxy)
+			return S_OK;
 
 		if (d3dptPrimitiveType != D3DPT_TRIANGLELIST)
 			LogWarn() << "DP-VB: Unimplemented primitive type: " << d3dptPrimitiveType;
