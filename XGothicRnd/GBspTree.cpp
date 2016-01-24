@@ -300,7 +300,7 @@ void GBspTree::DrawWorldMeshPart(WorldMeshPart& part, RRenderQueueID queue)
 /** Draws the pipeline-states from the visible quad-tree nodes */
 void GBspTree::DrawQuadTreeNodes(BSPRenderInfo& info, RRenderQueueID queue)
 {
-	info.ClipFlags = CLIP_FLAGS_FULL_WO_FAR;
+	info.ClipFlags = CLIP_FLAGS_FULL;
 
 	// Lambda to traverse to the leafs and draw them
 	std::function<void(GQuadTree<QuadTreeNode>*)> fnDraw = [&](GQuadTree<QuadTreeNode>* n)
@@ -344,7 +344,9 @@ void GBspTree::DrawQuadTreeNodes(BSPRenderInfo& info, RRenderQueueID queue)
 		//zTCam_ClipType clip = zCCamera::GetActiveCamera()->BBox3DInFrustum(n->GetBBox(), info.ClipFlags);
 		zTCam_ClipType clip = zCCamera::BBox3DInFrustumCached(n->GetBBox(), info.FrustumPlanes, info.FrustumSignBits, n->GetData().m_FrustumTestCache, info.ClipFlags);
 
-
+		// Gothics BBox3DInFrustum seems to mess up the farplane
+		if(Toolbox::ComputePointAABBDistance(info.CameraPostion, n->GetBBox().m_Min, n->GetBBox().m_Max) > info.ObjectFarplane)
+			return;
 
 		if(clip == ZTCAM_CLIPTYPE_OUT)
 		{
