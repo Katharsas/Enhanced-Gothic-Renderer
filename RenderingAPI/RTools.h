@@ -11,6 +11,7 @@
 #include "RDepthStencilState.h"
 #include "RSamplerState.h"
 #include "RLineRenderer.h"
+#include "RTweakBar.h"
 
 /**
  * Useful function for handling rendering specific things
@@ -28,6 +29,7 @@ namespace RTools
 {
 	/** Line renderer */
 	__declspec(selectany) RLineRenderer LineRenderer;
+	__declspec(selectany) RTweakBar TweakBar;
 
 	/** Shader loading functions, which also cache the objects by using the alias as hash */
 	//static RVertexShader* LoadVertexShader(const std::string& file, 
