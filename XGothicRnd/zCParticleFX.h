@@ -3,6 +3,7 @@
 #include "zDefinitions.h"
 #include "zCTimer.h"
 #include "zCTexture.h"
+#include "zCTimer.h"
 
 #ifndef _USE_MATH_DEFINES
 #define _USE_MATH_DEFINES
@@ -232,6 +233,9 @@ public:
 	{
 		CreateParticlesUpdateDependencies();
 		zCStaticPfxList::GetStaticPfxList()->TouchPfx(this);
+
+		// Set this, so this doesn't get updated twice...
+		m_LastTimeRendered = zCTimer::GetTimer()->totalTimeFloat;
 	}
 
 	/** Checks if this/the next one is a dead particle and cleans it from the list if so. */
