@@ -3,10 +3,40 @@
 #include "zDefinitions.h"
 #include "BasicTimer.h"
 #include "GConstantBuffers.h"
+#include <RTools.h>
 
 /**
  * Game-managing class. Handles world creation and destruction, as well as hooks and other critical stuff
  */
+
+struct GameRenderSettings
+{
+	GameRenderSettings()
+	{
+		m_DrawSky = true;
+		m_EnableFog = true;
+		m_RenderWorld = true;
+		m_AllowD3D7Proxy = true;
+	}
+
+	void Register()
+	{
+		RTools::TweakBar.AddBoolRW("Game", &m_DrawSky, "Draw Sky");	
+		RTools::TweakBar.AddBoolRW("Game", &m_EnableFog, "Fog");
+		RTools::TweakBar.AddBoolRW("Game", &m_RenderWorld, "Render World");
+		RTools::TweakBar.AddBoolRW("Game", &m_AllowD3D7Proxy, "AllowD3D7Proxy");
+	}
+
+	/** Whether to allow drawcalls and updates from the original D3D7-Device */
+	bool m_AllowD3D7Proxy;
+
+	/** Whether to render the original sky/Fog */
+	bool m_DrawSky;
+	bool m_EnableFog;
+
+	/** Whether to render the world */
+	bool m_RenderWorld;
+};
 
 class GWorld;
 class RBuffer;
@@ -102,6 +132,12 @@ public:
 
 	/** Gets the current profiler-data and formats it into a string */
 	std::string FormatProfilerData();
+
+	/** Returns the rendersettings */
+	const GameRenderSettings& GetRenderSettings()
+	{
+		return m_RenderSettings;
+	}
 private:
 
 	/** Called when a log-message was sent */
@@ -153,5 +189,8 @@ private:
 	 * Code to execute when we got to a safe position
 	 */
 	std::vector<std::function<void()>> m_SaveFunctions;
+
+	/** Rendering-Settings / Game side */
+	GameRenderSettings m_RenderSettings;
 };
 

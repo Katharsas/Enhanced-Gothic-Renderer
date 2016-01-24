@@ -161,6 +161,9 @@ bool GGame::Initialize()
 	// This is called right after we got the games window. Hook the message-callback.
 	zGlobalHk::PlaceWndHook(REngine::RenderingDevice->GetOutputWindow());
 
+	// Init ant-tweakbar for debugging
+	m_RenderSettings.Register();
+
 	return true;
 }
 
@@ -267,6 +270,7 @@ void GGame::OnFrameEnd()
 		RTools::LineRenderer.Flush(zCCamera::GetActiveCamera()->GetViewProjMatrix());
 
 	DrawStatistics();
+
 }
 
 /**
@@ -304,7 +308,7 @@ void GGame::OnRender()
 
 	perFrameCB->UpdateData(&pfcb);
 
-	if(m_ActiveWorld)
+	if(m_ActiveWorld && m_RenderSettings.m_RenderWorld)
 		m_ActiveWorld->Render();
 
 #endif
@@ -321,7 +325,7 @@ void GGame::ExtractSkyParameters(ConstantBuffers::PerFrameConstantBuffer& cb)
 	// Fog values
 	zCSkyController* sky = zCSkyController::GetActiveSkyControler();
 
-	if (sky && strcmp(sky->GetClassDef()->GetClassName(), "zCSkyControler_Outdoor") == 0)
+	if (m_RenderSettings.m_EnableFog && sky && strcmp(sky->GetClassDef()->GetClassName(), "zCSkyControler_Outdoor") == 0)
 	{
 		zCSkyController_Outdoor* oSky = (zCSkyController_Outdoor*)sky;
 
@@ -433,6 +437,8 @@ void GGame::OnWindowMessage(HWND hwnd, DWORD msg, WPARAM wParam, LPARAM lParam)
 		OnKeyEvent((byte)wParam, false);
 		break;
 	}
+
+	RTools::TweakBar.OnWindowMessage(hwnd, msg, wParam, lParam);
 }
 
 /**
