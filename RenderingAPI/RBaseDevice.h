@@ -95,5 +95,7 @@ protected:
 	// Main profiler
 	RProfiler Profiler;
 
+	// Whether to do drawcalls
+	bool DoDrawcalls;
 };
 

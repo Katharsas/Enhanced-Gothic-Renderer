@@ -128,6 +128,9 @@ public:
 #endif
 protected:
 
+	/** Initializes the tweak-bar with values */
+	void AddTweakBarValues();
+
 	/**
 	 * Prepares the renderqueues for rendering. Does the actual drawcalls.
 	 */

@@ -6,6 +6,7 @@
 #include "RThreadPool.h"
 #include "RCommandList.h"
 #include "RBuffer.h"
+#include "RTools.h"
 
 #if !defined(NO_MULTITHREADED_RENDERING) && defined(R_PROFILE_QUEUES)
 #define NO_MULTITHREADED_RENDERING
@@ -31,6 +32,8 @@ bool RDevice::CreateDevice()
 	if(!CreateDeviceAPI())
 		return false;
 
+
+
 	// Make deferred contexts for all threads
 	std::vector<size_t> threadIDs = REngine::ThreadPool->getThreadIDs();
 	for (unsigned int i = 0; i < threadIDs.size(); i++)
@@ -50,6 +53,10 @@ bool RDevice::SetWindow(HWND hWnd)
 
 	if(!SetWindowAPI())
 		return false;
+
+	// Init tweak-bar for debugging
+	RTools::TweakBar.Init();
+	AddTweakBarValues();
 
 	return true;
 }
@@ -114,6 +121,8 @@ bool RDevice::OnFrameEnd()
 */
 bool RDevice::Present()
 {
+	RTools::TweakBar.Draw();
+
 	Profiler.StartProfile("Present");
 	bool r = PresentAPI();
 	Profiler.EndProfile("Present");
@@ -496,4 +505,10 @@ HWND RDevice::GetOutputWindow()
 std::vector<std::pair<std::string, RProfiler::RProfileResult>> RDevice::GetProfilerResults()
 {
 	return Profiler.GetAllProfileResults();
+}
+
+/** Initializes the tweak-bar with values */
+void RDevice::AddTweakBarValues()
+{
+	RTools::TweakBar.AddBoolRW("Renderer", &DoDrawcalls, "Drawcalls");
 }

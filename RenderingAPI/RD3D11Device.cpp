@@ -381,20 +381,23 @@ bool RD3D11Device::DrawPipelineStateAPI(const struct RPipelineState& state, cons
 	// Bind everything
 	BindPipelineState(state, changes, context, stateMachine);
 
-	// Perform drawcall
-	switch(state.IDs.DrawFunctionID)
+	if(DoDrawcalls)
 	{
-	case EDrawCallType::DCT_Draw:
-		context->Draw(state.NumDrawElements, state.StartVertexOffset);
-		break;
+		// Perform drawcall
+		switch(state.IDs.DrawFunctionID)
+		{
+		case EDrawCallType::DCT_Draw:
+			context->Draw(state.NumDrawElements, state.StartVertexOffset);
+			break;
 
-	case EDrawCallType::DCT_DrawIndexed:
-		context->DrawIndexed(state.NumDrawElements, state.StartIndexOffset, state.StartVertexOffset);
-		break;
+		case EDrawCallType::DCT_DrawIndexed:
+			context->DrawIndexed(state.NumDrawElements, state.StartIndexOffset, state.StartVertexOffset);
+			break;
 
-	case EDrawCallType::DCT_DrawIndexedInstanced:
-		context->DrawIndexedInstanced(state.NumDrawElements, state.NumInstances, state.StartIndexOffset, state.StartVertexOffset, state.StartInstanceOffset);
-		break;
+		case EDrawCallType::DCT_DrawIndexedInstanced:
+			context->DrawIndexedInstanced(state.NumDrawElements, state.NumInstances, state.StartIndexOffset, state.StartVertexOffset, state.StartInstanceOffset);
+			break;
+		}
 	}
 
 	return true;
