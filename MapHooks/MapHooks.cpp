@@ -8,6 +8,8 @@
 
 const int MAX_DAEDALUS_NAME_SIZE = 128;
 
+const char* INVALID_FUNCTION_NAMES[] = {"__", "?", "RTTI", "unknown_libname", "_GUID", "_IID"};
+
 // Windows.h, needed by detours
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
@@ -112,6 +114,9 @@ bool MapHooks::LoadMapFile(const char* mapfile, const char* alias, bool isCacheF
 		// Get section
 		std::string section = sline.substr(0, sline.find_first_of(':'));
 
+		if(section.find("Program entry point at") != std::string::npos)
+			continue;
+
 		// Strip section
 		sline = sline.substr(sline.find_first_of(':') + 1);
 
@@ -151,11 +156,24 @@ bool MapHooks::LoadMapFile(const char* mapfile, const char* alias, bool isCacheF
 		// Strip any trailing newlines
 		function = function.substr(0, function.find_last_not_of("\r\n") + 1);
 
-		// Store in map
-		if(isCacheFile)
-			mapFileObject.m_CachedFunctionMap[function] = address;
-		else
-			mapFileObject.m_FunctionMap[function] = address;
+		bool skip = false;
+		for(int i = 0; i < ARRAYSIZE(INVALID_FUNCTION_NAMES); i++)
+		{
+			if(function.find(INVALID_FUNCTION_NAMES[i]) != std::string::npos)
+			{
+				skip = true;
+				break;
+			}
+		}
+
+		if(!skip)
+		{
+			// Store in map
+			if(isCacheFile)
+				mapFileObject.m_CachedFunctionMap[function] = address;
+			else
+				mapFileObject.m_FunctionMap[function] = address;
+		}
 	}
 
 	fclose(f);
@@ -349,7 +367,7 @@ bool MapHooks::WriteCppHeader(const char* file, ECodeType codeType)
 			if(codeType == CT_CPP) 
 				ss << "\t\tstatic const void* " << name << " = (void*)0x" << std::hex << loc.second << ";\n";
 			else if(name.size() < MAX_DAEDALUS_NAME_SIZE)
-				ss << "\t\const int " << name << " = " << loc.second << ";\n";	
+				ss << "\tconst int " << name << " = " << loc.second << ";\n";	
 			
 			fputs(ss.str().c_str(), f);
 		}
