@@ -379,10 +379,11 @@ bool RD3D11Device::DrawPipelineStateAPI(const struct RPipelineState& state, cons
 	ID3D11DeviceContext* context = GetThreadContext(GetCurrentThreadId());
 
 	// Bind everything
-	BindPipelineState(state, changes, context, stateMachine);
-
 	if(DoDrawcalls)
 	{
+		BindPipelineState(state, changes, context, stateMachine);
+
+	
 		// Perform drawcall
 		switch(state.IDs.DrawFunctionID)
 		{

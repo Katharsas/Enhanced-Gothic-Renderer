@@ -157,6 +157,9 @@
     <ClCompile Include="GParticleFXVisual.cpp">
       <Filter>Wrappers\Visuals</Filter>
     </ClCompile>
+    <ClCompile Include="zCProgMeshProtoHk.cpp">
+      <Filter>zEngineHooks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="D3D7\MyDirectDrawSurface7.h">
@@ -422,6 +425,9 @@
     </ClInclude>
     <ClInclude Include="GQuadTree.h">
       <Filter>Wrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="zCProgMeshProtoHk.h">
+      <Filter>zEngineHooks</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

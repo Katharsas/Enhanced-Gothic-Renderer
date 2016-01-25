@@ -27,6 +27,7 @@
 #include <future>
 #include <numeric>
 #include "../Shared/Types.h"
+#include "AntTweakBar.h"
 
 #define R_PI 3.14159265358979f
 

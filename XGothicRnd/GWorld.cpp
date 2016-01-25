@@ -101,17 +101,21 @@ void GWorld::Render()
 	double farPlaneSquaredInv = 1.0f / (farZMod * farZMod);
 
 	// Extract render-instances
-	for(GVobObject* vob : m_VobRenderList)
-	{
-		//if(vob->HasDynamicDrawState())
-		{
-			float3 vobPosition = vob->GetWorldMatrix().TranslationT();
-			double distanceSquared = (vobPosition - activeCameraPosition).LengthSquared();
 
-			if(distanceSquared < farZSquared)
+	if(Engine::Game->GetRenderSettings().m_ProcessVobs)
+	{
+		for(GVobObject* vob : m_VobRenderList)
+		{
+			//if(vob->HasDynamicDrawState())
 			{
-				double distanceSquaredMod = distanceSquared * 0.00001 * 0.00001;
-				vob->MakeRenderInstances(s_sortIndexList, GConstants::RS_WORLD, distanceSquaredMod * farPlaneSquaredInv);
+				float3 vobPosition = vob->GetWorldMatrix().TranslationT();
+				double distanceSquared = (vobPosition - activeCameraPosition).LengthSquared();
+
+				if(distanceSquared < farZSquared)
+				{
+					double distanceSquaredMod = distanceSquared * 0.00001 * 0.00001;
+					vob->MakeRenderInstances(s_sortIndexList, GConstants::RS_WORLD, distanceSquaredMod * farPlaneSquaredInv);
+				}
 			}
 		}
 	}
@@ -264,7 +268,8 @@ void GWorld::DrawSkyPre()
 	// Debugging...
 	MyDirect3DDevice7::GetActiveDevice()->SetRenderQueueName("Sky");
 
-	sky->RenderSkyPre();
+	if(Engine::Game->GetRenderSettings().m_DrawSky)
+		sky->RenderSkyPre();
 }
 
 /**
@@ -279,7 +284,8 @@ void GWorld::DrawSkyPost()
 	// Do this just in case it hasn't been done before
 	zCCamera::GetActiveCamera()->Activate();
 
-	sky->RenderSkyPost(true);
+	if(Engine::Game->GetRenderSettings().m_DrawSky)
+		sky->RenderSkyPost(true);
 }
 
 /** Registers a zCVob into the world */

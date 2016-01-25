@@ -32,6 +32,30 @@ public:
 		return *(MyDirectDrawSurface7**)THISPTR_OFFSET(MemoryOffsets::Gothic::zCTexture::D3D7Surface);
 	}
 
+	/** Returns the current animation-texture */
+	zCTexture* GetAniTexture()
+	{
+		if (!m_TextureFlags.IsAnimated)
+			return this;
+
+
+		zCTexture* tex = this;
+		for (int i=0; i<zTEX_MAX_ANIMATIONS; i++) 
+		{
+			if (m_AnimationNumFrames[i]==0) 
+				continue;
+
+			for (int j=0; j<m_AnimationActiveFrame[i]; j++) 
+			{
+				if (!tex->m_NextAniTexture[i]) 
+					break;
+
+				tex = tex->m_NextAniTexture[i];
+			}
+		}
+		return tex;
+	}
+
 private:
 	enum
 	{

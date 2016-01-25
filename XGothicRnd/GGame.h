@@ -17,6 +17,7 @@ struct GameRenderSettings
 		m_EnableFog = true;
 		m_RenderWorld = true;
 		m_AllowD3D7Proxy = true;
+		m_ProcessVobs = true;
 	}
 
 	void Register()
@@ -25,6 +26,7 @@ struct GameRenderSettings
 		RTools::TweakBar.AddBoolRW("Game", &m_EnableFog, "Fog");
 		RTools::TweakBar.AddBoolRW("Game", &m_RenderWorld, "Render World");
 		RTools::TweakBar.AddBoolRW("Game", &m_AllowD3D7Proxy, "AllowD3D7Proxy");
+		RTools::TweakBar.AddBoolRW("Game", &m_ProcessVobs, "ProcessVobs");
 	}
 
 	/** Whether to allow drawcalls and updates from the original D3D7-Device */
@@ -33,6 +35,7 @@ struct GameRenderSettings
 	/** Whether to render the original sky/Fog */
 	bool m_DrawSky;
 	bool m_EnableFog;
+	bool m_ProcessVobs;
 
 	/** Whether to render the world */
 	bool m_RenderWorld;

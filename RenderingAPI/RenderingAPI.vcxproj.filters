@@ -65,6 +65,9 @@
     <Filter Include="Renderer\Debug">
       <UniqueIdentifier>{811cf85a-7e6f-431a-a98c-a2f45fdb546f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Renderer\Tweakbar">
+      <UniqueIdentifier>{efd18bd9-02e6-468c-a647-9a27281d4fe2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -259,6 +262,18 @@
     <ClInclude Include="RTextureAtlas.h">
       <Filter>Renderer\Textures</Filter>
     </ClInclude>
+    <ClInclude Include="AntTweakBar.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="RTweakBarBase.h">
+      <Filter>Renderer\Tweakbar</Filter>
+    </ClInclude>
+    <ClInclude Include="RD3D11TweakBar.h">
+      <Filter>Renderer\Tweakbar</Filter>
+    </ClInclude>
+    <ClInclude Include="RTweakBar.h">
+      <Filter>Renderer\Tweakbar</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -413,6 +428,15 @@
     </ClCompile>
     <ClCompile Include="RTextureAtlas.cpp">
       <Filter>Renderer\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="RD3D11TweakBar.cpp">
+      <Filter>Renderer\Tweakbar</Filter>
+    </ClCompile>
+    <ClCompile Include="RTweakBar.cpp">
+      <Filter>Renderer\Tweakbar</Filter>
+    </ClCompile>
+    <ClCompile Include="RTweakBarBase.cpp">
+      <Filter>Renderer\Tweakbar</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

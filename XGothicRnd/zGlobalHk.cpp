@@ -22,10 +22,12 @@ zGlobalHk::zGlobalHk()
 int zGlobalHk::vidGetFPSRate()
 {
 	// Use our counter as assistance, when the original one comes to its limit
-	int fps = GET_HOOK(zGlobalHk).m_vidGetFPSRate();
+	/*int fps = GET_HOOK(zGlobalHk).m_vidGetFPSRate();
 
 	if(fps == 256)
-		fps = (int)(Engine::Game->GetFramesPerSecond()+0.5f);
+		fps = (int)(Engine::Game->GetFramesPerSecond()+0.5f);*/
+
+	int fps = (int)(Engine::Game->GetFramesPerSecond()+0.5f);
 
 	return fps;
 }

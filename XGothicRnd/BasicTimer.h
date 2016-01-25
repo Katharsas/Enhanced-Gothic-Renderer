@@ -3,7 +3,7 @@
 #include <wrl.h>
 #include <exception>
 
-const int NUM_FRAMES_TO_MIDDLE = 256;
+const int NUM_FRAMES_TO_MIDDLE = 32;
 
 class BasicTimer
 {

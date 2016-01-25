@@ -24,6 +24,12 @@ private:
 	float m_AniFPS;
 	DWORD m_FrameCtr;
 	zBOOL m_BOneShotAni;
+
+public:
+	void AdvanceAni(zCTexture* texture)
+	{
+		XCALL(MemoryLocations::Gothic::zCTexAniCtrl__AdvanceAni_zCTexture_p);
+	}
 };
 
 
@@ -34,20 +40,24 @@ class zCMaterial : public zCObject
 public:
 
 	/** Returns the texture associated with this material */
-	zCTexture* __GetTexture()
-	{
-		XCALL(MemoryLocations::Gothic::zCMaterial__GetAniTexture_void);
-	}
-
-	/** Returns the texture associated with this material */
 	zCTexture* GetTexture()
 	{
-		try{
-			// FIXME: Hack! Sometimes m_Texture is 26 or some corrupted value! Why?
-			if(!IsBadReadPtr(m_Texture, 4))
-				return __GetTexture();
-		}catch(...)
-		{ }
+		if (m_Texture) 
+		{
+			if (m_Texture->GetTextureFlags().IsAnimated) 
+			{ 
+				m_TexAniCtrl.AdvanceAni(m_Texture); 
+				return m_Texture->GetAniTexture();
+			}
+			else
+			{
+				return m_Texture;
+			}
+		}
+		else
+		{
+			return 0;
+		}
 
 		return nullptr;
 	}

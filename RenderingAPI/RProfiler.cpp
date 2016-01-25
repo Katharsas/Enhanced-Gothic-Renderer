@@ -12,6 +12,9 @@
 #include "RProfiler.h"
 #include "../Shared/Logger.h"
 
+// Switch profiling on or off
+//#define ENABLE_PROFILING
+
 using std::string;
 using std::map;
 
@@ -21,12 +24,20 @@ RProfiler RProfiler::GlobalProfiler;
 
 void RProfiler::StartProfile(const string& name)
 {
+#ifndef ENABLE_PROFILING
+	return;
+#endif
+
 	StartProfileAPI(name);
 
 }
 
 void RProfiler::EndProfile(const string& name)
 {
+#ifndef ENABLE_PROFILING
+	return;
+#endif
+
 	EndProfileAPI(name);
 }
 

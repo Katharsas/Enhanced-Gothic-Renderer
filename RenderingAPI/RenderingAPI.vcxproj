@@ -419,6 +419,7 @@
     <ClInclude Include="..\Shared\SimpleMath.h" />
     <ClInclude Include="..\Shared\Toolbox.h" />
     <ClInclude Include="..\Shared\Types.h" />
+    <ClInclude Include="AntTweakBar.h" />
     <ClInclude Include="atomicops.h" />
     <ClInclude Include="IObserver.h" />
     <ClInclude Include="RBaseBlendState.h" />
@@ -450,6 +451,7 @@
     <ClInclude Include="RD3D11Shader.h" />
     <ClInclude Include="RD3D11SyncCheck.h" />
     <ClInclude Include="RD3D11Texture.h" />
+    <ClInclude Include="RD3D11TweakBar.h" />
     <ClInclude Include="RD3D11VertexShader.h" />
     <ClInclude Include="RD3D11Viewport.h" />
     <ClInclude Include="RDepthStencilState.h" />
@@ -477,6 +479,8 @@
     <ClInclude Include="RThreadPool.h" />
     <ClInclude Include="RTimer.h" />
     <ClInclude Include="RTools.h" />
+    <ClInclude Include="RTweakBar.h" />
+    <ClInclude Include="RTweakBarBase.h" />
     <ClInclude Include="RVertexShader.h" />
     <ClInclude Include="RViewport.h" />
     <ClInclude Include="targetver.h" />
@@ -569,6 +573,7 @@
     <ClCompile Include="RD3D11SamplerState.cpp" />
     <ClCompile Include="RD3D11Shader.cpp" />
     <ClCompile Include="RD3D11Texture.cpp" />
+    <ClCompile Include="RD3D11TweakBar.cpp" />
     <ClCompile Include="RD3D11VertexShader.cpp" />
     <ClCompile Include="RD3D11Viewport.cpp" />
     <ClCompile Include="RDepthStencilState.cpp" />
@@ -587,6 +592,8 @@
     <ClCompile Include="RTexture.cpp" />
     <ClCompile Include="RTextureAtlas.cpp" />
     <ClCompile Include="RTools.cpp" />
+    <ClCompile Include="RTweakBar.cpp" />
+    <ClCompile Include="RTweakBarBase.cpp" />
     <ClCompile Include="RVertexShader.cpp" />
     <ClCompile Include="RViewport.cpp" />
   </ItemGroup>

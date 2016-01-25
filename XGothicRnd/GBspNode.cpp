@@ -292,10 +292,13 @@ void GBspNode::CollectVobs(std::vector<GVobObject*>& visibleVobs, const float3& 
 		for (unsigned int i = 0; i < leaf->LeafVobList.NumInArray; i++)
 		{
 			GVobObject* vob = leaf->LeafVobList.Array[i]->GetVobObject();
-			bool isIndoor = (leaf->LeafVobList.Array[i]->GetGroundPolygon() && leaf->LeafVobList.Array[i]->GetGroundPolygon()->GetMaterial()->GetSectorFront());
-			if (vob && !isIndoor && vob->UpdateObjectCollectionState(frame))
+			
+			if (vob && vob->UpdateObjectCollectionState(frame))
 			{
-				visibleVobs.push_back(vob);
+				bool isIndoor = (leaf->LeafVobList.Array[i]->GetGroundPolygon() && leaf->LeafVobList.Array[i]->GetGroundPolygon()->GetMaterial()->GetSectorFront());
+
+				if(!isIndoor)
+					visibleVobs.push_back(vob);
 			}
 		}
 

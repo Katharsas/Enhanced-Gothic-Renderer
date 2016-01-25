@@ -478,6 +478,7 @@ call "$(ProjectDir)\PatchSmartHeap.bat"</Command>
     <ClCompile Include="zCModelMeshLibHk.cpp" />
     <ClCompile Include="zCObjectHk.cpp" />
     <ClCompile Include="zCOptionHk.cpp" />
+    <ClCompile Include="zCProgMeshProtoHk.cpp" />
     <ClCompile Include="zCTextureHk.cpp" />
     <ClCompile Include="zCVisualHk.cpp" />
     <ClCompile Include="zCVobHk.cpp" />
@@ -553,6 +554,7 @@ call "$(ProjectDir)\PatchSmartHeap.bat"</Command>
     <ClInclude Include="zCParticleFX.h" />
     <ClInclude Include="zCPolygon.h" />
     <ClInclude Include="zCProgMeshProto.h" />
+    <ClInclude Include="zCProgMeshProtoHk.h" />
     <ClInclude Include="zCResource.h" />
     <ClInclude Include="zCResourceManager.h" />
     <ClInclude Include="zCSkyController.h" />
