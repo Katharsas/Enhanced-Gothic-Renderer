@@ -39,9 +39,14 @@ public:
 	virtual void HostVobAddedToWorld(zCVob* hostVob, zCWorld* hostWorld) = 0;
 	virtual const zSTRING* __GetFileExtension(int i) = 0;
 	virtual void GetLODVisualAndAlpha(const float distToCam, zCVisual* &vis, float& alpha) = 0;
+	
+#if DATASET_VERSION == VERSION_2_6_FIX	
 	virtual zBOOL GetAlphaTestingEnabled() const = 0;
 	virtual void SetAlphaTestingEnabled(const zBOOL a_btest) = 0;
-
+#else
+	zBOOL GetAlphaTestingEnabled(){return false;};
+	void SetAlphaTestingEnabled(const zBOOL a_btest){};
+#endif
 
 	/** File extension this visual uses. Handy for finding out what class this is */
 	const char* GetFileExtension(int i)

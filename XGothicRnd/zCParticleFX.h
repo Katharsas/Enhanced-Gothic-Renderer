@@ -58,7 +58,10 @@ enum zTPFX_FlockMode
 
 struct zTParticle {
 	zTParticle* m_Next;
-	float3 m_Position;
+
+#if DATASET_VERSION == VERSION_2_6_FIX
+	float3 m_Position; // Local
+#endif
 	float3 m_PositionWS;
 	float3 m_Vel;
 	float m_LifeSpan;
@@ -68,6 +71,11 @@ struct zTParticle {
 	float2 m_SizeVel;
 	float3 m_Color;
 	float3 m_ColorVel;
+
+#if DATASET_VERSION == VERSION_1_8K_MOD
+	float m_TexAniFrame;
+#endif
+
 	class zCPolyStrip* m_PolyStrip;
 };
 
@@ -127,11 +135,15 @@ public:
 	float					mrkFadeSpeed;
 	zSTRING					mrkTexture_S;
 	float					mrkSize;
+
+#if DATASET_VERSION == VERSION_2_6_FIX
 	zSTRING					m_flockMode_S;
 	float					m_fFlockWeight;
 	zBOOL					m_bSlowLocalFOR;
 	zSTRING					m_timeStartEnd_S;
 	zBOOL					m_bIsAmbientPFX;
+#endif
+
 	int						endOfDScriptPart;
 	zSTRING					particleFXName;			
 	zCArray<float>			ppsScaleKeys;
@@ -139,10 +151,16 @@ public:
 	zTPFX_EmitterShape		shpType;					
 	float					shpCircleSphereRadius;
 	float3					shpLineBoxDim;
+
+#if DATASET_VERSION == VERSION_2_6_FIX
 	float3*					shpMeshLastPolyNormal;
 	class zCMesh			*shpMesh;
 	class zCProgMeshProto	*shpProgMesh;
 	zCModel					*shpModel;
+#else
+	class zCMesh			*shpMesh;
+	class zCPolygon			*shpMeshLastPoly;
+#endif
 	zTPFX_EmitterFOR		shpFOR;
 	zTPFX_DistribType		shpDistribType;
 	float3					shpOffsetVec;
@@ -155,6 +173,9 @@ public:
 	float3					dirAngleBoxDim;
 	float3					flyGravity;
 	zCTexture				*visTexture;
+#if DATASET_VERSION == VERSION_1_8K_MOD
+	class zCMesh*			visMesh;
+#endif
 	zTPFX_EmitterVisOrient	visOrientation;
 	float2					visSizeStart;
 	float3					visTexColorRGBAStart;
@@ -165,10 +186,13 @@ public:
 	zBOOL					 isOneShotFX;
 	float					dirAngleHeadVarRad;
 	float					dirAngleElevVarRad;
+
+#if DATASET_VERSION == VERSION_2_6_FIX
 	zTPFX_FlockMode			m_flockMode;
 	float					m_ooAlphaDist;
 	float					m_startTime;
 	float					m_endTime;
+#endif
 };
 
 class zCParticleEmitterVars {
@@ -354,7 +378,9 @@ private:
 		byte m_Dead						: 1;
 		byte m_IsOneShotFX				: 1;	
 		byte m_ForceEveryFrameUpdate	: 1;	
+#if DATASET_VERSION == VERSION_2_6_FIX
 		byte m_RenderUnderWaterOnly		: 1;
+#endif
 	};
 
 	zCParticleFX* m_NextPfx;
@@ -365,6 +391,9 @@ private:
 	float m_LocalFrameTimeF;
 	class zCQuadMark* m_QuadMark;
 	zTBBox3D m_QuadMarkBBox3DWorld;
+
+#if DATASET_VERSION == VERSION_2_6_FIX
 	float m_BboxYRangeInv;
 	zBOOL m_bVisualNeverDies;
+#endif
 };

@@ -5,6 +5,7 @@
 #include <RTools.h>
 #include "zCPolygon.h"
 #include "zEngineHooks.h"
+#include "zClassDef.h"
 
 #ifndef HOOK_RENDERING
 #include "GVobObject.h"
@@ -13,6 +14,8 @@
 class zCPolygon;
 class zCVisual;
 class GVobObject;
+class zCCollisionObjectDef;
+class zCCollisionObject;
 class zCVob : public zCObject
 {
 public:
@@ -36,10 +39,15 @@ public:
 		byte HintTrafoLocalConst		: 1;	
 		byte InsideEndMovementMethod	: 1;
 		byte VisualCamAlign				: 2;
+#if DATASET_VERSION == VERSION_2_6_FIX
 		byte CollisionButNoMove			: 4;
 		byte DontWriteIntoArchive		: 1;
 		byte IsInWater					: 1;
 		byte IsAmbientVob				: 1;
+#elif DATASET_VERSION == VERSION_1_8K_MOD
+		byte CollisionButNoMove			: 8;
+		byte DontWriteIntoArchive		: 1;
+#endif
 	};	
 
 	/** Returns the world-matrix of this vob */
@@ -148,6 +156,7 @@ public:
 
 		m_StaticLightColor = RTools::float4ToDWORD(float4(c.x, c.y, c.z, 1.0f));
 		m_VobFlags.LightColorStatDirty = 0;
+
 	}
 
 protected:
@@ -169,7 +178,10 @@ protected:
 
 	// Bounding primitives
 	zTBBox3D m_BBox3D;
+
+#if DATASET_VERSION == VERSION_2_6_FIX
 	zTBSphere3D m_BSphere3D;
+#endif
 
 	byte N016DC337[12];
 
@@ -186,10 +198,13 @@ protected:
 
 	zCVisual* m_Visual;
 	float m_VisualAlpha;
+
+#if DATASET_VERSION == VERSION_2_6_FIX
 	float m_VobFarClipZScale;
 	unsigned int m_WindMode; // 1 and 2 define this as wind affected
 	float m_WindStrength;
 	int	m_zBias;
+#endif
 
 	byte data3[4];
 
@@ -202,4 +217,6 @@ protected:
 
 	VobFlags m_VobFlags;
 
+	zCCollisionObjectDef* m_CollisionObjectClass;
+	zCCollisionObject* m_CollisionObject;
 };

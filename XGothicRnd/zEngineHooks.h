@@ -7,3 +7,4 @@
 #else
 #define GASSERT(x, m) {if(!(x)){LogError() << "Assertion failed: " << #x << " | " << m;}}
 #endif
+

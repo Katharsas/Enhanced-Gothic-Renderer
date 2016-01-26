@@ -10,9 +10,6 @@
 // Init global instance of this object
 REGISTER_HOOK(zCVobHk);
 
-
-#if GAME_VERSION == VERSION_2_6_FIX
-
 /** Called when this vob is about to change the visual */
 void __fastcall zCVobHk::zCVob__SetVisual(zCVob* thisptr, void* edx, zCVisual* visual)
 {
@@ -31,6 +28,9 @@ void __fastcall zCVobHk::zCVob__SetVisual(zCVob* thisptr, void* edx, zCVisual* v
 
 	GET_HOOK(zCVobHk).m_SetVisual(thisptr, visual);
 }
+
+
+#if GAME_VERSION == VERSION_2_6_FIX
 
 /**
 * Called whenever a vob moved

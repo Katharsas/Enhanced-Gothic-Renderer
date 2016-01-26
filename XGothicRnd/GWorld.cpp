@@ -268,6 +268,14 @@ void GWorld::DrawSkyPre()
 	// Debugging...
 	MyDirect3DDevice7::GetActiveDevice()->SetRenderQueueName("Sky");
 
+	zCSkyController::SetSkyEffectsEnabled(0);
+	zCSkyController_Outdoor* osky = (zCSkyController_Outdoor*)sky;
+
+	// Testing
+	/*zCTexture* skydayLayer0 = zCTexture::Load(zSTRING("SKYDAY_LAYER0_A0.TGA"));
+	if(skydayLayer0)
+		skydayLayer0->CacheIn(-1);*/
+
 	if(Engine::Game->GetRenderSettings().m_DrawSky)
 		sky->RenderSkyPre();
 }

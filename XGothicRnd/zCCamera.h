@@ -32,6 +32,10 @@ enum zTCamTrafoType
 	zCAM_TRAFO_VIEW_INV
 };
 
+class zCPolygon;
+class zCMesh;
+class zCMaterial;
+
 class zCCamera
 {
 public:
@@ -242,11 +246,37 @@ private:
 	// Weird datalayout. Probably haven't got that right?
 	Matrix m_ProjectionMatrix;
 
-	// Hopefully not needed, don't know what this is about
-	byte data2[152];
+	// DrawSimplePoly
+	enum { zTCAM_POLY_NUM_VERT = 4 };
+	struct zTCamVertSimple 
+	{
+		float x,y,z;
+		float2 texuv;
+		DWORD color;
+	};
 
-	// Not used?
-	int data3[4];
+	zTCamVertSimple m_PolyCamVerts[zTCAM_POLY_NUM_VERT];
+	zCPolygon *m_Poly;
+	zCMesh *m_PolyMesh;
+	zCMaterial *m_PolyMaterial;
+
+	// Screen-Effects
+	zBOOL m_ScreenFadeEnabled;
+	DWORD m_ScreenFadeColor;
+
+#if DATASET_VERSION == VERSION_2_6_FIX
+	zSTRING m_ScreenFadeTexture;
+	float m_ScreenFadeTextureAniFPS;
+	zTRnd_AlphaBlendFunc m_ScreenFadeTextureBlendFunc;
+#endif
+
+	zBOOL m_CinemaScopeEnabled;
+	DWORD m_CinemaScopeColor;
+
+	int m_ProjectionType;
+	int m_DrawMode;
+	int m_ShadeMode;
+	zBOOL m_DrawWire;
 
 	// View distances and clipping planes
 	float m_FarPlane;

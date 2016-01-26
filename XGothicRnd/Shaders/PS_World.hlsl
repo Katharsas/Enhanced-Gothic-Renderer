@@ -36,6 +36,7 @@ float4 PSMain( PS_INPUT Input ) : SV_TARGET
 {
 	float4 color = TX_Texture0.Sample(SS_Linear, Input.vTexcoord);
 	
+	
 	// Get sky-color
 	float4 lighting = GetLightCLUT(Input.vDiffuse.r);
 	

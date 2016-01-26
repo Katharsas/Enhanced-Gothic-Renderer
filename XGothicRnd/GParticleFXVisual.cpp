@@ -200,6 +200,7 @@ void GParticleFXVisual::UpdateEffect()
 		i.m_Color.z = p->m_Color.z / 255.0f;
 		i.m_Velocity = p->m_Vel;
 
+#if GAME_VERSION == VERSION_2_6_FIX
 		// Calculate alpha-value
 		if(emt->visTexAniIsLooping != 2) // 2 seems to be some magic case with sinus smoothing
 		{
@@ -208,6 +209,9 @@ void GParticleFXVisual::UpdateEffect()
 		{
 			i.m_Color.w = std::min((zCParticleFX::SinSmooth(fabs((p->m_Alpha - emt->visAlphaStart) * emt->m_ooAlphaDist)) * p->m_Alpha) / 255.0f, 255.0f);
 		}
+#else
+		i.m_Color.w = std::min(p->m_Alpha, 255.0f) / 255.0f;
+#endif
 
 		i.m_Color.w = std::max(i.m_Color.w, 0.0f);
 

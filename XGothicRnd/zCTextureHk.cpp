@@ -12,9 +12,9 @@ REGISTER_HOOK(zCTextureHk);
 */
 zCTextureHk::zCTextureHk()
 {
-		m_GetTextureBuffer = Hooks::HookFunction<zEngine::zCTexture__GetTextureBuffer>
+		/*m_GetTextureBuffer = Hooks::HookFunction<zEngine::zCTexture__GetTextureBuffer>
 		(MemoryLocations::Gothic::zCTex_D3D__GetTextureBuffer_int_void_p_r_int_r, 
-		zCTexture__GetTextureBuffer);
+		zCTexture__GetTextureBuffer);*/
 
 		m_Constructor = Hooks::HookFunction<zEngine::GenericConstructor>
 			(MemoryLocations::Gothic::zCTexture__zCTexture_void, zCTexture__Constructor);
@@ -24,6 +24,9 @@ zCTextureHk::zCTextureHk()
 
 		m_XTEX_BuildSurfaces = Hooks::HookFunction<zEngine::zCTexD3D__XTEX_BuildSurfaces>
 			(MemoryLocations::Gothic::zCTex_D3D__XTEX_BuildSurfaces_int, zCTexD3D__XTEX_BuildSurfaces);
+		
+		m_CacheInNamed = Hooks::HookFunction<zEngine::zCTexture__CacheInNamed>
+			(MemoryLocations::Gothic::zCTexture__CacheInNamed_zSTRING_const_p, zCTexture__CacheInNamed);
 }
 
 /**
@@ -35,6 +38,17 @@ void __fastcall zCTextureHk::zCTexture__Constructor(zCTexture* thisptr, void* ed
 
 	// Construct object for this
 	// GTexture::GetFromSource(thisptr);
+}
+
+/** Called when a texture is being loaded */
+zBOOL __fastcall zCTextureHk::zCTexture__CacheInNamed(zCTexture* thisptr, void* edx, const zSTRING *texFileName)
+{
+#if GAME_VERSION != VERSION_2_6_FIX
+	if(std::string(texFileName->ToChar()) == "SKYDAY_LAYER0_A0.TGA")
+		return FALSE;
+#endif
+
+	return GET_HOOK(zCTextureHk).m_CacheInNamed(thisptr, texFileName);
 }
 
 /**

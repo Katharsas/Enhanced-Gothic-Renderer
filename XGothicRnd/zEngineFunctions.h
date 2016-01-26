@@ -18,6 +18,7 @@ class zCFileBIN;
 class zCModelPrototype;
 class zCModelMeshLib;
 class zCModel;
+class zCTexture;
 
 namespace zEngine
 {
@@ -26,6 +27,9 @@ namespace zEngine
 	typedef void (__thiscall* GenericConstructor)(void* thisptr);
 	typedef void (__thiscall* GenericDestructor)(void* thisptr);
 	typedef void (__thiscall* oCNPC__Enable)(void*, float3&);
+
+	// zBOOL zCTexture::CacheInNamed (const zSTRING *texFileName)  
+	typedef int (__thiscall* zCTexture__CacheInNamed)(zCTexture* thisptr, const zSTRING*);
 
 	// int __thiscall zCOption::ReadBool(class zSTRING const &, char const *, int)
 	typedef int (__thiscall* zCOption__ReadBool)(zCOption* thisptr, zSTRING const & section, char const* variable, int defValue);

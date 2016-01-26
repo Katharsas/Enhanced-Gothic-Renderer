@@ -32,6 +32,15 @@
     <Filter Include="Batch">
       <UniqueIdentifier>{cbcc8ad5-11d5-4c4e-886b-fbe0814c570c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zEngineHooks\2.6fix">
+      <UniqueIdentifier>{3c5232d7-ed23-47e2-9a83-4e38b38cc613}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zEngineHooks\1.08k_mod">
+      <UniqueIdentifier>{077de4ec-e046-4078-a1e7-84dbf1ec9e83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zEngineHooks\1.12f">
+      <UniqueIdentifier>{a8141626-44ef-48e1-8c2d-614d8ecb7d7a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="D3D7\MyDirectDrawSurface7.cpp">
@@ -160,6 +169,9 @@
     <ClCompile Include="zCProgMeshProtoHk.cpp">
       <Filter>zEngineHooks</Filter>
     </ClCompile>
+    <ClCompile Include="ZenGinValidation.cpp">
+      <Filter>zEngine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="D3D7\MyDirectDrawSurface7.h">
@@ -281,9 +293,6 @@
     </ClInclude>
     <ClInclude Include="oCGame.h">
       <Filter>zEngine</Filter>
-    </ClInclude>
-    <ClInclude Include="MemoryOffsets_2_6fix.h">
-      <Filter>zEngineHooks</Filter>
     </ClInclude>
     <ClInclude Include="zCViewProgressBar.h">
       <Filter>zEngine</Filter>
@@ -428,6 +437,27 @@
     </ClInclude>
     <ClInclude Include="zCProgMeshProtoHk.h">
       <Filter>zEngineHooks</Filter>
+    </ClInclude>
+    <ClInclude Include="MemoryLocations2_6fix.h">
+      <Filter>zEngineHooks\2.6fix</Filter>
+    </ClInclude>
+    <ClInclude Include="MemoryOffsets_2_6fix.h">
+      <Filter>zEngineHooks\2.6fix</Filter>
+    </ClInclude>
+    <ClInclude Include="MemoryLocations1_8kmod.h">
+      <Filter>zEngineHooks\1.08k_mod</Filter>
+    </ClInclude>
+    <ClInclude Include="MemoryOffsets_1_8mod.h">
+      <Filter>zEngineHooks\1.08k_mod</Filter>
+    </ClInclude>
+    <ClInclude Include="MemoryLocations1_12f.h">
+      <Filter>zEngineHooks\1.12f</Filter>
+    </ClInclude>
+    <ClInclude Include="MemoryOffsets1_12f.h">
+      <Filter>zEngineHooks\1.12f</Filter>
+    </ClInclude>
+    <ClInclude Include="ZenGinValidation.h">
+      <Filter>zEngine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

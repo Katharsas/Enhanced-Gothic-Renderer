@@ -206,7 +206,9 @@ private:
 	zCModelAniActive* m_AniChannels[6];
 	zCModelAniActive* m_ActiveAniList;
 
+#if DATASET_VERSION == VERSION_2_6_FIX
 	zCArray<int> m_ListOfVoiceHandles;
+#endif
 							
 	// Vob using this visual. zCModels are attached to exactly one vob.
 	zCVob* m_HomeVob;
@@ -238,7 +240,10 @@ private:
 	// animations will look jerky. You can use the actual distance
 	// or simply 0 to make all animations smooth
 	float m_ModelDistanceToCam;
+
+#if DATASET_VERSION == VERSION_2_6_FIX
 	zBOOL m_IsInMobInteraction;
+#endif
 
 	// Fatness of the model					
 	float m_Fatness;
@@ -250,6 +255,8 @@ private:
 	float3 m_AniTransScale;
 	float3 m_RootPosLocal;
 	float3 m_VobTrans;
+
+#if DATASET_VERSION == VERSION_2_6_FIX
 	float3 m_VobTransRing;
 	zBOOL m_NewAniStarted;
 	zBOOL m_SmoothRootNode;
@@ -257,6 +264,7 @@ private:
 
 	// True when in firstperson-mode
 	zBOOL m_DrawHandVisualsOnly;
+#endif
 
 	// Used internally 
 	Quaternion m_VobRotation;

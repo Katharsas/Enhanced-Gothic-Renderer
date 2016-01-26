@@ -32,11 +32,15 @@ public:
 	 * Called when the original renderer creates a surface for a zCTexture
 	 */
 	static zBOOL __fastcall zCTexD3D__XTEX_BuildSurfaces(zCTexture* thisptr, void* edx, zBOOL decompress);
+
+	/** Called when a texture is being loaded */
+	static zBOOL __fastcall zCTexture__CacheInNamed(zCTexture* thisptr, void* edx, const zSTRING *texFileName);
 private:
 
 	zEngine::GenericConstructor m_Constructor;
 	zEngine::GenericDestructor m_Destructor;
 	zEngine::zCTexture__GetTextureBuffer m_GetTextureBuffer;
 	zEngine::zCTexD3D__XTEX_BuildSurfaces m_XTEX_BuildSurfaces;
+	zEngine::zCTexture__CacheInNamed m_CacheInNamed;
 };
 

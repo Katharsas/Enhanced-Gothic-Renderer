@@ -19,7 +19,7 @@
 // Init global instance of this object
 REGISTER_HOOK(oCNpcHk);
 
-void UpdateModel(oCNpc* npc)
+bool UpdateModel(oCNpc* npc)
 {
 	GWorld* wld = GWorld::GetFromSource(npc->GetHomeWorld());
 
@@ -36,7 +36,7 @@ void UpdateModel(oCNpc* npc)
 	if(wld && vob)
 	{
 		if(!wld->RemoveVob(npc))
-			return; // Vob wasn't in the world
+			return false; // Vob wasn't in the world
 
 		vob = GVobObject::QueryFromSource(npc);
 	}
@@ -47,8 +47,13 @@ void UpdateModel(oCNpc* npc)
 	delete vis;
 	vis = (GModelVisual*)GVisual::CreateExtensionVisual(npc->GetVisual());
 
+	if(!vis)
+		return false;
+
 	if(wld)
 		wld->AddVob(npc);
+
+	return true;
 }
 
 /**
@@ -63,10 +68,11 @@ void oCNpcHk::oCNpc__InitModel(oCNpc* thisptr, void* edx)
 	if (!thisptr->GetVisual() || !thisptr->GetHomeWorld())
 		return;
 
-	UpdateModel(thisptr);
-
-	//GASSERT((GVobObject::QueryFromSource(thisptr) != nullptr), "NPC-Vob not in the world after InitModel!");
-	GASSERT((GModelVisual::QueryFromSource(thisptr->GetVisual()) != nullptr), "NPC-Visual not created after InitModel!");
+	if(UpdateModel(thisptr))
+	{
+		//GASSERT((GVobObject::QueryFromSource(thisptr) != nullptr), "NPC-Vob not in the world after InitModel!");
+		GASSERT((GModelVisual::QueryFromSource(thisptr->GetVisual()) != nullptr), "NPC-Visual not created after InitModel!");
+	}
 }
 
 /** Enables a stored NPC */
@@ -76,8 +82,8 @@ void __fastcall oCNpcHk::oCNPC__Enable(oCNpc* thisptr, void* unknwn, float3& pos
 	
 	//UpdateModel(thisptr);
 
-	GASSERT((GVobObject::QueryFromSource(thisptr) != nullptr), "NPC-Vob not in the world after Enable!");
-	GASSERT((GModelVisual::QueryFromSource(thisptr->GetVisual()) != nullptr), "NPC-Visual not created after Enable!");
+	//GASSERT((GVobObject::QueryFromSource(thisptr) != nullptr), "NPC-Vob not in the world after Enable!");
+	//GASSERT((GModelVisual::QueryFromSource(thisptr->GetVisual()) != nullptr), "NPC-Visual not created after Enable!");
 }
 
 /** Disables an NPC and frees it's memory */
@@ -117,9 +123,9 @@ oCNpcHk::oCNpcHk()
 		(MemoryLocations::Gothic::oCNpc__InitModel_void,
 			oCNpc__InitModel);
 
-	m_Enable = Hooks::HookFunction<zEngine::oCNPC__Enable>
+	/*m_Enable = Hooks::HookFunction<zEngine::oCNPC__Enable>
 		(MemoryLocations::Gothic::oCNpc__Enable_zVEC3_r,
-			oCNPC__Enable);
+			oCNPC__Enable);*/
 
 	m_Disable = Hooks::HookFunction<zEngine::GenericThiscall>
 		(MemoryLocations::Gothic::oCNpc__Disable_void,

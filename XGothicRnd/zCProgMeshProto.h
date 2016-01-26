@@ -137,7 +137,10 @@ protected:
 	byte* m_DataPool;
 	DWORD m_DataSize;
 	float m_AvgTriArea;
+
+#if DATASET_VERSION == VERSION_2_6_FIX
 	zBOOL m_IsUsingAlphaTesting;
+#endif
 
 	struct zTLODParams {
 		float m_Strength;		

@@ -59,31 +59,52 @@ public:
 		return dw;
 	}
 
+#if DATASET_VERSION == VERSION_2_6_FIX
 	virtual DWORD GetBackgroundColorDef() const = 0;
 	virtual void SetOverrideColor(const float3 col) = 0;
 	virtual void SetOverrideColorFlag(const zBOOL b) = 0;
 	virtual float GetCloudShadowScale()const = 0;
 	virtual void SetCloudShadowScale(const float f) = 0;
+#endif
+
 	virtual void SetFillBackground(const zBOOL b) = 0;
 	virtual zBOOL GetFillBackground() const = 0;
 	virtual void SetUnderwaterFX(const zBOOL b) = 0;
 	virtual zBOOL GetUnderwaterFX() const = 0;
 	virtual void UpdateWorldDependencies() = 0;
+
+#if DATASET_VERSION == VERSION_2_6_FIX
 	virtual void SetLightDirty() = 0;
 	virtual void SetRelightTime(const float a_fLightPerfCtr) = 0;
+#endif
 
 	virtual unsigned int GetRelightCtr() = 0;
 	virtual DWORD GetDaylightColorFromIntensity(int intensity) = 0;
 	virtual void RenderSkyPre() = 0;
+
+#if DATASET_VERSION == VERSION_2_6_FIX
 	virtual void RenderSkyPost(const zBOOL renderSkyMesh) = 0;
+#elif DATASET_VERSION == VERSION_1_8K_MOD
+	void RenderSkyPost(zBOOL renderSkyMesh){__RenderSkyPost();} // Dummy for keeping my code clean between versions
+	virtual void __RenderSkyPost() = 0;
+#endif
+
+#if DATASET_VERSION == VERSION_2_6_FIX
 	virtual zBOOL GetGlobalWindVec(float3 &resVec, const zTAnimationMode a_aniMode) = 0;
 	virtual void SetGlobalSkyScale(const float skyScale) = 0;
 	virtual float GetGlobalSkyScale() const = 0;
 	virtual zBOOL GetGlobalSkyScaleChanged() const = 0;
+#endif
 
 	virtual void SetCameraLocationHint(const zTCamLocationHint camLocHint) = 0;
+
+#if DATASET_VERSION == VERSION_2_6_FIX
 	virtual void SetWeatherType(const zTWeather a_weather) = 0;
 	virtual zTWeather GetWeatherType() const = 0;
+#elif DATASET_VERSION == VERSION_1_8K_MOD
+	void SetWeatherType(const zTWeather a_weather) {}
+	zTWeather GetWeatherType() {return zTWeather::zTWEATHER_RAIN; }
+#endif
 
 	/** Returns the daylight coloring-array */
 	DWORD* GetPolyLightCLUT()
@@ -100,11 +121,13 @@ protected:
 	// Cloudshadows for when it's raining
 	float m_CloudShadowScale;
 
+#if DATASET_VERSION == VERSION_2_6_FIX
 	// Whether the game should update the worlds color
 	zBOOL m_ColorChanged;
 
 	// Current weather type
 	zTWeather m_EnuWeather;
+#endif
 
 	// Same as Clear- and Fog-Color
 	DWORD m_BackgroundColor;
@@ -115,10 +138,13 @@ protected:
 	// Background texture for everything. Not sure where this is used, probably menus.
 	zCTexture* m_BackgroundTexture;
 
+#if DATASET_VERSION == VERSION_2_6_FIX
 	// Last times this was relighted
 	unsigned int m_RelightCtr;
 	float m_LastRelightTime;
 	float m_RelightTime;
+#endif
+
 };
 
 class zCSkyController_Mid : public zCSkyController

@@ -31,6 +31,7 @@
 #include "zClassDef.h"
 #include "D3D7\MyDirect3DDevice7.h"
 #include "zCVisual.h"
+#include "ZenGinValidation.h"
 
 // Max number of profile results to show on screen
 const int MAX_PROFILE_RESULTS = 6;
@@ -54,6 +55,9 @@ GGame::~GGame(void)
  */
 bool GGame::Initialize()
 {
+	// Validate the engine classes
+	ZenGinValidation::Validate();
+
 	// Load shaders:
 	// Default vertexshader for WorldMesh
 	RVertexShader* vs_ExWMM = RTools::LoadShader<RVertexShader>("system\\GD3D11\\Shaders\\VS_ExWorldMeshMain.hlsl", "VS_ExWorldMeshMain");
@@ -351,8 +355,14 @@ void GGame::ExtractSkyParameters(ConstantBuffers::PerFrameConstantBuffer& cb)
 	cb.PF_SceneParams.S_FogRange = cb.PF_SceneParams.S_FogEnd - cb.PF_SceneParams.S_FogStart;
 	cb.PF_SceneParams.S_Time = m_FPSTimer.GetTotal();
 
+	memcpy(cb.PF_SceneParams.S_LightCLUT, sky->GetPolyLightCLUT(), sizeof(DWORD) * 256);
+/*#if GAME_VERSION == VERSION_2_6_FIX
 	// Copy CLUT
 	memcpy(cb.PF_SceneParams.S_LightCLUT, sky->GetPolyLightCLUT(), sizeof(DWORD) * 256);
+#else
+	// TODO: Implement
+	memset(cb.PF_SceneParams.S_LightCLUT, 255, sizeof(DWORD) * 256);
+#endif*/
 }
 
 

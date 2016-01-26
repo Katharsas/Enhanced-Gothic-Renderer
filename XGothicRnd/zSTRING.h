@@ -6,7 +6,13 @@ class zSTRING
 {
 public:
 
-	
+	/**
+	* Constructs a new string from a std::string
+	*/
+	zSTRING(const std::string& str)
+	{
+		zSTRING(str.c_str());
+	}
 
 	/**
 	 * Constructs a new string from a c-str

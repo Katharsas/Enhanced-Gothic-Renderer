@@ -1,6 +1,7 @@
 #pragma once
 #include "zDefinitions.h"
 #include "zSTRING.h"
+#include "zClassDef.h"
 
 class zCObject
 {

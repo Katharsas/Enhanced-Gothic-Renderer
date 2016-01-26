@@ -12,7 +12,7 @@ class zCPolygon
 {
 public:
 	#pragma pack (push, 1)	
-#if GAME_VERSION == VERSION_2_6_FIX
+#if DATASET_VERSION == VERSION_2_6_FIX
 struct PolyFlags {
 	unsigned char PortalPoly			: 2;
 	unsigned char Occluder				: 1;
@@ -24,7 +24,7 @@ struct PolyFlags {
 	zWORD SectorIndex					: 16;
 };
 
-#elif GAME_VERSION == VERSION_1_8K_MOD
+#elif DATASET_VERSION == VERSION_1_8K_MOD
 struct PolyFlags 
 {
 		unsigned char PortalPoly : 2;	

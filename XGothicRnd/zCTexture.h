@@ -14,6 +14,13 @@ public:
 class zCTexture : public zCResource, public zCTextureExchange
 {
 public:
+
+	/** Creates a new texture object and registers the name. Does not cache the texture in! */
+	static zCTexture* Load(const zSTRING& texFile, int texLoadFlags = 0)
+	{
+		XCALL(MemoryLocations::Gothic::zCTexture__Load_zSTRING_r_int);
+	}
+
 	struct zTextureFlags
 	{
 		byte HasAlpha			: 1; // Only valid after the texture was cached in
