@@ -71,8 +71,8 @@ void GMaterial::ApplyStates()
 
 	sm.SetTexture(0, m_Diffuse->GetTexture(), EShaderType::ST_PIXEL);
 
-	// Turn on two-sided rendering if this is masked
-	if (IsMaterialUsingAlphaTest())
+	// Turn on two-sided rendering if this is masked or animated
+	if (IsMaterialUsingAlphaTest() || m_SourceObject->GetTexture()->GetTextureFlags().IsAnimated)
 	{
 		RRasterizerStateInfo info = sm.GetCurrentState().RasterizerState->GetStateInfo();
 		info.CullMode = RRasterizerStateInfo::CM_CULL_NONE;
