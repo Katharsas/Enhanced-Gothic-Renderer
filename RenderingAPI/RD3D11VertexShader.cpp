@@ -5,11 +5,13 @@
 
 RD3D11VertexShader::RD3D11VertexShader()
 {
+	Shader = nullptr;
 }
 
 
 RD3D11VertexShader::~RD3D11VertexShader()
 {
+	SafeRelease(Shader);
 }
 
 /**

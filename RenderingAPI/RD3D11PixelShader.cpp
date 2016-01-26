@@ -4,11 +4,13 @@
 
 RD3D11PixelShader::RD3D11PixelShader()
 {
+	Shader = nullptr;
 }
 
 
 RD3D11PixelShader::~RD3D11PixelShader()
 {
+	SafeRelease(Shader);
 }
 
 /**
