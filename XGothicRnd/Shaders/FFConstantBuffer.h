@@ -44,7 +44,9 @@ cbuffer FFPipelineConstantBuffer : register( b0 )
 
 	/** Graphical Switches (Takes GSWITCH_*) */
 	unsigned int FF_GSwitches;
-	float2 ggs_Pad3;
+	
+	/** Used to reverse the already projected vertices */
+	float2 FF_ViewDistances;
 	
 		/** Matrices */
 	matrix FF_ProjMatrix;

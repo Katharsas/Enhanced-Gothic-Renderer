@@ -69,8 +69,70 @@ float3 RotateModelToView(float3 v)
 /** Transforms a pre-transformed xyzrhw-coordinate into d3d11-space */
 float4 TransformXYZRHW(float4 xyzrhw)
 {
+	// 		x_p = x_center + x_cam * x_view * 1/z_cam
+	// <=>  x_cam = (x_p - x_center) / x_view * (1/z_cam)
+	// note: rhw = (1/z_cam)
+	
+	// 		FF_ViewDistances_vp.x = (vpData.xdim * 0.5f) / tan(fovH/2)
+	// 		=> FF_ViewDistances.x = 2 * vpData.xdim * FF_ViewDistances_vp.x;
+	
+	// 		vert->vertScrX = vpData.xcenter + (vert->vertCamSpace.n[VX] * viewDistanceX * vert->vertCamSpaceZInv);
+	//  <=> vert->vertScrX - vpData.xcenter = vert->vertCamSpace.n[VX] * viewDistanceX * vert->vertCamSpaceZInv
+	//  <=> (vert->vertScrX - vpData.xcenter) / viewDistanceX * vert->vertCamSpaceZInv = vert->vertCamSpace.n[VX]
+	//  => (-vert->vertScrY + vpData.ycenter) / viewDistanceY * vert->vertCamSpaceZInv = vert->vertCamSpace.n[VY]
+	
+	
+	/*float2 viewDistNormalized = (2 / (FF_ViewportSize)) * FF_ViewDistances;
+	float2 vpCenter = (FF_ViewportSize / 2.0f);
+	float zInv = xyzrhw.w;
+	
+	float3 v_cam;
+	v_cam.x = (xyzrhw.x - vpCenter.x) / (FF_ViewDistances.x * zInv);
+	v_cam.y = (-xyzrhw.y + vpCenter.y) / (FF_ViewDistances.y * zInv);
+	v_cam.z = 1 / zInv;
+	
+	xyzrhw.xyz = v_cam;
+	xyzrhw.x = (v_cam.x * viewDistNormalized.x) * zInv;
+	xyzrhw.y = (v_cam.y * viewDistNormalized.y) * zInv;
+		
+	xyzrhw.xy = clamp(xyzrhw, -1, 1);*/
+		
+	// Remove the stupid half-pixel offset from pre D3D10
+	//xyzrhw.xy -= 0.5f / FF_ViewportSize;
+	
+	// Xp = (X + 1) * Viewport.Width * 0.5 + Viewport.TopLeftX
+	// <=> Xp - Viewport.TopLeftX = (X + 1) * Viewport.Width * 0.5 + Viewport.TopLeftX
+	// <=> Xp - Viewport.TopLeftX = (X + 1) * Viewport.Width * 0.5
+	// <=> 2 * (Xp - Viewport.TopLeftX) = (X + 1) * Viewport.Width
+	// <=> X = ((2 * (Xp - Viewport.TopLeftX)) / Viewport.Width) - 1
+	
+	// Yp = (1 - Y) * Viewport.Height * 0.5 + Viewport.TopLeftY
+	// <=> Yp = (1 - Y) * Viewport.Height * 0.5 + Viewport.TopLeftY
+	// <=> (2 * (Yp - Viewport.TopLeftY)) / Viewport.Height = 1 - Y
+	// <=> ((2 * (Yp - Viewport.TopLeftY)) / Viewport.Height) - 1 = - Y
+	// <=> Y = 1 - ((2 * (Yp - Viewport.TopLeftY)) / Viewport.Height)
+
+	// Zp = Viewport.MinDepth + Z * (Viewport.MaxDepth - Viewport.MinDepth)
+	// <=> Zp = 0 + Z * (1)
+	// <=> Zp = Z
+	
+	// Convert from viewport-coordinates to normalized device coordinates
+	float3 ndc;
+	ndc.x = ((2 * (xyzrhw.x - FF_ViewportPos.x)) / FF_ViewportSize.x) - 1;
+	ndc.y = 1 - ((2 * (xyzrhw.y - FF_ViewportPos.y)) / FF_ViewportSize.y);
+	ndc.z = xyzrhw.z;
+	
+	// Convert to clip-space. rhw is actually 1/w ("reciprocal"). So to undo the devide by w, devide by the given 1/w.
+	float actualW = 1.0f / xyzrhw.w;
+	float3 clipSpace = ndc.xyz * actualW;
+	
+	// Remove the stupid half-pixel offset from pre D3D10
+	clipSpace.xy -= 0.5f / FF_ViewportSize;
+	
+	return float4(clipSpace, actualW);
+		
 	// Remove viewport-transformation
-	xyzrhw.xy -= FF_ViewportPos;
+	/*xyzrhw.xy -= FF_ViewportPos;
 	xyzrhw.xy = xyzrhw.xy * 2.0f - FF_ViewportSize;
 	
 	// We don't want this in pixels
@@ -80,10 +142,12 @@ float4 TransformXYZRHW(float4 xyzrhw)
 	xyzrhw.y = -xyzrhw.y;
 	
 	// Remove the stupid half-pixel offset from pre D3D10
-	xyzrhw.xy -= 0.5f / FF_ViewportSize;
+	xyzrhw.xy -= 0.5f / FF_ViewportSize;*/
 	
+	
+		
 	// Remove w-component, as it can mess things up when not 1. (Why? Not sure, sorry)
-	return float4(xyzrhw.xyz, 1);
+	return float4(xyzrhw.xyz, xyzrhw.w);
 }
 
 /** Selects the input from the given texture arg */
