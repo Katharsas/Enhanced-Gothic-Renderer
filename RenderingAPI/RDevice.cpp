@@ -510,5 +510,6 @@ std::vector<std::pair<std::string, RProfiler::RProfileResult>> RDevice::GetProfi
 /** Initializes the tweak-bar with values */
 void RDevice::AddTweakBarValues()
 {
+	RTools::TweakBar.AddButton("Renderer", "Reload Shaders", [](void*){RTools::ReloadShaders();});
 	RTools::TweakBar.AddBoolRW("Renderer", &DoDrawcalls, "Drawcalls");
 }
