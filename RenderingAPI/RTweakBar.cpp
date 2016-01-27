@@ -85,6 +85,26 @@ void RTweakBar::AddBoolR(const char* table, bool* value, const char* name)
 	TwAddVarRO(GetBarByName(table), name, TwType::TW_TYPE_BOOLCPP, value, nullptr);
 }
 
+/** Helper callback for button presses */
+void RTweakBar::OnButtonPressedHelper(void* userData)
+{
+	cbStruct* data = (cbStruct*)userData;
+
+	// Proxy to the given std::function
+	data->onButtonPressed(data->userdata);
+}
+
+void RTweakBar::AddButton(const char * table, const char * name, std::function<void(void*)> onButtonPressed, void* userdata)
+{
+	if(!GetBarByName(table))
+		return;
+
+	// Place the std::function into the map so we can call lambdas later
+	ButtonCallbackMap[std::string(table) + "|" + std::string(name)] = cbStruct(userdata, onButtonPressed);
+
+	TwAddButton(GetBarByName(table), name, OnButtonPressedHelper, &ButtonCallbackMap[std::string(table) + "|" + std::string(name)], "");
+}
+
 /** Returns the bar of the given name. Creates one if not present */
 TwBar* RTweakBar::GetBarByName(const char* name)
 {

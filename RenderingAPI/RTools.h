@@ -12,6 +12,8 @@
 #include "RSamplerState.h"
 #include "RLineRenderer.h"
 #include "RTweakBar.h"
+#include "RPixelShader.h"
+#include "RVertexShader.h"
 
 /**
  * Useful function for handling rendering specific things
@@ -35,6 +37,19 @@ namespace RTools
 	//static RVertexShader* LoadVertexShader(const std::string& file, 
 	//	const std::string& alias, 
 	//	const std::vector<std::vector<std::string>>& definitions);
+
+	/** Reloads all shaders */
+	static void ReloadShaders()
+	{
+		auto& psmap = REngine::ResourceCache->GetCacheMap<RPixelShader>();
+		auto& vsmap = REngine::ResourceCache->GetCacheMap<RVertexShader>();
+
+		for(auto s : psmap)
+			((RPixelShader*)s.second)->ReloadShader();
+
+		for(auto s : vsmap)
+			((RVertexShader*)s.second)->ReloadShader();
+	}
 
 	/** Generic state creation function */
 	template<typename T, typename S>

@@ -36,7 +36,12 @@ public:
 	void AddBoolRW(const char* table, bool* value, const char* name);
 	void AddBoolR(const char* table, bool* value, const char* name);
 
+	void AddButton(const char* table, const char* name, std::function<void(void*)> onButtonPressed, void* userdata = nullptr);
+
 protected:
+	/** Helper callback for button presses */
+	static void TW_CALL OnButtonPressedHelper(void* userData);
+
 	/** Returns the bar of the given name. Creates one if not present */
 	TwBar* GetBarByName(const char* name);
 };
