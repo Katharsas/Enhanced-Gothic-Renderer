@@ -49,3 +49,9 @@ bool RPixelShader::LoadShaderFromString(const std::string& shadercode, const std
 
 	return LoadShaderAPI();
 }
+
+/** Reloads the shader */
+bool RPixelShader::ReloadShader()
+{
+	return LoadShaderAPI();
+}

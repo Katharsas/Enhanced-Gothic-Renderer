@@ -49,3 +49,9 @@ bool RVertexShader::LoadShaderFromString(const std::string& shadercode, const st
 
 	return LoadShaderAPI();
 }
+
+/** Reloads the shader */
+bool RVertexShader::ReloadShader()
+{
+	return LoadShaderAPI();
+}

@@ -31,6 +31,7 @@ HRESULT RD3D11Shader::CompileShaderFromFile(const CHAR* szFileName, LPCSTR szEnt
 	// the release configuration of this program.
 	//dwShaderFlags |= D3DCOMPILE_DEBUG;
 #endif
+	dwShaderFlags |= 1;
 
 	// Construct makros
 	std::vector<D3D10_SHADER_MACRO> mvec;

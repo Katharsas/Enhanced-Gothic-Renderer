@@ -19,8 +19,16 @@ RD3D11VertexShader::~RD3D11VertexShader()
 */
 bool RD3D11VertexShader::LoadShaderAPI()
 {
+	ID3D11VertexShader* old = Shader;
+
 	// Compile and load
 	Shader = (ID3D11VertexShader*)CompileShaderAPI("VSMain", "vs_4_0", ST_VERTEX);
+
+	// Keep the old shader, in case this one failed
+	if(Shader)
+		SafeRelease(old);
+	else
+		Shader = old;
 
 	return Shader != NULL;
 }
