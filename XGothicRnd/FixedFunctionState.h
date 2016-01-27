@@ -103,7 +103,9 @@ struct FixedFunctionGraphicsState
 
 	/** Graphical Switches (Takes GSWITCH_*) */
 	unsigned int FF_GSwitches;
-	Vector2 ggs_Pad3;
+
+	/** Used to reverse the already projected vertices */
+	Vector2 FF_ViewDistances;
 
 	/** Matrices */
 	Matrix ProjMatrix;

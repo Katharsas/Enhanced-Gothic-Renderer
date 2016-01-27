@@ -24,6 +24,7 @@
 #include "../GGame.h"
 #include "../Engine.h"
 #include "../GTexture.h"
+#include "../zCCamera.h"
 
 // Currently active device
 class MyDirect3DDevice7;
@@ -740,6 +741,12 @@ public:
 			else if(BoundSurfaces[i])
 				sm.SetTexture(i, nullptr, EShaderType::ST_PIXEL);
 		}
+
+		// If we have an active camera, set the inverse-view-distance into the state as well
+		if(zCCamera::GetActiveCamera())
+			FixedFunctionStageInfo.FF_ViewDistances = zCCamera::GetActiveCamera()->GetViewDistances();
+		else
+			FixedFunctionStageInfo.FF_ViewDistances = float2(1.0f, 1.0f);
 
 		size_t ffStateHash = Toolbox::HashObject(FixedFunctionStageInfo);
 
