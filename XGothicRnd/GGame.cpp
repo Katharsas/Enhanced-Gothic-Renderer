@@ -355,7 +355,12 @@ void GGame::ExtractSkyParameters(ConstantBuffers::PerFrameConstantBuffer& cb)
 	cb.PF_SceneParams.S_FogRange = cb.PF_SceneParams.S_FogEnd - cb.PF_SceneParams.S_FogStart;
 	cb.PF_SceneParams.S_Time = m_FPSTimer.GetTotal();
 
-	memcpy(cb.PF_SceneParams.S_LightCLUT, sky->GetPolyLightCLUT(), sizeof(DWORD) * 256);
+
+	if(sky->GetPolyLightCLUT())
+		memcpy(cb.PF_SceneParams.S_LightCLUT, sky->GetPolyLightCLUT(), sizeof(DWORD) * 256);
+	else
+		memset(cb.PF_SceneParams.S_LightCLUT, 255, sizeof(DWORD) * 256); // TODO: These aren't the right values for indoor-rendering
+
 /*#if GAME_VERSION == VERSION_2_6_FIX
 	// Copy CLUT
 	memcpy(cb.PF_SceneParams.S_LightCLUT, sky->GetPolyLightCLUT(), sizeof(DWORD) * 256);

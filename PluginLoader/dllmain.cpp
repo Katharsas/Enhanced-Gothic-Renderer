@@ -1,23 +1,7 @@
-#include "pch.h"
-
-#include "ddraw.h"
-#include "d3d.h"
-#include "D3D7/MyDirectDraw.h"
-#include "../Shared/Logger.h"
-#include "DbgHelp.h"
-#include "Hooks.h"
-#include "Engine.h"
-#include "GGame.h"
-#include "SmartHeap.h"
-
-#pragma comment(lib, "winmm.lib")
-#pragma comment(lib, "Imagehlp.lib")
-
-// Signal nvidia drivers that we want the high-performance card on laptops
-// TODO: Doesn't seem to work, though!
-extern "C" {
-	_declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
-}
+#include <windows.h>
+#include <string>
+#include <vector>
+#include "../Shared/PluginInterface.h"
 
 // Function-decleration for DirectDrawCreateEx
 typedef HRESULT (WINAPI *DirectDrawCreateEx_t)(GUID FAR * lpGuid, LPVOID  *lplpDD, REFIID  iid,IUnknown FAR *pUnkOuter);
@@ -50,32 +34,81 @@ struct ddraw_dll
 	FARPROC	ReleaseDDThreadLock;
 } ddraw;
 
+/** Loaded plugins */
+std::vector<std::pair<HMODULE, GPlugin::IPlugin*>> g_LoadedPlugins;
+
+/** Loads the given plugin */
+bool LoadPlugin(const char* file)
+{
+	HMODULE plugin = LoadLibrary(file);
+	if(!plugin)
+		return false;
+
+	// Call the startup function to get an object
+	GPlugin::InitPlugin_t init = (GPlugin::InitPlugin_t)GetProcAddress(plugin, "InitPlugin");
+	if(!init)
+		return false;
+
+	GPlugin::IPlugin* pluginInterface = init();
+
+	pluginInterface->OnStartup();
+
+	// Save in plugin-stash
+	g_LoadedPlugins.push_back(std::make_pair(plugin, pluginInterface));
+	return true;
+}
+
+/** Loads all plugins in the given folder */
+bool LoadPlugins(const char* dir)
+{
+	WIN32_FIND_DATAA ffd;
+	HANDLE hFind = FindFirstFile((std::string(dir) + "*.dll").c_str(), &ffd);
+
+	if (INVALID_HANDLE_VALUE == hFind) 
+		return false;
+
+	do
+	{
+		// Load the plugin, if this is a dll-file
+		std::string name = ffd.cFileName;
+		if(name.find(".dll") != std::string::npos)
+		{
+			std::string n = std::string(dir) + ffd.cFileName;
+
+			// Perform load
+			OutputDebugString("Loading Plugin: ");
+			OutputDebugString(n.c_str());
+			OutputDebugString("\n");
+			LoadPlugin(n.c_str());
+		}
+	}
+	while (FindNextFile(hFind, &ffd) != 0);
+
+	return true;
+}
+
+
+
 /** Our hooked DirectDrawCreateEx */
 extern "C" HRESULT WINAPI HookedDirectDrawCreateEx(GUID FAR * lpGuid, LPVOID  *lplpDD, REFIID  iid,IUnknown FAR *pUnkOuter) {
 
+	static bool s_pluginsLoaded = false;
+	if(!s_pluginsLoaded)
+	{
+		// Load plugins
+		LoadPlugins("system\\Plugins\\");
+
+		s_pluginsLoaded = true;
+
+		// Call this again, in case we got hooked
+		return HookedDirectDrawCreateEx(lpGuid, lplpDD, iid, pUnkOuter);
+	}
+
 	DirectDrawCreateEx_t oProc = (DirectDrawCreateEx_t)ddraw.DirectDrawCreateEx;
 	return oProc(lpGuid, lplpDD, iid, pUnkOuter);	
-
-	// Initialize main graphics engine, if we don't have one yet
-	if(!REngine::RenderingDevice)
-	{
-		// Initialize rendering-engine
-		REngine::InitializeEngine();
-
-		// Create a rendering device
-		REngine::RenderingDevice->CreateDevice();
-
-		// Initialize Gothic-dependent Engine
-		if(!Engine::Initialize())
-			LogErrorBox() << "XRND: Failed to initialize Engine!";
-	};
-
-	// Create fake D3D7-Device to get the game starting
-	*lplpDD = new MyDirectDraw(NULL);
-
-	return S_OK;
 }
 
+#pragma region ProxyFunctions
 __declspec(naked) void FakeAcquireDDThreadLock()			{ _asm { jmp [ddraw.AcquireDDThreadLock] } }
 __declspec(naked) void FakeCheckFullscreen()				{ _asm { jmp [ddraw.CheckFullscreen] } }
 __declspec(naked) void FakeCompleteCreateSysmemSurface()	{ _asm { jmp [ddraw.CompleteCreateSysmemSurface] } }
@@ -105,35 +138,10 @@ __declspec(naked) void FakeGetOLEThunkData()				{ _asm { jmp [ddraw.GetOLEThunkD
 __declspec(naked) void FakeGetSurfaceFromDC()				{ _asm { jmp [ddraw.GetSurfaceFromDC] } }
 __declspec(naked) void FakeRegisterSpecialCase()			{ _asm { jmp [ddraw.RegisterSpecialCase] } }
 __declspec(naked) void FakeReleaseDDThreadLock()			{ _asm { jmp [ddraw.ReleaseDDThreadLock] } }
-
-/** Turns on all exceptions */
-void EnableCrashingOnCrashes()
-{
-	typedef BOOL (WINAPI *tGetPolicy)(LPDWORD lpFlags);
-	typedef BOOL (WINAPI *tSetPolicy)(DWORD dwFlags);
-	const DWORD EXCEPTION_SWALLOWING = 0x1;
-
-	HMODULE kernel32 = LoadLibraryA("kernel32.dll");
-	if(!kernel32)
-		return;
-
-	tGetPolicy pGetPolicy = (tGetPolicy)GetProcAddress(kernel32,
-		"GetProcessUserModeExceptionPolicy");
-	tSetPolicy pSetPolicy = (tSetPolicy)GetProcAddress(kernel32,
-		"SetProcessUserModeExceptionPolicy");
-	if (pGetPolicy && pSetPolicy)
-	{
-		DWORD dwFlags;
-		if (pGetPolicy(&dwFlags))
-		{
-			// Turn off the filter
-			pSetPolicy(dwFlags & ~EXCEPTION_SWALLOWING);
-		}
-	}
-}
+#pragma endregion
 
 /** Extracts all exports of the DDRAW.dll and puts them into teh ddraw-object, in case we need one 
-	of its functions again */
+of its functions again */
 void ExtractDDRAWExports()
 {
 	char infoBuf[MAX_PATH];
@@ -169,33 +177,32 @@ void ExtractDDRAWExports()
 	ddraw.GetSurfaceFromDC				= GetProcAddress(ddraw.dll, "GetSurfaceFromDC");
 	ddraw.RegisterSpecialCase			= GetProcAddress(ddraw.dll, "RegisterSpecialCase");
 	ddraw.ReleaseDDThreadLock			= GetProcAddress(ddraw.dll, "ReleaseDDThreadLock");
-
-	*(void**)&DirectDrawCreateEx_t = (void*)GetProcAddress(ddraw.dll, "DirectDrawCreateEx");
 }
 
 /** Entry-point */
 BOOL WINAPI DllMain(HINSTANCE hInst, DWORD reason, LPVOID lpvReserved) {
 	if (reason == DLL_PROCESS_ATTACH) 
 	{
-		// Don't let the old smartheap-library patch the CRT, if compile flags want.
-		UnpatchSmartHeap();
-
-		// Turn of exception-filter to get all crashes reported
-		EnableCrashingOnCrashes();
-
-		// Start with a fresh log
-		Log::Clear();
-		LogInfo() << "Starting DDRAW Proxy DLL.";
-
+		// Extract addresses of the original ddraw.dll
 		ExtractDDRAWExports();
 
 	} else if (reason == DLL_PROCESS_DETACH) {
 		FreeLibrary(ddraw.dll);
 
-		if(!lpvReserved) // nullptr means simple detach. Otherwise the process was alredy exited
-		REngine::UninitializeEngine();
+		// Clear plugins
+		for(auto& p : g_LoadedPlugins)
+		{
+			GPlugin::ClosePlugin_t close = (GPlugin::ClosePlugin_t)GetProcAddress(p.first, "ClosePlugin");
 
-		LogInfo() << "DDRAW Proxy DLL signing off.\n";
+			if(!close)
+				continue;
+
+			// Call ending-method
+			p.second->OnShutdown();
+
+			// Delete the plugin-interface
+			close(p.second);
+		}
 	}
 	return TRUE;
 };

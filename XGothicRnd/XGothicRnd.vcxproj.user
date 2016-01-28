@@ -31,9 +31,9 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_NO_G112f|Win32'">
-    <LocalDebuggerCommand>$(G1SEQ_SYSTEM_PATH)\Gothic.exe</LocalDebuggerCommand>
+    <LocalDebuggerCommand>$(G11f_SYSTEM_PATH)\Gothic.exe</LocalDebuggerCommand>
     <LocalDebuggerCommandArguments>-zWindow -ZNOEXHND</LocalDebuggerCommandArguments>
-    <LocalDebuggerWorkingDirectory>$(G1SEQ_SYSTEM_PATH)</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerWorkingDirectory>$(G11f_SYSTEM_PATH)</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_CRT_NoOpt|Win32'">

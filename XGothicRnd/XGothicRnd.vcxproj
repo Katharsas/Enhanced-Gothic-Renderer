@@ -213,7 +213,7 @@
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>..\RenderingAPI;$(DXSDK_DIR)\Include;$(IncludePath)</IncludePath>
     <LibraryPath>..\Debug;$(DXSDK_DIR)\Lib\x86;$(LibraryPath)</LibraryPath>
-    <TargetName>ddraw</TargetName>
+    <TargetName>EnhancedGothicRenderer</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -222,42 +222,42 @@
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(DXSDK_DIR)\Include;..\RenderingAPI;..\MapHooks;$(IncludePath)</IncludePath>
     <LibraryPath>$(DXSDK_DIR)\Lib\x86;..\lib;$(LibraryPath)</LibraryPath>
-    <TargetName>ddraw</TargetName>
+    <TargetName>EnhancedGothicRenderer</TargetName>
     <SourcePath>E:\Code\g2addon\work;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='OriginalRnd|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(DXSDK_DIR)\Include;..\RenderingAPI;..\MapHooks;$(IncludePath)</IncludePath>
     <LibraryPath>$(DXSDK_DIR)\Lib\x86;..\lib;$(LibraryPath)</LibraryPath>
-    <TargetName>ddraw</TargetName>
+    <TargetName>EnhancedGothicRenderer</TargetName>
     <SourcePath>E:\Code\g2addon\work;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_NoOpt|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(DXSDK_DIR)\Include;..\RenderingAPI;..\MapHooks;$(IncludePath)</IncludePath>
     <LibraryPath>$(DXSDK_DIR)\Lib\x86;..\lib;$(LibraryPath)</LibraryPath>
-    <TargetName>ddraw</TargetName>
+    <TargetName>EnhancedGothicRenderer</TargetName>
     <SourcePath>E:\Code\g2addon\work;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_NO_G18kmod|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(DXSDK_DIR)\Include;..\RenderingAPI;..\MapHooks;$(IncludePath)</IncludePath>
     <LibraryPath>$(DXSDK_DIR)\Lib\x86;..\lib;$(LibraryPath)</LibraryPath>
-    <TargetName>ddraw</TargetName>
+    <TargetName>EnhancedGothicRenderer</TargetName>
     <SourcePath>E:\Code\g2addon\work;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_NO_G112f|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(DXSDK_DIR)\Include;..\RenderingAPI;..\MapHooks;$(IncludePath)</IncludePath>
     <LibraryPath>$(DXSDK_DIR)\Lib\x86;..\lib;$(LibraryPath)</LibraryPath>
-    <TargetName>ddraw</TargetName>
+    <TargetName>EnhancedGothicRenderer</TargetName>
     <SourcePath>E:\Code\g2addon\work;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_CRT_NoOpt|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(DXSDK_DIR)\Include;..\RenderingAPI;..\MapHooks;$(IncludePath)</IncludePath>
     <LibraryPath>$(DXSDK_DIR)\Lib\x86;..\lib;$(LibraryPath)</LibraryPath>
-    <TargetName>ddraw</TargetName>
+    <TargetName>EnhancedGothicRenderer</TargetName>
     <SourcePath>E:\Code\g2addon\work;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -292,7 +292,8 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ModuleDefinitionFile>ddraw.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
     </Link>
     <CustomBuildStep>
       <Command>copy "shaders\*.*" "$(G1SEQ_SYSTEM_PATH)\GD3D11\shaders\"
@@ -336,13 +337,15 @@ copy "$(OutDir)$(TargetName).pdb" "$(G1SEQ_SYSTEM_PATH)\ddraw.pdb"</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
-      <ModuleDefinitionFile>ddraw.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
     </Link>
     <CustomBuildStep>
       <Command>copy "shaders\*.*" "$(G2_SYSTEM_PATH)\GD3D11\shaders\"
-copy "$(OutDir)$(TargetName)$(TargetExt)" "$(G2_SYSTEM_PATH)\ddraw.dll"
-copy "$(OutDir)$(TargetName).pdb" "$(G2_SYSTEM_PATH)\ddraw.pdb"
-call "$(ProjectDir)\UnPatchSmartHeap.bat"</Command>
+
+copy "$(OutDir)$(TargetName)$(TargetExt)" "$(G2_SYSTEM_PATH)\Plugins\$(TargetName).dll"
+
+</Command>
     </CustomBuildStep>
     <CustomBuildStep>
       <Outputs>xxx</Outputs>
@@ -367,7 +370,8 @@ call "$(ProjectDir)\UnPatchSmartHeap.bat"</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
-      <ModuleDefinitionFile>ddraw.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
     </Link>
     <CustomBuildStep>
       <Command>del "$(G2_SYSTEM_PATH)\ddraw.dll"
@@ -395,13 +399,14 @@ call "$(ProjectDir)\UnPatchSmartHeap.bat"</Command>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <ModuleDefinitionFile>ddraw.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <CustomBuildStep>
       <Command>copy "shaders\*.*" "$(G2_SYSTEM_PATH)\GD3D11\shaders\"
-copy "$(OutDir)$(TargetName)$(TargetExt)" "$(G2_SYSTEM_PATH)\ddraw.dll"
-copy "$(OutDir)$(TargetName).pdb" "$(G2_SYSTEM_PATH)\ddraw.pdb"
+
+copy "$(OutDir)$(TargetName)$(TargetExt)" "$(G2_SYSTEM_PATH)\Plugins\$(TargetName).dll"
 call "$(ProjectDir)\UnPatchSmartHeap.bat"</Command>
     </CustomBuildStep>
     <CustomBuildStep>
@@ -426,14 +431,16 @@ call "$(ProjectDir)\UnPatchSmartHeap.bat"</Command>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <ModuleDefinitionFile>ddraw.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <CustomBuildStep>
       <Command>copy "shaders\*.*" "$(G1_SYSTEM_PATH)\GD3D11\shaders\"
-copy "$(OutDir)$(TargetName)$(TargetExt)" "$(G1_SYSTEM_PATH)\ddraw.dll"
-copy "$(OutDir)$(TargetName).pdb" "$(G1_SYSTEM_PATH)\ddraw.pdb"
-call "$(ProjectDir)\UnPatchSmartHeap.bat"</Command>
+
+copy "$(OutDir)$(TargetName)$(TargetExt)" "$(G1_SYSTEM_PATH)\Plugins\$(TargetName).dll"
+
+</Command>
     </CustomBuildStep>
     <CustomBuildStep>
       <Outputs>xxx</Outputs>
@@ -457,17 +464,18 @@ call "$(ProjectDir)\UnPatchSmartHeap.bat"</Command>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <ModuleDefinitionFile>ddraw.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
-    <CustomBuildStep>
-      <Command>copy "shaders\*.*" "$(G1SEQ_SYSTEM_PATH)\GD3D11\shaders\"
-copy "$(OutDir)$(TargetName)$(TargetExt)" "$(G1SEQ_SYSTEM_PATH)\ddraw.dll"
-copy "$(OutDir)$(TargetName).pdb" "$(G1SEQ_SYSTEM_PATH)\ddraw.pdb"
-call "$(ProjectDir)\UnPatchSmartHeap.bat"</Command>
-    </CustomBuildStep>
+    <CustomBuildStep />
     <CustomBuildStep>
       <Outputs>xxx</Outputs>
+      <Command>copy "shaders\*.*" "$(G11f_SYSTEM_PATH)\GD3D11\shaders\"
+
+copy "$(OutDir)$(TargetName)$(TargetExt)" "$(G11f_SYSTEM_PATH)\Plugins\$(TargetName).dll"
+
+</Command>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_CRT_NoOpt|Win32'">
@@ -488,13 +496,14 @@ call "$(ProjectDir)\UnPatchSmartHeap.bat"</Command>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <ModuleDefinitionFile>ddraw.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <CustomBuildStep>
       <Command>copy "shaders\*.*" "$(G2_SYSTEM_PATH)\GD3D11\shaders\"
-copy "$(OutDir)$(TargetName)$(TargetExt)" "$(G2_SYSTEM_PATH)\ddraw.dll"
 
+copy "$(OutDir)$(TargetName)$(TargetExt)" "$(G2_SYSTEM_PATH)\Plugins\$(TargetName).dll"
 call "$(ProjectDir)\PatchSmartHeap.bat"</Command>
     </CustomBuildStep>
     <CustomBuildStep>
@@ -612,7 +621,15 @@ call "$(ProjectDir)\PatchSmartHeap.bat"</Command>
   <ItemGroup>
     <ClCompile Include="D3D7\FakeDirectDrawSurface7.cpp" />
     <ClCompile Include="D3D7\MyDirectDrawSurface7.cpp" />
-    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="dllmain.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_NoOpt|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_NO_G112f|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_NO_G18kmod|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OriginalRnd|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_CRT_NoOpt|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="GBaseDrawable.cpp" />
     <ClCompile Include="GBspNode.cpp" />
@@ -648,6 +665,7 @@ call "$(ProjectDir)\PatchSmartHeap.bat"</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='OriginalRnd|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="PluginInterface.cpp" />
     <ClCompile Include="SmartHeap.cpp" />
     <ClCompile Include="zCBspTreeHk.cpp" />
     <ClCompile Include="zCCameraHk.cpp" />
@@ -664,6 +682,7 @@ call "$(ProjectDir)\PatchSmartHeap.bat"</Command>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\RenderingAPI\IVisualChangedObserver.h" />
+    <ClInclude Include="..\Shared\PluginInterface.h" />
     <ClInclude Include="BasicTimer.h" />
     <ClInclude Include="D3D7\FakeDirectDrawSurface7.h" />
     <ClInclude Include="D3D7\MyClipper.h" />

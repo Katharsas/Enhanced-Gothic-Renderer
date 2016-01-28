@@ -41,6 +41,9 @@
     <Filter Include="zEngineHooks\1.12f">
       <UniqueIdentifier>{a8141626-44ef-48e1-8c2d-614d8ecb7d7a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Plugin">
+      <UniqueIdentifier>{c40c5f41-e86f-4da8-a135-0b5e2d363538}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="D3D7\MyDirectDrawSurface7.cpp">
@@ -171,6 +174,9 @@
     </ClCompile>
     <ClCompile Include="ZenGinValidation.cpp">
       <Filter>zEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="PluginInterface.cpp">
+      <Filter>Plugin</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -458,6 +464,9 @@
     </ClInclude>
     <ClInclude Include="ZenGinValidation.h">
       <Filter>zEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Shared\PluginInterface.h">
+      <Filter>Plugin</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
