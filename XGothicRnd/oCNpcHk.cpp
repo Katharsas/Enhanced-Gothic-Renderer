@@ -21,7 +21,7 @@ REGISTER_HOOK(oCNpcHk);
 
 bool UpdateModel(oCNpc* npc)
 {
-	GWorld* wld = GWorld::GetFromSource(npc->GetHomeWorld());
+	GWorld* wld = GWorld::QueryFromSource(npc->GetHomeWorld());
 
 	// Handle this as if the whole visual changed, remove and add the vob again, recreate the visual.
 	// This will update everything, but isn't the fastest way but a very robust one. 
