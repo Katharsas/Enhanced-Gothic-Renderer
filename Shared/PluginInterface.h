@@ -17,7 +17,9 @@ namespace GPlugin
 	class IPlugin
 	{
 	public:
-		/** Called right after the game started */
+		/** Called right after the game started. 
+			Return false to cancel the loading process and to free
+			the library again. */
 		virtual bool OnStartup(){return true;}
 
 		/** Called right before the game closes */
