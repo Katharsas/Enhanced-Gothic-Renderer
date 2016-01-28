@@ -68,7 +68,7 @@ struct FixedFunctionGraphicsState
 		FF_AmbientLighting = Vector3(1.0f,1.0f,1.0f);
 		FF_TextureFactor = Vector4(1.0f,1.0f,1.0f,1.0f);
 
-		FF_AlphaRef = 0.5f;
+		FF_AlphaRef = 0.0f;
 
 		FF_GSwitches = 0;
 	}
