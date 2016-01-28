@@ -31,4 +31,4 @@
 
 #define R_PI 3.14159265358979f
 
-#define SafeRelease(x) if(x){x->Release(); x = NULL;}
+#define SafeRelease(x) do{if(x){x->Release(); x = NULL;}}while(0)
