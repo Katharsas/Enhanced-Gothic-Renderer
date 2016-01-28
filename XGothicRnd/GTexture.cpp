@@ -75,7 +75,7 @@ void GTexture::OnSurfaceUnlocked(void* imageData, unsigned int sizeInBytes, std:
 	LEB(m_Texture->CreateTexture(imageData, 
 		sizeInBytes, 
 		INT2(ddsd.dwWidth, ddsd.dwHeight), 
-		ddsd.dwMipMapCount,
+		m_CurrentSurface->ComputeBitsPerPixel() != 16 ? ddsd.dwMipMapCount : 1, // Force mipcount to 1 on 16-bit
 		m_CurrentSurface->GetInternalTextureFormat(),
 		B_SHADER_RESOURCE,
 		U_DEFAULT,
