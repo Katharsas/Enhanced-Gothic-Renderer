@@ -204,7 +204,7 @@ public:
 			// Hack: Don't allow MIPs on 16-bit surfaces
 			// Only a very small number of mods use these (L'Hiver is the only one I know so far)
 			// and thus it shouldn't be too much of a problem
-			lpDDSurfaceDesc2->dwMipMapCount = 1;
+			//lpDDSurfaceDesc2->dwMipMapCount = 1;
 		}
 		// Create surface
 		MyDirectDrawSurface7* mySurface = new MyDirectDrawSurface7();
