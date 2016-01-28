@@ -182,24 +182,44 @@ HRESULT FakeDirectDrawSurface7::Lock( LPRECT lpDestRect, LPDDSURFACEDESC2 lpDDSu
 {
 	*lpDDSurfaceDesc = OriginalDesc;
 
-	// Allocate some temporary data
-	unsigned int size = RBaseTexture::ComputeSizeInBytes(MipLevel, 
-		INT2(OriginalDesc.dwWidth, OriginalDesc.dwHeight), 
-		Resource->GetInternalTextureFormat());
-	DataLocal = new unsigned char[size];
-
-	// Give out data and pitch
-	lpDDSurfaceDesc->lpSurface = DataLocal;
-	lpDDSurfaceDesc->lPitch = RTexture::ComputeRowPitchBytes(MipLevel, 
-		INT2(OriginalDesc.dwWidth, OriginalDesc.dwHeight), 
-		Resource->GetInternalTextureFormat());
-
 	// Compute size of this mip
 	int px = (int)std::max(1.0f, floor(OriginalDesc.dwWidth / pow(2.0f, MipLevel)));
 	int py = (int)std::max(1.0f, floor(OriginalDesc.dwHeight / pow(2.0f, MipLevel)));
-	
+
 	lpDDSurfaceDesc->dwWidth = px;
 	lpDDSurfaceDesc->dwHeight = py;
+
+	// Half everything if this is 16-bit
+	int redBits = Toolbox::GetNumberOfBits(OriginalDesc.ddpfPixelFormat.dwRBitMask);
+	if(redBits == 5)
+	{
+		// Allocate some temporary data
+		unsigned int size = RBaseTexture::ComputeSizeInBytes(MipLevel,
+			INT2(OriginalDesc.dwWidth, OriginalDesc.dwHeight),
+			Resource->GetInternalTextureFormat()) / 2;
+		DataLocal = new unsigned char[size];
+
+		// Give out data and pitch
+		lpDDSurfaceDesc->lpSurface = DataLocal;
+		lpDDSurfaceDesc->lPitch = RTexture::ComputeRowPitchBytes(MipLevel,
+			INT2(OriginalDesc.dwWidth, OriginalDesc.dwHeight),
+			Resource->GetInternalTextureFormat()) / 2;
+	}
+	else
+	{
+		// Allocate some temporary data
+		unsigned int size = RBaseTexture::ComputeSizeInBytes(MipLevel,
+			INT2(OriginalDesc.dwWidth, OriginalDesc.dwHeight),
+			Resource->GetInternalTextureFormat());
+		DataLocal = new unsigned char[size];
+
+		// Give out data and pitch
+		lpDDSurfaceDesc->lpSurface = DataLocal;
+		lpDDSurfaceDesc->lPitch = RTexture::ComputeRowPitchBytes(MipLevel,
+			INT2(OriginalDesc.dwWidth, OriginalDesc.dwHeight),
+			Resource->GetInternalTextureFormat());
+	}
+
 
 	return S_OK;
 }

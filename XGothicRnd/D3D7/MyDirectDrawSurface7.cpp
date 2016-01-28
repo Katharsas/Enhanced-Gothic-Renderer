@@ -288,10 +288,15 @@ void MyDirectDrawSurface7::FinalizeTexture()
 
 	// Fill a vector of pointers to mipdata
 	std::vector<void*> mipData;
-	for each (MyDirectDrawSurface7* srf in attachedSurfaces)
+
+	// Don't use any mips for 16-bit!
+	if(ComputeBitsPerPixel() != 16)
 	{
-		FakeDirectDrawSurface7* mip = (FakeDirectDrawSurface7*)srf;
-		mipData.push_back(mip->GetCachedData());
+		for each (MyDirectDrawSurface7* srf in attachedSurfaces)
+		{
+			FakeDirectDrawSurface7* mip = (FakeDirectDrawSurface7*)srf;
+			mipData.push_back(mip->GetCachedData());
+		}
 	}
 
 	// Move the data to the engine-object
