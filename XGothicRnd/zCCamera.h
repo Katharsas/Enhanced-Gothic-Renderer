@@ -215,6 +215,12 @@ public:
 	{
 		return m_Signbits;
 	}
+
+	/** Returns the view-distances */
+	float2 GetViewDistances()
+	{
+		return float2(m_ViewDistanceX, m_ViewDistanceY);
+	}
 private:
 
 	Plane m_Frustumplanes[6];
@@ -281,8 +287,13 @@ private:
 	// View distances and clipping planes
 	float m_FarPlane;
 	float m_NearPlane;
+
+	// viewDistanceX = (vpData.xdim * 0.5f) / tan(fovH/2));
+	// viewDistanceY = (vpData.ydim * 0.5f) / tan(fovV/2));
 	float m_ViewDistanceX;
 	float m_ViewDistanceY;
+
+
 	float m_ViewDistanceXInv;
 	float m_ViewDistanceYInv;
 	zBOOL m_VobFarClipZ;
