@@ -72,4 +72,13 @@ void DoAlphaTest(float alpha)
 		clip(alpha - FF_AlphaRef);
 }
 
+/** Computes the fog-term */
+float3 FF_ApplyFogLinear(float distance, float3 color)
+{
+	float fogRange = FF_FogFar - FF_FogNear;
+	float l = saturate((distance-FF_FogNear)/(fogRange)) * FF_FogWeight;
+	
+	return lerp(color.rgb, FF_FogColor, l);
+}
+
 #endif

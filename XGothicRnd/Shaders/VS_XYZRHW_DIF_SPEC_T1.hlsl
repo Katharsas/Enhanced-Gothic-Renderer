@@ -31,7 +31,7 @@ VS_OUTPUT VSMain( XYZRHW_DIF_SPEC_T1_Vertex Input )
 	Output.vTexcoord = Input.texCoord;
 	Output.vDiffuse  = Input.color;
 	Output.vNormalVS = float3(0,0,0);
-	Output.vViewPosition = float3(0,0,0);
+	Output.vViewPosition = float3(0,0,1 / Input.xyzrhw.w);
 	
 	return Output;
 }

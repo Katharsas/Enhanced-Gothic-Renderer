@@ -28,6 +28,8 @@ float4 PSMain( PS_INPUT Input ) : SV_TARGET
 {
 	float4 color = GetColorFromStates(Input.vDiffuse.bgra, Input.vTexcoord, Input.vTexcoord2, SS_Linear);
 	
+	color.rgb = FF_ApplyFogLinear(Input.vViewPosition.z, color.rgb);
+	
 	//return float4(1,0,0,1);
 	return color;
 }
