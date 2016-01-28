@@ -43,10 +43,11 @@ void __fastcall zCTextureHk::zCTexture__Constructor(zCTexture* thisptr, void* ed
 /** Called when a texture is being loaded */
 zBOOL __fastcall zCTextureHk::zCTexture__CacheInNamed(zCTexture* thisptr, void* edx, const zSTRING *texFileName)
 {
-#if GAME_VERSION != VERSION_2_6_FIX
-	if(std::string(texFileName->ToChar()) == "SKYDAY_LAYER0_A0.TGA")
+/*#if GAME_VERSION != VERSION_2_6_FIX
+	if(std::string(texFileName->ToChar()) == "SKYDAY_LAYER0_A0.TGA" 
+		|| std::string(texFileName->ToChar()) == "SKYNIGHT_LAYER0_A0.TGA")
 		return FALSE;
-#endif
+#endif*/
 
 	return GET_HOOK(zCTextureHk).m_CacheInNamed(thisptr, texFileName);
 }
