@@ -235,12 +235,6 @@
     <ClInclude Include="RSemaphore.h">
       <Filter>Wrappers</Filter>
     </ClInclude>
-    <ClInclude Include="readerwriterqueue.h">
-      <Filter>Lib</Filter>
-    </ClInclude>
-    <ClInclude Include="atomicops.h">
-      <Filter>Lib</Filter>
-    </ClInclude>
     <ClInclude Include="RTimer.h">
       <Filter>Lib</Filter>
     </ClInclude>

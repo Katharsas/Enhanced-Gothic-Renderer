@@ -128,11 +128,11 @@ struct Vector2 : public XMFLOAT2
 };
 
 // Binary operators
-Vector2 operator+ (const Vector2& V1, const Vector2& V2);
-Vector2 operator- (const Vector2& V1, const Vector2& V2);
-Vector2 operator* (const Vector2& V1, const Vector2& V2);
+Vector2 operator+ (const Vector2& v1, const Vector2& V2);
+Vector2 operator- (const Vector2& v1, const Vector2& V2);
+Vector2 operator* (const Vector2& v1, const Vector2& V2);
 Vector2 operator* (const Vector2& V, float S);
-Vector2 operator/ (const Vector2& V1, const Vector2& V2);
+Vector2 operator/ (const Vector2& v1, const Vector2& V2);
 Vector2 operator* (float S, const Vector2& V);
 
 //------------------------------------------------------------------------------
@@ -239,11 +239,11 @@ struct Vector3 : public XMFLOAT3
 };
 
 // Binary operators
-//Vector3 operator+ (const Vector3& V1, const Vector3& V2);
-//Vector3 operator- (const Vector3& V1, const Vector3& V2);
-//Vector3 operator* (const Vector3& V1, const Vector3& V2);
+//Vector3 operator+ (const Vector3& v1, const Vector3& V2);
+//Vector3 operator- (const Vector3& v1, const Vector3& V2);
+//Vector3 operator* (const Vector3& v1, const Vector3& V2);
 //Vector3 operator* (const Vector3& V, float S);
-//Vector3 operator/ (const Vector3& V1, const Vector3& V2);
+//Vector3 operator/ (const Vector3& v1, const Vector3& V2);
 //Vector3 operator* (float S, const Vector3& V);
 
 //------------------------------------------------------------------------------
@@ -354,11 +354,11 @@ struct Vector4 : public XMFLOAT4
 };
 
 // Binary operators
-Vector4 operator+ (const Vector4& V1, const Vector4& V2);
-Vector4 operator- (const Vector4& V1, const Vector4& V2);
-Vector4 operator* (const Vector4& V1, const Vector4& V2);
+Vector4 operator+ (const Vector4& v1, const Vector4& V2);
+Vector4 operator- (const Vector4& v1, const Vector4& V2);
+Vector4 operator* (const Vector4& v1, const Vector4& V2);
 Vector4 operator* (const Vector4& V, float S);
-Vector4 operator/ (const Vector4& V1, const Vector4& V2);
+Vector4 operator/ (const Vector4& v1, const Vector4& V2);
 Vector4 operator* (float S, const Vector4& V);
 
 //------------------------------------------------------------------------------
@@ -738,30 +738,30 @@ namespace std
 
     template<> struct less<DirectX::SimpleMath::Vector2>
     {
-        bool operator()(const DirectX::SimpleMath::Vector2& V1, const DirectX::SimpleMath::Vector2& V2) const
+        bool operator()(const DirectX::SimpleMath::Vector2& v1, const DirectX::SimpleMath::Vector2& V2) const
         {
-            return ( (V1.x < V2.x) || ((V1.x == V2.x) && (V1.y < V2.y)) );
+            return ( (v1.x < V2.x) || ((v1.x == V2.x) && (v1.y < V2.y)) );
         }
     };
 
     template<> struct less<DirectX::SimpleMath::Vector3>
     {
-        bool operator()(const DirectX::SimpleMath::Vector3& V1, const DirectX::SimpleMath::Vector3& V2) const
+        bool operator()(const DirectX::SimpleMath::Vector3& v1, const DirectX::SimpleMath::Vector3& V2) const
         {
-            return ( (V1.x < V2.x)
-                     || ((V1.x == V2.x) && (V1.y < V2.y))
-                     || ((V1.x == V2.x) && (V1.y == V2.y) && (V1.z < V2.z)) );
+            return ( (v1.x < V2.x)
+                     || ((v1.x == V2.x) && (v1.y < V2.y))
+                     || ((v1.x == V2.x) && (v1.y == V2.y) && (v1.z < V2.z)) );
         }
     };
 
     template<> struct less<DirectX::SimpleMath::Vector4>
     {
-        bool operator()(const DirectX::SimpleMath::Vector4& V1, const DirectX::SimpleMath::Vector4& V2) const
+        bool operator()(const DirectX::SimpleMath::Vector4& v1, const DirectX::SimpleMath::Vector4& V2) const
         {
-            return ( (V1.x < V2.x)
-                     || ((V1.x == V2.x) && (V1.y < V2.y))
-                     || ((V1.x == V2.x) && (V1.y == V2.y) && (V1.z < V2.z))
-                     || ((V1.x == V2.x) && (V1.y == V2.y) && (V1.z == V2.z) && (V1.w < V2.w)) );
+            return ( (v1.x < V2.x)
+                     || ((v1.x == V2.x) && (v1.y < V2.y))
+                     || ((v1.x == V2.x) && (v1.y == V2.y) && (v1.z < V2.z))
+                     || ((v1.x == V2.x) && (v1.y == V2.y) && (v1.z == V2.z) && (v1.w < V2.w)) );
         }
     };
 

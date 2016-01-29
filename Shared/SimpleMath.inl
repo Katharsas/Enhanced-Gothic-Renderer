@@ -97,10 +97,10 @@ inline Vector2& Vector2::operator/= (float S)
 // Binary operators
 //------------------------------------------------------------------------------
 
-inline Vector2 operator+ (const Vector2& V1, const Vector2& V2)
+inline Vector2 operator+ (const Vector2& v1, const Vector2& V2)
 {
     using namespace DirectX;
-    XMVECTOR v1 = XMLoadFloat2( &V1 );
+    XMVECTOR v1 = XMLoadFloat2( &v1 );
     XMVECTOR v2 = XMLoadFloat2( &V2 );
     XMVECTOR X = XMVectorAdd(v1,v2);
     Vector2 R;
@@ -108,10 +108,10 @@ inline Vector2 operator+ (const Vector2& V1, const Vector2& V2)
     return R;
 }
 
-inline Vector2 operator- (const Vector2& V1, const Vector2& V2)
+inline Vector2 operator- (const Vector2& v1, const Vector2& V2)
 {
     using namespace DirectX;
-    XMVECTOR v1 = XMLoadFloat2( &V1 );
+    XMVECTOR v1 = XMLoadFloat2( &v1 );
     XMVECTOR v2 = XMLoadFloat2( &V2 );
     XMVECTOR X = XMVectorSubtract(v1,v2);
     Vector2 R;
@@ -119,10 +119,10 @@ inline Vector2 operator- (const Vector2& V1, const Vector2& V2)
     return R;
 }
 
-inline Vector2 operator* (const Vector2& V1, const Vector2& V2)
+inline Vector2 operator* (const Vector2& v1, const Vector2& V2)
 {
     using namespace DirectX;
-    XMVECTOR v1 = XMLoadFloat2( &V1 );
+    XMVECTOR v1 = XMLoadFloat2( &v1 );
     XMVECTOR v2 = XMLoadFloat2( &V2 );
     XMVECTOR X = XMVectorMultiply(v1,v2);
     Vector2 R;
@@ -140,10 +140,10 @@ inline Vector2 operator* (const Vector2& V, float S)
     return R;
 }
 
-inline Vector2 operator/ (const Vector2& V1, const Vector2& V2)
+inline Vector2 operator/ (const Vector2& v1, const Vector2& V2)
 {
     using namespace DirectX;
-    XMVECTOR v1 = XMLoadFloat2( &V1 );
+    XMVECTOR v1 = XMLoadFloat2( &v1 );
     XMVECTOR v2 = XMLoadFloat2( &V2 );
     XMVECTOR X = XMVectorDivide(v1,v2);
     Vector2 R;
@@ -676,10 +676,10 @@ inline Vector3 Vector3::operator- () const
 // Binary operators
 //------------------------------------------------------------------------------
 
-inline Vector3 operator+ (const Vector3& V1, const Vector3& V2)
+inline Vector3 operator+ (const Vector3& v1, const Vector3& V2)
 {
     using namespace DirectX;
-    XMVECTOR v1 = XMLoadFloat3( &V1 );
+    XMVECTOR v1 = XMLoadFloat3( &v1 );
     XMVECTOR v2 = XMLoadFloat3( &V2 );
     XMVECTOR X = XMVectorAdd(v1,v2);
     Vector3 R;
@@ -687,10 +687,10 @@ inline Vector3 operator+ (const Vector3& V1, const Vector3& V2)
     return R;
 }
 
-inline Vector3 operator- (const Vector3& V1, const Vector3& V2)
+inline Vector3 operator- (const Vector3& v1, const Vector3& V2)
 {
     using namespace DirectX;
-    XMVECTOR v1 = XMLoadFloat3( &V1 );
+    XMVECTOR v1 = XMLoadFloat3( &v1 );
     XMVECTOR v2 = XMLoadFloat3( &V2 );
     XMVECTOR X = XMVectorSubtract(v1,v2);
     Vector3 R;
@@ -698,10 +698,10 @@ inline Vector3 operator- (const Vector3& V1, const Vector3& V2)
     return R;
 }
 
-inline Vector3 operator* (const Vector3& V1, const Vector3& V2)
+inline Vector3 operator* (const Vector3& v1, const Vector3& V2)
 {
     using namespace DirectX;
-    XMVECTOR v1 = XMLoadFloat3( &V1 );
+    XMVECTOR v1 = XMLoadFloat3( &v1 );
     XMVECTOR v2 = XMLoadFloat3( &V2 );
     XMVECTOR X = XMVectorMultiply(v1,v2);
     Vector3 R;
@@ -719,10 +719,10 @@ inline Vector3 operator* (const Vector3& V, float S)
     return R;
 }
 
-inline Vector3 operator/ (const Vector3& V1, const Vector3& V2)
+inline Vector3 operator/ (const Vector3& v1, const Vector3& V2)
 {
     using namespace DirectX;
-    XMVECTOR v1 = XMLoadFloat3( &V1 );
+    XMVECTOR v1 = XMLoadFloat3( &v1 );
     XMVECTOR v2 = XMLoadFloat3( &V2 );
     XMVECTOR X = XMVectorDivide(v1,v2);
     Vector3 R;
@@ -1259,10 +1259,10 @@ inline Vector4 Vector4::operator- () const
 // Binary operators
 //------------------------------------------------------------------------------
 
-inline Vector4 operator+ (const Vector4& V1, const Vector4& V2)
+inline Vector4 operator+ (const Vector4& v1, const Vector4& V2)
 {
     using namespace DirectX;
-    XMVECTOR v1 = XMLoadFloat4( &V1 );
+    XMVECTOR v1 = XMLoadFloat4( &v1 );
     XMVECTOR v2 = XMLoadFloat4( &V2 );
     XMVECTOR X = XMVectorAdd(v1,v2);
     Vector4 R;
@@ -1270,10 +1270,10 @@ inline Vector4 operator+ (const Vector4& V1, const Vector4& V2)
     return R;
 }
 
-inline Vector4 operator- (const Vector4& V1, const Vector4& V2)
+inline Vector4 operator- (const Vector4& v1, const Vector4& V2)
 {
     using namespace DirectX;
-    XMVECTOR v1 = XMLoadFloat4( &V1 );
+    XMVECTOR v1 = XMLoadFloat4( &v1 );
     XMVECTOR v2 = XMLoadFloat4( &V2 );
     XMVECTOR X = XMVectorSubtract(v1,v2);
     Vector4 R;
@@ -1281,10 +1281,10 @@ inline Vector4 operator- (const Vector4& V1, const Vector4& V2)
     return R;
 }
 
-inline Vector4 operator* (const Vector4& V1, const Vector4& V2)
+inline Vector4 operator* (const Vector4& v1, const Vector4& V2)
 {
     using namespace DirectX;
-    XMVECTOR v1 = XMLoadFloat4( &V1 );
+    XMVECTOR v1 = XMLoadFloat4( &v1 );
     XMVECTOR v2 = XMLoadFloat4( &V2 );
     XMVECTOR X = XMVectorMultiply(v1,v2);
     Vector4 R;
@@ -1302,10 +1302,10 @@ inline Vector4 operator* (const Vector4& V, float S)
     return R;
 }
 
-inline Vector4 operator/ (const Vector4& V1, const Vector4& V2)
+inline Vector4 operator/ (const Vector4& v1, const Vector4& V2)
 {
     using namespace DirectX;
-    XMVECTOR v1 = XMLoadFloat4( &V1 );
+    XMVECTOR v1 = XMLoadFloat4( &v1 );
     XMVECTOR v2 = XMLoadFloat4( &V2 );
     XMVECTOR X = XMVectorDivide(v1,v2);
     Vector4 R;

@@ -584,7 +584,6 @@
     <ClInclude Include="..\Shared\Toolbox.h" />
     <ClInclude Include="..\Shared\Types.h" />
     <ClInclude Include="AntTweakBar.h" />
-    <ClInclude Include="atomicops.h" />
     <ClInclude Include="IObserver.h" />
     <ClInclude Include="RBaseBlendState.h" />
     <ClInclude Include="RBaseBuffer.h" />
@@ -621,7 +620,6 @@
     <ClInclude Include="RDepthStencilState.h" />
     <ClInclude Include="RDevice.h" />
     <ClInclude Include="RDynamicBufferCache.h" />
-    <ClInclude Include="readerwriterqueue.h" />
     <ClInclude Include="REngine.h" />
     <ClInclude Include="RInputLayout.h" />
     <ClInclude Include="RLineRenderer.h" />
