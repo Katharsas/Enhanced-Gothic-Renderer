@@ -97,10 +97,10 @@ inline Vector2& Vector2::operator/= (float S)
 // Binary operators
 //------------------------------------------------------------------------------
 
-inline Vector2 operator+ (const Vector2& v1, const Vector2& V2)
+inline Vector2 operator+ (const Vector2& V1, const Vector2& V2)
 {
     using namespace DirectX;
-    XMVECTOR v1 = XMLoadFloat2( &v1 );
+    XMVECTOR v1 = XMLoadFloat2( &V1 );
     XMVECTOR v2 = XMLoadFloat2( &V2 );
     XMVECTOR X = XMVectorAdd(v1,v2);
     Vector2 R;
@@ -108,10 +108,10 @@ inline Vector2 operator+ (const Vector2& v1, const Vector2& V2)
     return R;
 }
 
-inline Vector2 operator- (const Vector2& v1, const Vector2& V2)
+inline Vector2 operator- (const Vector2& V1, const Vector2& V2)
 {
     using namespace DirectX;
-    XMVECTOR v1 = XMLoadFloat2( &v1 );
+    XMVECTOR v1 = XMLoadFloat2( &V1 );
     XMVECTOR v2 = XMLoadFloat2( &V2 );
     XMVECTOR X = XMVectorSubtract(v1,v2);
     Vector2 R;
@@ -119,10 +119,10 @@ inline Vector2 operator- (const Vector2& v1, const Vector2& V2)
     return R;
 }
 
-inline Vector2 operator* (const Vector2& v1, const Vector2& V2)
+inline Vector2 operator* (const Vector2& V1, const Vector2& V2)
 {
     using namespace DirectX;
-    XMVECTOR v1 = XMLoadFloat2( &v1 );
+    XMVECTOR v1 = XMLoadFloat2( &V1 );
     XMVECTOR v2 = XMLoadFloat2( &V2 );
     XMVECTOR X = XMVectorMultiply(v1,v2);
     Vector2 R;
@@ -140,10 +140,10 @@ inline Vector2 operator* (const Vector2& V, float S)
     return R;
 }
 
-inline Vector2 operator/ (const Vector2& v1, const Vector2& V2)
+inline Vector2 operator/ (const Vector2& V1, const Vector2& V2)
 {
     using namespace DirectX;
-    XMVECTOR v1 = XMLoadFloat2( &v1 );
+    XMVECTOR v1 = XMLoadFloat2( &V1 );
     XMVECTOR v2 = XMLoadFloat2( &V2 );
     XMVECTOR X = XMVectorDivide(v1,v2);
     Vector2 R;
@@ -259,39 +259,39 @@ inline void Vector2::Clamp( const Vector2& vmin, const Vector2& vmax, Vector2& r
 // Static functions
 //------------------------------------------------------------------------------
 
-inline float Vector2::Distance( const Vector2& v1, const Vector2& v2 )
+inline float Vector2::Distance( const Vector2& V1, const Vector2& v2 )
 {
     using namespace DirectX;
-    XMVECTOR x1 = XMLoadFloat2( &v1 );
+    XMVECTOR x1 = XMLoadFloat2( &V1 );
     XMVECTOR x2 = XMLoadFloat2( &v2 );
     XMVECTOR V = XMVectorSubtract( x2, x1 );
     XMVECTOR X = XMVector2Length( V );
     return XMVectorGetX( X );
 }
 
-inline float Vector2::DistanceSquared( const Vector2& v1, const Vector2& v2 )
+inline float Vector2::DistanceSquared( const Vector2& V1, const Vector2& v2 )
 {
     using namespace DirectX;
-    XMVECTOR x1 = XMLoadFloat2( &v1 );
+    XMVECTOR x1 = XMLoadFloat2( &V1 );
     XMVECTOR x2 = XMLoadFloat2( &v2 );
     XMVECTOR V = XMVectorSubtract( x2, x1 );
     XMVECTOR X = XMVector2LengthSq( V );
     return XMVectorGetX( X );
 }
 
-inline void Vector2::Min( const Vector2& v1, const Vector2& v2, Vector2& result )
+inline void Vector2::Min( const Vector2& V1, const Vector2& v2, Vector2& result )
 {
     using namespace DirectX;
-    XMVECTOR x1 = XMLoadFloat2( &v1 );
+    XMVECTOR x1 = XMLoadFloat2( &V1 );
     XMVECTOR x2 = XMLoadFloat2( &v2 );
     XMVECTOR X = XMVectorMin( x1, x2 );
     XMStoreFloat2( &result, X );
 }
 
-inline Vector2 Vector2::Min( const Vector2& v1, const Vector2& v2 )
+inline Vector2 Vector2::Min( const Vector2& V1, const Vector2& v2 )
 {
     using namespace DirectX;
-    XMVECTOR x1 = XMLoadFloat2( &v1 );
+    XMVECTOR x1 = XMLoadFloat2( &V1 );
     XMVECTOR x2 = XMLoadFloat2( &v2 );
     XMVECTOR X = XMVectorMin( x1, x2 );
 
@@ -300,19 +300,19 @@ inline Vector2 Vector2::Min( const Vector2& v1, const Vector2& v2 )
     return result;
 }
 
-inline void Vector2::Max( const Vector2& v1, const Vector2& v2, Vector2& result )
+inline void Vector2::Max( const Vector2& V1, const Vector2& v2, Vector2& result )
 {
     using namespace DirectX;
-    XMVECTOR x1 = XMLoadFloat2( &v1 );
+    XMVECTOR x1 = XMLoadFloat2( &V1 );
     XMVECTOR x2 = XMLoadFloat2( &v2 );
     XMVECTOR X = XMVectorMax( x1, x2 );
     XMStoreFloat2( &result, X );
 }
 
-inline Vector2 Vector2::Max( const Vector2& v1, const Vector2& v2 )
+inline Vector2 Vector2::Max( const Vector2& V1, const Vector2& v2 )
 {
     using namespace DirectX;
-    XMVECTOR x1 = XMLoadFloat2( &v1 );
+    XMVECTOR x1 = XMLoadFloat2( &V1 );
     XMVECTOR x2 = XMLoadFloat2( &v2 );
     XMVECTOR X = XMVectorMax( x1, x2 );
 
@@ -321,44 +321,19 @@ inline Vector2 Vector2::Max( const Vector2& v1, const Vector2& v2 )
     return result;
 }
 
-inline void Vector2::Lerp( const Vector2& v1, const Vector2& v2, float t, Vector2& result )
+inline void Vector2::Lerp( const Vector2& V1, const Vector2& v2, float t, Vector2& result )
 {
     using namespace DirectX;
-    XMVECTOR x1 = XMLoadFloat2( &v1 );
+    XMVECTOR x1 = XMLoadFloat2( &V1 );
     XMVECTOR x2 = XMLoadFloat2( &v2 );
     XMVECTOR X = XMVectorLerp( x1, x2, t );
     XMStoreFloat2( &result, X );
 }
 
-inline Vector2 Vector2::Lerp( const Vector2& v1, const Vector2& v2, float t )
+inline Vector2 Vector2::Lerp( const Vector2& V1, const Vector2& v2, float t )
 {
     using namespace DirectX;
-    XMVECTOR x1 = XMLoadFloat2( &v1 );
-    XMVECTOR x2 = XMLoadFloat2( &v2 );
-    XMVECTOR X = XMVectorLerp( x1, x2, t );
-
-    Vector2 result;
-    XMStoreFloat2( &result, X );
-    return result;
-}
-
-inline void Vector2::SmoothStep( const Vector2& v1, const Vector2& v2, float t, Vector2& result )
-{
-    using namespace DirectX;
-    t = (t > 1.0f) ? 1.0f : ((t < 0.0f) ? 0.0f : t);  // Clamp value to 0 to 1
-    t = t*t*(3.f - 2.f*t);
-    XMVECTOR x1 = XMLoadFloat2( &v1 );
-    XMVECTOR x2 = XMLoadFloat2( &v2 );
-    XMVECTOR X = XMVectorLerp( x1, x2, t );
-    XMStoreFloat2( &result, X );
-}
-
-inline Vector2 Vector2::SmoothStep( const Vector2& v1, const Vector2& v2, float t )
-{
-    using namespace DirectX;
-    t = (t > 1.0f) ? 1.0f : ((t < 0.0f) ? 0.0f : t);  // Clamp value to 0 to 1
-    t = t*t*(3.f - 2.f*t);
-    XMVECTOR x1 = XMLoadFloat2( &v1 );
+    XMVECTOR x1 = XMLoadFloat2( &V1 );
     XMVECTOR x2 = XMLoadFloat2( &v2 );
     XMVECTOR X = XMVectorLerp( x1, x2, t );
 
@@ -367,20 +342,45 @@ inline Vector2 Vector2::SmoothStep( const Vector2& v1, const Vector2& v2, float 
     return result;
 }
 
-inline void Vector2::Barycentric( const Vector2& v1, const Vector2& v2, const Vector2& v3, float f, float g, Vector2& result )
+inline void Vector2::SmoothStep( const Vector2& V1, const Vector2& v2, float t, Vector2& result )
 {
     using namespace DirectX;
-    XMVECTOR x1 = XMLoadFloat2( &v1 );
+    t = (t > 1.0f) ? 1.0f : ((t < 0.0f) ? 0.0f : t);  // Clamp value to 0 to 1
+    t = t*t*(3.f - 2.f*t);
+    XMVECTOR x1 = XMLoadFloat2( &V1 );
+    XMVECTOR x2 = XMLoadFloat2( &v2 );
+    XMVECTOR X = XMVectorLerp( x1, x2, t );
+    XMStoreFloat2( &result, X );
+}
+
+inline Vector2 Vector2::SmoothStep( const Vector2& V1, const Vector2& v2, float t )
+{
+    using namespace DirectX;
+    t = (t > 1.0f) ? 1.0f : ((t < 0.0f) ? 0.0f : t);  // Clamp value to 0 to 1
+    t = t*t*(3.f - 2.f*t);
+    XMVECTOR x1 = XMLoadFloat2( &V1 );
+    XMVECTOR x2 = XMLoadFloat2( &v2 );
+    XMVECTOR X = XMVectorLerp( x1, x2, t );
+
+    Vector2 result;
+    XMStoreFloat2( &result, X );
+    return result;
+}
+
+inline void Vector2::Barycentric( const Vector2& V1, const Vector2& v2, const Vector2& v3, float f, float g, Vector2& result )
+{
+    using namespace DirectX;
+    XMVECTOR x1 = XMLoadFloat2( &V1 );
     XMVECTOR x2 = XMLoadFloat2( &v2 );
     XMVECTOR x3 = XMLoadFloat2( &v3 );
     XMVECTOR X = XMVectorBaryCentric( x1, x2, x3, f, g );
     XMStoreFloat2( &result, X );
 }
 
-inline Vector2 Vector2::Barycentric( const Vector2& v1, const Vector2& v2, const Vector2& v3, float f, float g )
+inline Vector2 Vector2::Barycentric( const Vector2& V1, const Vector2& v2, const Vector2& v3, float f, float g )
 {
     using namespace DirectX;
-    XMVECTOR x1 = XMLoadFloat2( &v1 );
+    XMVECTOR x1 = XMLoadFloat2( &V1 );
     XMVECTOR x2 = XMLoadFloat2( &v2 );
     XMVECTOR x3 = XMLoadFloat2( &v3 );
     XMVECTOR X = XMVectorBaryCentric( x1, x2, x3, f, g );
@@ -390,10 +390,10 @@ inline Vector2 Vector2::Barycentric( const Vector2& v1, const Vector2& v2, const
     return result;
 }
 
-inline void Vector2::CatmullRom( const Vector2& v1, const Vector2& v2, const Vector2& v3, const Vector2& v4, float t, Vector2& result )
+inline void Vector2::CatmullRom( const Vector2& V1, const Vector2& v2, const Vector2& v3, const Vector2& v4, float t, Vector2& result )
 {
     using namespace DirectX;
-    XMVECTOR x1 = XMLoadFloat2( &v1 );
+    XMVECTOR x1 = XMLoadFloat2( &V1 );
     XMVECTOR x2 = XMLoadFloat2( &v2 );
     XMVECTOR x3 = XMLoadFloat2( &v3 );
     XMVECTOR x4 = XMLoadFloat2( &v4 );
@@ -401,10 +401,10 @@ inline void Vector2::CatmullRom( const Vector2& v1, const Vector2& v2, const Vec
     XMStoreFloat2( &result, X );
 }
 
-inline Vector2 Vector2::CatmullRom( const Vector2& v1, const Vector2& v2, const Vector2& v3, const Vector2& v4, float t )
+inline Vector2 Vector2::CatmullRom( const Vector2& V1, const Vector2& v2, const Vector2& v3, const Vector2& v4, float t )
 {
     using namespace DirectX;
-    XMVECTOR x1 = XMLoadFloat2( &v1 );
+    XMVECTOR x1 = XMLoadFloat2( &V1 );
     XMVECTOR x2 = XMLoadFloat2( &v2 );
     XMVECTOR x3 = XMLoadFloat2( &v3 );
     XMVECTOR x4 = XMLoadFloat2( &v4 );
@@ -415,10 +415,10 @@ inline Vector2 Vector2::CatmullRom( const Vector2& v1, const Vector2& v2, const 
     return result;
 }
 
-inline void Vector2::Hermite( const Vector2& v1, const Vector2& t1, const Vector2& v2, const Vector2& t2, float t, Vector2& result )
+inline void Vector2::Hermite( const Vector2& V1, const Vector2& t1, const Vector2& v2, const Vector2& t2, float t, Vector2& result )
 {
     using namespace DirectX;
-    XMVECTOR x1 = XMLoadFloat2( &v1 );
+    XMVECTOR x1 = XMLoadFloat2( &V1 );
     XMVECTOR x2 = XMLoadFloat2( &t1 );
     XMVECTOR x3 = XMLoadFloat2( &v2 );
     XMVECTOR x4 = XMLoadFloat2( &t2 );
@@ -426,10 +426,10 @@ inline void Vector2::Hermite( const Vector2& v1, const Vector2& t1, const Vector
     XMStoreFloat2( &result, X );
 }
 
-inline Vector2 Vector2::Hermite( const Vector2& v1, const Vector2& t1, const Vector2& v2, const Vector2& t2, float t )
+inline Vector2 Vector2::Hermite( const Vector2& V1, const Vector2& t1, const Vector2& v2, const Vector2& t2, float t )
 {
     using namespace DirectX;
-    XMVECTOR x1 = XMLoadFloat2( &v1 );
+    XMVECTOR x1 = XMLoadFloat2( &V1 );
     XMVECTOR x2 = XMLoadFloat2( &t1 );
     XMVECTOR x3 = XMLoadFloat2( &v2 );
     XMVECTOR x4 = XMLoadFloat2( &t2 );
@@ -676,10 +676,10 @@ inline Vector3 Vector3::operator- () const
 // Binary operators
 //------------------------------------------------------------------------------
 
-inline Vector3 operator+ (const Vector3& v1, const Vector3& V2)
+inline Vector3 operator+ (const Vector3& V1, const Vector3& V2)
 {
     using namespace DirectX;
-    XMVECTOR v1 = XMLoadFloat3( &v1 );
+    XMVECTOR v1 = XMLoadFloat3( &V1 );
     XMVECTOR v2 = XMLoadFloat3( &V2 );
     XMVECTOR X = XMVectorAdd(v1,v2);
     Vector3 R;
@@ -687,10 +687,10 @@ inline Vector3 operator+ (const Vector3& v1, const Vector3& V2)
     return R;
 }
 
-inline Vector3 operator- (const Vector3& v1, const Vector3& V2)
+inline Vector3 operator- (const Vector3& V1, const Vector3& V2)
 {
     using namespace DirectX;
-    XMVECTOR v1 = XMLoadFloat3( &v1 );
+    XMVECTOR v1 = XMLoadFloat3( &V1 );
     XMVECTOR v2 = XMLoadFloat3( &V2 );
     XMVECTOR X = XMVectorSubtract(v1,v2);
     Vector3 R;
@@ -698,10 +698,10 @@ inline Vector3 operator- (const Vector3& v1, const Vector3& V2)
     return R;
 }
 
-inline Vector3 operator* (const Vector3& v1, const Vector3& V2)
+inline Vector3 operator* (const Vector3& V1, const Vector3& V2)
 {
     using namespace DirectX;
-    XMVECTOR v1 = XMLoadFloat3( &v1 );
+    XMVECTOR v1 = XMLoadFloat3( &V1 );
     XMVECTOR v2 = XMLoadFloat3( &V2 );
     XMVECTOR X = XMVectorMultiply(v1,v2);
     Vector3 R;
@@ -719,10 +719,10 @@ inline Vector3 operator* (const Vector3& V, float S)
     return R;
 }
 
-inline Vector3 operator/ (const Vector3& v1, const Vector3& V2)
+inline Vector3 operator/ (const Vector3& V1, const Vector3& V2)
 {
     using namespace DirectX;
-    XMVECTOR v1 = XMLoadFloat3( &v1 );
+    XMVECTOR v1 = XMLoadFloat3( &V1 );
     XMVECTOR v2 = XMLoadFloat3( &V2 );
     XMVECTOR X = XMVectorDivide(v1,v2);
     Vector3 R;
@@ -842,39 +842,39 @@ inline void Vector3::Clamp( const Vector3& vmin, const Vector3& vmax, Vector3& r
 // Static functions
 //------------------------------------------------------------------------------
 
-inline float Vector3::Distance( const Vector3& v1, const Vector3& v2 )
+inline float Vector3::Distance( const Vector3& V1, const Vector3& v2 )
 {
     using namespace DirectX;
-    XMVECTOR x1 = XMLoadFloat3( &v1 );
+    XMVECTOR x1 = XMLoadFloat3( &V1 );
     XMVECTOR x2 = XMLoadFloat3( &v2 );
     XMVECTOR V = XMVectorSubtract( x2, x1 );
     XMVECTOR X = XMVector3Length( V );
     return XMVectorGetX( X );
 }
 
-inline float Vector3::DistanceSquared( const Vector3& v1, const Vector3& v2 )
+inline float Vector3::DistanceSquared( const Vector3& V1, const Vector3& v2 )
 {
     using namespace DirectX;
-    XMVECTOR x1 = XMLoadFloat3( &v1 );
+    XMVECTOR x1 = XMLoadFloat3( &V1 );
     XMVECTOR x2 = XMLoadFloat3( &v2 );
     XMVECTOR V = XMVectorSubtract( x2, x1 );
     XMVECTOR X = XMVector3LengthSq( V );
     return XMVectorGetX( X );
 }
 
-inline void Vector3::Min( const Vector3& v1, const Vector3& v2, Vector3& result )
+inline void Vector3::Min( const Vector3& V1, const Vector3& v2, Vector3& result )
 {
     using namespace DirectX;
-    XMVECTOR x1 = XMLoadFloat3( &v1 );
+    XMVECTOR x1 = XMLoadFloat3( &V1 );
     XMVECTOR x2 = XMLoadFloat3( &v2 );
     XMVECTOR X = XMVectorMin( x1, x2 );
     XMStoreFloat3( &result, X );
 }
 
-inline Vector3 Vector3::Min( const Vector3& v1, const Vector3& v2 )
+inline Vector3 Vector3::Min( const Vector3& V1, const Vector3& v2 )
 {
     using namespace DirectX;
-    XMVECTOR x1 = XMLoadFloat3( &v1 );
+    XMVECTOR x1 = XMLoadFloat3( &V1 );
     XMVECTOR x2 = XMLoadFloat3( &v2 );
     XMVECTOR X = XMVectorMin( x1, x2 );
 
@@ -883,19 +883,19 @@ inline Vector3 Vector3::Min( const Vector3& v1, const Vector3& v2 )
     return result;
 }
 
-inline void Vector3::Max( const Vector3& v1, const Vector3& v2, Vector3& result )
+inline void Vector3::Max( const Vector3& V1, const Vector3& v2, Vector3& result )
 {
     using namespace DirectX;
-    XMVECTOR x1 = XMLoadFloat3( &v1 );
+    XMVECTOR x1 = XMLoadFloat3( &V1 );
     XMVECTOR x2 = XMLoadFloat3( &v2 );
     XMVECTOR X = XMVectorMax( x1, x2 );
     XMStoreFloat3( &result, X );
 }
 
-inline Vector3 Vector3::Max( const Vector3& v1, const Vector3& v2 )
+inline Vector3 Vector3::Max( const Vector3& V1, const Vector3& v2 )
 {
     using namespace DirectX;
-    XMVECTOR x1 = XMLoadFloat3( &v1 );
+    XMVECTOR x1 = XMLoadFloat3( &V1 );
     XMVECTOR x2 = XMLoadFloat3( &v2 );
     XMVECTOR X = XMVectorMax( x1, x2 );
 
@@ -904,44 +904,19 @@ inline Vector3 Vector3::Max( const Vector3& v1, const Vector3& v2 )
     return result;
 }
 
-inline void Vector3::Lerp( const Vector3& v1, const Vector3& v2, float t, Vector3& result )
+inline void Vector3::Lerp( const Vector3& V1, const Vector3& v2, float t, Vector3& result )
 {
     using namespace DirectX;
-    XMVECTOR x1 = XMLoadFloat3( &v1 );
+    XMVECTOR x1 = XMLoadFloat3( &V1 );
     XMVECTOR x2 = XMLoadFloat3( &v2 );
     XMVECTOR X = XMVectorLerp( x1, x2, t );
     XMStoreFloat3( &result, X );
 }
 
-inline Vector3 Vector3::Lerp( const Vector3& v1, const Vector3& v2, float t )
+inline Vector3 Vector3::Lerp( const Vector3& V1, const Vector3& v2, float t )
 {
     using namespace DirectX;
-    XMVECTOR x1 = XMLoadFloat3( &v1 );
-    XMVECTOR x2 = XMLoadFloat3( &v2 );
-    XMVECTOR X = XMVectorLerp( x1, x2, t );
-
-    Vector3 result;
-    XMStoreFloat3( &result, X );
-    return result;
-}
-
-inline void Vector3::SmoothStep( const Vector3& v1, const Vector3& v2, float t, Vector3& result )
-{
-    using namespace DirectX;
-    t = (t > 1.0f) ? 1.0f : ((t < 0.0f) ? 0.0f : t);  // Clamp value to 0 to 1
-    t = t*t*(3.f - 2.f*t);
-    XMVECTOR x1 = XMLoadFloat3( &v1 );
-    XMVECTOR x2 = XMLoadFloat3( &v2 );
-    XMVECTOR X = XMVectorLerp( x1, x2, t );
-    XMStoreFloat3( &result, X );
-}
-
-inline Vector3 Vector3::SmoothStep( const Vector3& v1, const Vector3& v2, float t )
-{
-    using namespace DirectX;
-    t = (t > 1.0f) ? 1.0f : ((t < 0.0f) ? 0.0f : t);  // Clamp value to 0 to 1
-    t = t*t*(3.f - 2.f*t);
-    XMVECTOR x1 = XMLoadFloat3( &v1 );
+    XMVECTOR x1 = XMLoadFloat3( &V1 );
     XMVECTOR x2 = XMLoadFloat3( &v2 );
     XMVECTOR X = XMVectorLerp( x1, x2, t );
 
@@ -950,20 +925,45 @@ inline Vector3 Vector3::SmoothStep( const Vector3& v1, const Vector3& v2, float 
     return result;
 }
 
-inline void Vector3::Barycentric( const Vector3& v1, const Vector3& v2, const Vector3& v3, float f, float g, Vector3& result )
+inline void Vector3::SmoothStep( const Vector3& V1, const Vector3& v2, float t, Vector3& result )
 {
     using namespace DirectX;
-    XMVECTOR x1 = XMLoadFloat3( &v1 );
+    t = (t > 1.0f) ? 1.0f : ((t < 0.0f) ? 0.0f : t);  // Clamp value to 0 to 1
+    t = t*t*(3.f - 2.f*t);
+    XMVECTOR x1 = XMLoadFloat3( &V1 );
+    XMVECTOR x2 = XMLoadFloat3( &v2 );
+    XMVECTOR X = XMVectorLerp( x1, x2, t );
+    XMStoreFloat3( &result, X );
+}
+
+inline Vector3 Vector3::SmoothStep( const Vector3& V1, const Vector3& v2, float t )
+{
+    using namespace DirectX;
+    t = (t > 1.0f) ? 1.0f : ((t < 0.0f) ? 0.0f : t);  // Clamp value to 0 to 1
+    t = t*t*(3.f - 2.f*t);
+    XMVECTOR x1 = XMLoadFloat3( &V1 );
+    XMVECTOR x2 = XMLoadFloat3( &v2 );
+    XMVECTOR X = XMVectorLerp( x1, x2, t );
+
+    Vector3 result;
+    XMStoreFloat3( &result, X );
+    return result;
+}
+
+inline void Vector3::Barycentric( const Vector3& V1, const Vector3& v2, const Vector3& v3, float f, float g, Vector3& result )
+{
+    using namespace DirectX;
+    XMVECTOR x1 = XMLoadFloat3( &V1 );
     XMVECTOR x2 = XMLoadFloat3( &v2 );
     XMVECTOR x3 = XMLoadFloat3( &v3 );
     XMVECTOR X = XMVectorBaryCentric( x1, x2, x3, f, g );
     XMStoreFloat3( &result, X );
 }
 
-inline Vector3 Vector3::Barycentric( const Vector3& v1, const Vector3& v2, const Vector3& v3, float f, float g )
+inline Vector3 Vector3::Barycentric( const Vector3& V1, const Vector3& v2, const Vector3& v3, float f, float g )
 {
     using namespace DirectX;
-    XMVECTOR x1 = XMLoadFloat3( &v1 );
+    XMVECTOR x1 = XMLoadFloat3( &V1 );
     XMVECTOR x2 = XMLoadFloat3( &v2 );
     XMVECTOR x3 = XMLoadFloat3( &v3 );
     XMVECTOR X = XMVectorBaryCentric( x1, x2, x3, f, g );
@@ -973,10 +973,10 @@ inline Vector3 Vector3::Barycentric( const Vector3& v1, const Vector3& v2, const
     return result;
 }
 
-inline void Vector3::CatmullRom( const Vector3& v1, const Vector3& v2, const Vector3& v3, const Vector3& v4, float t, Vector3& result )
+inline void Vector3::CatmullRom( const Vector3& V1, const Vector3& v2, const Vector3& v3, const Vector3& v4, float t, Vector3& result )
 {
     using namespace DirectX;
-    XMVECTOR x1 = XMLoadFloat3( &v1 );
+    XMVECTOR x1 = XMLoadFloat3( &V1 );
     XMVECTOR x2 = XMLoadFloat3( &v2 );
     XMVECTOR x3 = XMLoadFloat3( &v3 );
     XMVECTOR x4 = XMLoadFloat3( &v4 );
@@ -984,10 +984,10 @@ inline void Vector3::CatmullRom( const Vector3& v1, const Vector3& v2, const Vec
     XMStoreFloat3( &result, X );
 }
 
-inline Vector3 Vector3::CatmullRom( const Vector3& v1, const Vector3& v2, const Vector3& v3, const Vector3& v4, float t )
+inline Vector3 Vector3::CatmullRom( const Vector3& V1, const Vector3& v2, const Vector3& v3, const Vector3& v4, float t )
 {
     using namespace DirectX;
-    XMVECTOR x1 = XMLoadFloat3( &v1 );
+    XMVECTOR x1 = XMLoadFloat3( &V1 );
     XMVECTOR x2 = XMLoadFloat3( &v2 );
     XMVECTOR x3 = XMLoadFloat3( &v3 );
     XMVECTOR x4 = XMLoadFloat3( &v4 );
@@ -998,10 +998,10 @@ inline Vector3 Vector3::CatmullRom( const Vector3& v1, const Vector3& v2, const 
     return result;
 }
 
-inline void Vector3::Hermite( const Vector3& v1, const Vector3& t1, const Vector3& v2, const Vector3& t2, float t, Vector3& result )
+inline void Vector3::Hermite( const Vector3& V1, const Vector3& t1, const Vector3& v2, const Vector3& t2, float t, Vector3& result )
 {
     using namespace DirectX;
-    XMVECTOR x1 = XMLoadFloat3( &v1 );
+    XMVECTOR x1 = XMLoadFloat3( &V1 );
     XMVECTOR x2 = XMLoadFloat3( &t1 );
     XMVECTOR x3 = XMLoadFloat3( &v2 );
     XMVECTOR x4 = XMLoadFloat3( &t2 );
@@ -1009,10 +1009,10 @@ inline void Vector3::Hermite( const Vector3& v1, const Vector3& t1, const Vector
     XMStoreFloat3( &result, X );
 }
 
-inline Vector3 Vector3::Hermite( const Vector3& v1, const Vector3& t1, const Vector3& v2, const Vector3& t2, float t )
+inline Vector3 Vector3::Hermite( const Vector3& V1, const Vector3& t1, const Vector3& v2, const Vector3& t2, float t )
 {
     using namespace DirectX;
-    XMVECTOR x1 = XMLoadFloat3( &v1 );
+    XMVECTOR x1 = XMLoadFloat3( &V1 );
     XMVECTOR x2 = XMLoadFloat3( &t1 );
     XMVECTOR x3 = XMLoadFloat3( &v2 );
     XMVECTOR x4 = XMLoadFloat3( &t2 );
@@ -1259,10 +1259,10 @@ inline Vector4 Vector4::operator- () const
 // Binary operators
 //------------------------------------------------------------------------------
 
-inline Vector4 operator+ (const Vector4& v1, const Vector4& V2)
+inline Vector4 operator+ (const Vector4& V1, const Vector4& V2)
 {
     using namespace DirectX;
-    XMVECTOR v1 = XMLoadFloat4( &v1 );
+    XMVECTOR v1 = XMLoadFloat4( &V1 );
     XMVECTOR v2 = XMLoadFloat4( &V2 );
     XMVECTOR X = XMVectorAdd(v1,v2);
     Vector4 R;
@@ -1270,10 +1270,10 @@ inline Vector4 operator+ (const Vector4& v1, const Vector4& V2)
     return R;
 }
 
-inline Vector4 operator- (const Vector4& v1, const Vector4& V2)
+inline Vector4 operator- (const Vector4& V1, const Vector4& V2)
 {
     using namespace DirectX;
-    XMVECTOR v1 = XMLoadFloat4( &v1 );
+    XMVECTOR v1 = XMLoadFloat4( &V1 );
     XMVECTOR v2 = XMLoadFloat4( &V2 );
     XMVECTOR X = XMVectorSubtract(v1,v2);
     Vector4 R;
@@ -1281,10 +1281,10 @@ inline Vector4 operator- (const Vector4& v1, const Vector4& V2)
     return R;
 }
 
-inline Vector4 operator* (const Vector4& v1, const Vector4& V2)
+inline Vector4 operator* (const Vector4& V1, const Vector4& V2)
 {
     using namespace DirectX;
-    XMVECTOR v1 = XMLoadFloat4( &v1 );
+    XMVECTOR v1 = XMLoadFloat4( &V1 );
     XMVECTOR v2 = XMLoadFloat4( &V2 );
     XMVECTOR X = XMVectorMultiply(v1,v2);
     Vector4 R;
@@ -1302,10 +1302,10 @@ inline Vector4 operator* (const Vector4& V, float S)
     return R;
 }
 
-inline Vector4 operator/ (const Vector4& v1, const Vector4& V2)
+inline Vector4 operator/ (const Vector4& V1, const Vector4& V2)
 {
     using namespace DirectX;
-    XMVECTOR v1 = XMLoadFloat4( &v1 );
+    XMVECTOR v1 = XMLoadFloat4( &V1 );
     XMVECTOR v2 = XMLoadFloat4( &V2 );
     XMVECTOR X = XMVectorDivide(v1,v2);
     Vector4 R;
@@ -1360,21 +1360,21 @@ inline float Vector4::Dot( const Vector4& V ) const
     return XMVectorGetX( X );
 }
 
-inline void Vector4::Cross( const Vector4& v1, const Vector4& v2, Vector4& result ) const
+inline void Vector4::Cross( const Vector4& V1, const Vector4& v2, Vector4& result ) const
 {
     using namespace DirectX;
     XMVECTOR x1 = XMLoadFloat4( this );
-    XMVECTOR x2 = XMLoadFloat4( &v1 );
+    XMVECTOR x2 = XMLoadFloat4( &V1 );
     XMVECTOR x3 = XMLoadFloat4( &v2 );
     XMVECTOR R = XMVector4Cross( x1, x2, x3 );
     XMStoreFloat4( &result, R );
 }
 
-inline Vector4 Vector4::Cross( const Vector4& v1, const Vector4& v2 ) const
+inline Vector4 Vector4::Cross( const Vector4& V1, const Vector4& v2 ) const
 {
     using namespace DirectX;
     XMVECTOR x1 = XMLoadFloat4( this );
-    XMVECTOR x2 = XMLoadFloat4( &v1 );
+    XMVECTOR x2 = XMLoadFloat4( &V1 );
     XMVECTOR x3 = XMLoadFloat4( &v2 );
     XMVECTOR R = XMVector4Cross( x1, x2, x3 );
 
@@ -1423,39 +1423,39 @@ inline void Vector4::Clamp( const Vector4& vmin, const Vector4& vmax, Vector4& r
 // Static functions
 //------------------------------------------------------------------------------
 
-inline float Vector4::Distance( const Vector4& v1, const Vector4& v2 )
+inline float Vector4::Distance( const Vector4& V1, const Vector4& v2 )
 {
     using namespace DirectX;
-    XMVECTOR x1 = XMLoadFloat4( &v1 );
+    XMVECTOR x1 = XMLoadFloat4( &V1 );
     XMVECTOR x2 = XMLoadFloat4( &v2 );
     XMVECTOR V = XMVectorSubtract( x2, x1 );
     XMVECTOR X = XMVector4Length( V );
     return XMVectorGetX( X );
 }
 
-inline float Vector4::DistanceSquared( const Vector4& v1, const Vector4& v2 )
+inline float Vector4::DistanceSquared( const Vector4& V1, const Vector4& v2 )
 {
     using namespace DirectX;
-    XMVECTOR x1 = XMLoadFloat4( &v1 );
+    XMVECTOR x1 = XMLoadFloat4( &V1 );
     XMVECTOR x2 = XMLoadFloat4( &v2 );
     XMVECTOR V = XMVectorSubtract( x2, x1 );
     XMVECTOR X = XMVector4LengthSq( V );
     return XMVectorGetX( X );
 }
 
-inline void Vector4::Min( const Vector4& v1, const Vector4& v2, Vector4& result )
+inline void Vector4::Min( const Vector4& V1, const Vector4& v2, Vector4& result )
 {
     using namespace DirectX;
-    XMVECTOR x1 = XMLoadFloat4( &v1 );
+    XMVECTOR x1 = XMLoadFloat4( &V1 );
     XMVECTOR x2 = XMLoadFloat4( &v2 );
     XMVECTOR X = XMVectorMin( x1, x2 );
     XMStoreFloat4( &result, X );
 }
 
-inline Vector4 Vector4::Min( const Vector4& v1, const Vector4& v2 )
+inline Vector4 Vector4::Min( const Vector4& V1, const Vector4& v2 )
 {
     using namespace DirectX;
-    XMVECTOR x1 = XMLoadFloat4( &v1 );
+    XMVECTOR x1 = XMLoadFloat4( &V1 );
     XMVECTOR x2 = XMLoadFloat4( &v2 );
     XMVECTOR X = XMVectorMin( x1, x2 );
 
@@ -1464,19 +1464,19 @@ inline Vector4 Vector4::Min( const Vector4& v1, const Vector4& v2 )
     return result;
 }
 
-inline void Vector4::Max( const Vector4& v1, const Vector4& v2, Vector4& result )
+inline void Vector4::Max( const Vector4& V1, const Vector4& v2, Vector4& result )
 {
     using namespace DirectX;
-    XMVECTOR x1 = XMLoadFloat4( &v1 );
+    XMVECTOR x1 = XMLoadFloat4( &V1 );
     XMVECTOR x2 = XMLoadFloat4( &v2 );
     XMVECTOR X = XMVectorMax( x1, x2 );
     XMStoreFloat4( &result, X );
 }
 
-inline Vector4 Vector4::Max( const Vector4& v1, const Vector4& v2 )
+inline Vector4 Vector4::Max( const Vector4& V1, const Vector4& v2 )
 {
     using namespace DirectX;
-    XMVECTOR x1 = XMLoadFloat4( &v1 );
+    XMVECTOR x1 = XMLoadFloat4( &V1 );
     XMVECTOR x2 = XMLoadFloat4( &v2 );
     XMVECTOR X = XMVectorMax( x1, x2 );
 
@@ -1485,44 +1485,19 @@ inline Vector4 Vector4::Max( const Vector4& v1, const Vector4& v2 )
     return result;
 }
 
-inline void Vector4::Lerp( const Vector4& v1, const Vector4& v2, float t, Vector4& result )
+inline void Vector4::Lerp( const Vector4& V1, const Vector4& v2, float t, Vector4& result )
 {
     using namespace DirectX;
-    XMVECTOR x1 = XMLoadFloat4( &v1 );
+    XMVECTOR x1 = XMLoadFloat4( &V1 );
     XMVECTOR x2 = XMLoadFloat4( &v2 );
     XMVECTOR X = XMVectorLerp( x1, x2, t );
     XMStoreFloat4( &result, X );
 }
 
-inline Vector4 Vector4::Lerp( const Vector4& v1, const Vector4& v2, float t )
+inline Vector4 Vector4::Lerp( const Vector4& V1, const Vector4& v2, float t )
 {
     using namespace DirectX;
-    XMVECTOR x1 = XMLoadFloat4( &v1 );
-    XMVECTOR x2 = XMLoadFloat4( &v2 );
-    XMVECTOR X = XMVectorLerp( x1, x2, t );
-
-    Vector4 result;
-    XMStoreFloat4( &result, X );
-    return result;
-}
-
-inline void Vector4::SmoothStep( const Vector4& v1, const Vector4& v2, float t, Vector4& result )
-{
-    using namespace DirectX;
-    t = (t > 1.0f) ? 1.0f : ((t < 0.0f) ? 0.0f : t);  // Clamp value to 0 to 1
-    t = t*t*(3.f - 2.f*t);
-    XMVECTOR x1 = XMLoadFloat4( &v1 );
-    XMVECTOR x2 = XMLoadFloat4( &v2 );
-    XMVECTOR X = XMVectorLerp( x1, x2, t );
-    XMStoreFloat4( &result, X );
-}
-
-inline Vector4 Vector4::SmoothStep( const Vector4& v1, const Vector4& v2, float t )
-{
-    using namespace DirectX;
-    t = (t > 1.0f) ? 1.0f : ((t < 0.0f) ? 0.0f : t);  // Clamp value to 0 to 1
-    t = t*t*(3.f - 2.f*t);
-    XMVECTOR x1 = XMLoadFloat4( &v1 );
+    XMVECTOR x1 = XMLoadFloat4( &V1 );
     XMVECTOR x2 = XMLoadFloat4( &v2 );
     XMVECTOR X = XMVectorLerp( x1, x2, t );
 
@@ -1531,20 +1506,45 @@ inline Vector4 Vector4::SmoothStep( const Vector4& v1, const Vector4& v2, float 
     return result;
 }
 
-inline void Vector4::Barycentric( const Vector4& v1, const Vector4& v2, const Vector4& v3, float f, float g, Vector4& result )
+inline void Vector4::SmoothStep( const Vector4& V1, const Vector4& v2, float t, Vector4& result )
 {
     using namespace DirectX;
-    XMVECTOR x1 = XMLoadFloat4( &v1 );
+    t = (t > 1.0f) ? 1.0f : ((t < 0.0f) ? 0.0f : t);  // Clamp value to 0 to 1
+    t = t*t*(3.f - 2.f*t);
+    XMVECTOR x1 = XMLoadFloat4( &V1 );
+    XMVECTOR x2 = XMLoadFloat4( &v2 );
+    XMVECTOR X = XMVectorLerp( x1, x2, t );
+    XMStoreFloat4( &result, X );
+}
+
+inline Vector4 Vector4::SmoothStep( const Vector4& V1, const Vector4& v2, float t )
+{
+    using namespace DirectX;
+    t = (t > 1.0f) ? 1.0f : ((t < 0.0f) ? 0.0f : t);  // Clamp value to 0 to 1
+    t = t*t*(3.f - 2.f*t);
+    XMVECTOR x1 = XMLoadFloat4( &V1 );
+    XMVECTOR x2 = XMLoadFloat4( &v2 );
+    XMVECTOR X = XMVectorLerp( x1, x2, t );
+
+    Vector4 result;
+    XMStoreFloat4( &result, X );
+    return result;
+}
+
+inline void Vector4::Barycentric( const Vector4& V1, const Vector4& v2, const Vector4& v3, float f, float g, Vector4& result )
+{
+    using namespace DirectX;
+    XMVECTOR x1 = XMLoadFloat4( &V1 );
     XMVECTOR x2 = XMLoadFloat4( &v2 );
     XMVECTOR x3 = XMLoadFloat4( &v3 );
     XMVECTOR X = XMVectorBaryCentric( x1, x2, x3, f, g );
     XMStoreFloat4( &result, X );
 }
 
-inline Vector4 Vector4::Barycentric( const Vector4& v1, const Vector4& v2, const Vector4& v3, float f, float g )
+inline Vector4 Vector4::Barycentric( const Vector4& V1, const Vector4& v2, const Vector4& v3, float f, float g )
 {
     using namespace DirectX;
-    XMVECTOR x1 = XMLoadFloat4( &v1 );
+    XMVECTOR x1 = XMLoadFloat4( &V1 );
     XMVECTOR x2 = XMLoadFloat4( &v2 );
     XMVECTOR x3 = XMLoadFloat4( &v3 );
     XMVECTOR X = XMVectorBaryCentric( x1, x2, x3, f, g );
@@ -1554,10 +1554,10 @@ inline Vector4 Vector4::Barycentric( const Vector4& v1, const Vector4& v2, const
     return result;
 }
 
-inline void Vector4::CatmullRom( const Vector4& v1, const Vector4& v2, const Vector4& v3, const Vector4& v4, float t, Vector4& result )
+inline void Vector4::CatmullRom( const Vector4& V1, const Vector4& v2, const Vector4& v3, const Vector4& v4, float t, Vector4& result )
 {
     using namespace DirectX;
-    XMVECTOR x1 = XMLoadFloat4( &v1 );
+    XMVECTOR x1 = XMLoadFloat4( &V1 );
     XMVECTOR x2 = XMLoadFloat4( &v2 );
     XMVECTOR x3 = XMLoadFloat4( &v3 );
     XMVECTOR x4 = XMLoadFloat4( &v4 );
@@ -1565,10 +1565,10 @@ inline void Vector4::CatmullRom( const Vector4& v1, const Vector4& v2, const Vec
     XMStoreFloat4( &result, X );
 }
 
-inline Vector4 Vector4::CatmullRom( const Vector4& v1, const Vector4& v2, const Vector4& v3, const Vector4& v4, float t )
+inline Vector4 Vector4::CatmullRom( const Vector4& V1, const Vector4& v2, const Vector4& v3, const Vector4& v4, float t )
 {
     using namespace DirectX;
-    XMVECTOR x1 = XMLoadFloat4( &v1 );
+    XMVECTOR x1 = XMLoadFloat4( &V1 );
     XMVECTOR x2 = XMLoadFloat4( &v2 );
     XMVECTOR x3 = XMLoadFloat4( &v3 );
     XMVECTOR x4 = XMLoadFloat4( &v4 );
@@ -1579,10 +1579,10 @@ inline Vector4 Vector4::CatmullRom( const Vector4& v1, const Vector4& v2, const 
     return result;
 }
 
-inline void Vector4::Hermite( const Vector4& v1, const Vector4& t1, const Vector4& v2, const Vector4& t2, float t, Vector4& result )
+inline void Vector4::Hermite( const Vector4& V1, const Vector4& t1, const Vector4& v2, const Vector4& t2, float t, Vector4& result )
 {
     using namespace DirectX;
-    XMVECTOR x1 = XMLoadFloat4( &v1 );
+    XMVECTOR x1 = XMLoadFloat4( &V1 );
     XMVECTOR x2 = XMLoadFloat4( &t1 );
     XMVECTOR x3 = XMLoadFloat4( &v2 );
     XMVECTOR x4 = XMLoadFloat4( &t2 );
@@ -1590,10 +1590,10 @@ inline void Vector4::Hermite( const Vector4& v1, const Vector4& t1, const Vector
     XMStoreFloat4( &result, X );
 }
 
-inline Vector4 Vector4::Hermite( const Vector4& v1, const Vector4& t1, const Vector4& v2, const Vector4& t2, float t )
+inline Vector4 Vector4::Hermite( const Vector4& V1, const Vector4& t1, const Vector4& v2, const Vector4& t2, float t )
 {
     using namespace DirectX;
-    XMVECTOR x1 = XMLoadFloat4( &v1 );
+    XMVECTOR x1 = XMLoadFloat4( &V1 );
     XMVECTOR x2 = XMLoadFloat4( &t1 );
     XMVECTOR x3 = XMLoadFloat4( &v2 );
     XMVECTOR x4 = XMLoadFloat4( &t2 );

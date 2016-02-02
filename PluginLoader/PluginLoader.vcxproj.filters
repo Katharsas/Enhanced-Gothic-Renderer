@@ -14,12 +14,12 @@
     <ClCompile Include="dllmain.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="..\Shared\PluginInterface.cpp">
+    <ClCompile Include="PluginInterface.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Shared\PluginInterface.h">
+    <ClInclude Include="PluginInterface.h">
       <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>

@@ -47,18 +47,25 @@ bool LoadPlugin(const char* file)
 	// Call the startup function to get an object
 	GPlugin::InitPlugin_t init = (GPlugin::InitPlugin_t)GetProcAddress(plugin, "InitPlugin");
 	GPlugin::ClosePlugin_t close = (GPlugin::ClosePlugin_t)GetProcAddress(plugin, "ClosePlugin");
-	if(!init || !close)
+	FARPROC ddrawCreateEx = GetProcAddress(plugin, "DirectDrawCreateEx");
+
+	if(!ddrawCreateEx && (!init || !close))
 		return false;
 
-	GPlugin::IPlugin* pluginInterface = init();
-
-	if(!pluginInterface->OnStartup())
+	// Only use interface if this was built for it
+	GPlugin::IPlugin* pluginInterface = nullptr;
+	if(init)
 	{
-		// Plugin decided that it should not be loaded
-		close(pluginInterface);
-		FreeLibrary(plugin);
+		pluginInterface = init();
 
-		return true;
+		if(!pluginInterface->OnStartup())
+		{
+			// Plugin decided that it should not be loaded
+			close(pluginInterface);
+			FreeLibrary(plugin);
+
+			return true;
+		}
 	}
 
 	// Save in plugin-stash
@@ -103,13 +110,32 @@ extern "C" HRESULT WINAPI HookedDirectDrawCreateEx(GUID FAR * lpGuid, LPVOID  *l
 	static bool s_pluginsLoaded = false;
 	if(!s_pluginsLoaded)
 	{
+		// Some DLLs expect to be in the system-folder (Current directoy is one below system)
+		SetCurrentDirectory("system\\");
+
 		// Load plugins
-		LoadPlugins("system\\Plugins\\");
+		LoadPlugins("Plugins\\");
+
+		// Reset to where we were
+		SetCurrentDirectory("..\\");
 
 		s_pluginsLoaded = true;
 
 		// Call this again, in case we got hooked
 		return HookedDirectDrawCreateEx(lpGuid, lplpDD, iid, pUnkOuter);
+	}
+
+	// Check if one of the plugins implements the DirectDrawCreateEx-Function
+	// Note: Only the first occurence of this is used
+	for(auto& p : g_LoadedPlugins)
+	{
+		FARPROC ddcEx = GetProcAddress(p.first, "DirectDrawCreateEx");
+
+		if(ddcEx)
+		{
+			DirectDrawCreateEx_t oProc = (DirectDrawCreateEx_t)ddcEx;
+			return oProc(lpGuid, lplpDD, iid, pUnkOuter);	
+		}
 	}
 
 	DirectDrawCreateEx_t oProc = (DirectDrawCreateEx_t)ddraw.DirectDrawCreateEx;
@@ -195,14 +221,16 @@ BOOL WINAPI DllMain(HINSTANCE hInst, DWORD reason, LPVOID lpvReserved) {
 		{
 			GPlugin::ClosePlugin_t close = (GPlugin::ClosePlugin_t)GetProcAddress(p.first, "ClosePlugin");
 
-			if(!close)
-				continue;
+			if(close && p.second)
+			{
+				// Call ending-method
+				p.second->OnShutdown();
 
-			// Call ending-method
-			p.second->OnShutdown();
+				// Delete the plugin-interface
+				close(p.second);
+			}
 
-			// Delete the plugin-interface
-			close(p.second);
+			FreeLibrary(p.first);
 		}
 	}
 	return TRUE;

@@ -131,6 +131,9 @@
     </Link>
     <CustomBuildStep>
       <Command>copy "$(OutDir)$(TargetName)$(TargetExt)" "$(G2_SYSTEM_PATH)\$(TargetName).dll"
+copy "$(OutDir)$(TargetName)$(TargetExt)" "$(G1_SYSTEM_PATH)\$(TargetName).dll"
+
+
 
 </Command>
       <Outputs>xxx</Outputs>
@@ -158,11 +161,11 @@
     <None Include="ddraw.def" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Shared\PluginInterface.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="PluginInterface.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Shared\PluginInterface.h" />
+    <ClInclude Include="PluginInterface.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

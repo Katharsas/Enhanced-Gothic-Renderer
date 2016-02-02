@@ -90,50 +90,6 @@ __declspec( selectany ) std::string LOGFILE;
 // Builds a string that can be read by visual studio to jump directly to the sourcecode
 #define VS_LOG(file, line, function, msg) (file"(" STRING(line) "): [" function "] ")
 
-namespace LogCache
-{
-	__declspec(selectany) std::vector<std::string> Cache;
-	__declspec(selectany) std::mutex LogMutex;
-
-	struct LogFlush
-	{
-		~LogFlush()
-		{
-			LogMutex.lock();
-			Cache.push_back("Flushed " +  std::to_string(Cache.size()) + " log messages at program termination!\n");
-			FlushData();
-			LogMutex.unlock();
-		}
-
-		static void FlushData()
-		{
-			FILE* f;
-			fopen_s(&f,LOGFILE.c_str(),"a");
-
-			if(!f)
-				return;
-
-			//if(MAX_LOG_MESSAGES_TO_CACHE > 5)
-			//	fputs(" --- Log-Cache flush! --- \n", f);
-
-			// Write down all the data we have
-			for(UINT i=0;i<Cache.size();i++)
-			{
-				fputs(Cache[i].c_str(), f);
-
-				//OutputDebugStringA(Cache[i].c_str());
-			}
-
-			fclose(f);
-
-			// Clear the cache
-			Cache.clear();
-		}
-	};
-
-	__declspec(selectany) LogFlush fls; // This will be deleted by the CRT when the program ends, thus, calling the destructor, which flushes the remaining cache
-}
-
 class Log
 {
 public:
