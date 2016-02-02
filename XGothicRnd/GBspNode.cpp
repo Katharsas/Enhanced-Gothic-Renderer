@@ -108,6 +108,7 @@ void GBspNode::BuildTriangleList(std::vector<ExTVertexStruct>& vertices, std::ve
 			if (poly->GetPolyFlags().PortalIndoorOutdoor)
 				m_PortalList.push_back(poly);
 
+			// Set some magic number to note if we already collected this...
 			if(poly->GetLastTimeDrawn() == 12345)
 				continue;
 			
