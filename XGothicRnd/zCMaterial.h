@@ -38,6 +38,21 @@ class zCTexture;
 class zCMaterial : public zCObject
 {
 public:
+	struct zMatFlags
+	{
+		byte m_Smooth : 1;
+		byte m_DontUseLightmaps : 1;
+		byte m_TexAniMap : 1;
+		byte m_LodDontCollapse : 1;
+		byte m_NoCollDet : 1;
+		byte m_ForceOccluder : 1;
+		byte m_EnvironmentalMapping : 1;
+		byte m_PolyListNeedsSort : 1;
+		byte m_MatUsage : 8;
+		byte m_LibFlag : 8;
+		zTRnd_AlphaBlendFunc m_RndAlphaBlendFunc : 8;
+		byte m_IgnoreSun : 1;
+	};
 
 	/** Returns the texture associated with this material */
 	zCTexture* GetTexture()
@@ -62,6 +77,12 @@ public:
 		return nullptr;
 	}
 
+	/** Returns the root-animation texture. This only differs from GetTexture() for animated textures. */
+	zCTexture* GetRootAniTexture()
+	{
+		return m_Texture;
+	}
+
 	/** Returns the blendfunc of this material */
 	zTRnd_AlphaBlendFunc GetBlendFunc()
 	{
@@ -74,14 +95,22 @@ public:
 		m_Flags.m_RndAlphaBlendFunc = func;
 	}
 
+	/** Returns the front-facing sector of the portal polygon this is on */
 	zCBspSector* GetSectorFront()
 	{
 		return m_BspSectorFront;
 	}
 
+	/** Returns the back-facing sector of the portal polygon this is on */
 	zCBspSector* GetSectorBack()
 	{
 		return m_BspSectorBack;
+	}
+
+	/** Returns the flags-structure of this material */
+	const zMatFlags& GetFlags()
+	{
+		return m_Flags;
 	}
 
 private:
@@ -102,21 +131,7 @@ private:
 	float m_KDiffuse;
 	float m_EnvironmentalMappingStrength;
 
-	struct zMatFlags
-	{
-		byte m_Smooth : 1;
-		byte m_DontUseLightmaps : 1;
-		byte m_TexAniMap : 1;
-		byte m_LodDontCollapse : 1;
-		byte m_NoCollDet : 1;
-		byte m_ForceOccluder : 1;
-		byte m_EnvironmentalMapping : 1;
-		byte m_PolyListNeedsSort : 1;
-		byte m_MatUsage : 8;
-		byte m_LibFlag : 8;
-		zTRnd_AlphaBlendFunc m_RndAlphaBlendFunc : 8;
-		byte m_IgnoreSun : 1;
-	}m_Flags;
+	zMatFlags m_Flags;
 
 	/*zTWaveAniMode			m_enuWaveMode;
 	zTFFT					m_enuWaveSpeed;
