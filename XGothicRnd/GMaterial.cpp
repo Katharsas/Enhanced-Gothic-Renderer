@@ -72,12 +72,28 @@ void GMaterial::ApplyStates()
 	sm.SetTexture(0, m_Diffuse->GetTexture(), EShaderType::ST_PIXEL);
 
 	// Turn on two-sided rendering if this is masked or animated
-	if (IsMaterialUsingAlphaTest() || m_SourceObject->GetTexture()->GetTextureFlags().IsAnimated)
+	if (IsMaterialUsingAlphaTest() || m_SourceObject->GetRootAniTexture()->GetTextureFlags().IsAnimated)
 	{
 		RRasterizerStateInfo info = sm.GetCurrentState().RasterizerState->GetStateInfo();
 		info.CullMode = RRasterizerStateInfo::CM_CULL_NONE;
 		sm.SetRasterizerState(RTools::GetState(info));
 	}
+
+	// Alphablending
+	if(m_SourceObject->GetBlendFunc() == zTRnd_AlphaBlendFunc::zRND_ALPHA_FUNC_BLEND
+		|| m_SourceObject->GetBlendFunc() == zTRnd_AlphaBlendFunc::zRND_ALPHA_FUNC_BLEND_TEST)
+	{
+		RBlendStateInfo info = sm.GetCurrentState().BlendState->GetStateInfo();
+		info.SetAlphaBlending();
+		sm.SetBlendState(RTools::GetState(info));
+	}else if(m_SourceObject->GetBlendFunc() == zTRnd_AlphaBlendFunc::zRND_ALPHA_FUNC_ADD)
+	{
+		RBlendStateInfo info = sm.GetCurrentState().BlendState->GetStateInfo();
+		info.SetAdditiveBlending();
+		sm.SetBlendState(RTools::GetState(info));
+	}
+
+	// TODO: Other blendstates
 }
 
 /**
