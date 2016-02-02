@@ -221,11 +221,8 @@ void GBspTree::UpdateMeshPartPipelineState(WorldMeshPart& part)
 		// TODO: Maybe this is possible with threading. But is it even worth it?
 		part.m_Material->GetDiffuse()->CacheIn(false);
 
-		// Apply a twosided rasterizer-state if this is using a texture with alphatest
-		if (part.m_Material->GetDiffuse()->GetSourceObject()->GetTextureFlags().HasAlpha)
-			sm.SetRasterizerState(twosidedRS);
-		else
-			sm.SetRasterizerState(defaultRS);
+		// Apply blendstates etc.
+		part.m_Material->ApplyStates();
 
 		//if (part.m_Material->GetDiffuse()->GetSourceObject()->GetTextureFlags().HasAlpha)
 		//	LogInfo() << "Alphatest on: " << part.m_Material->GetDiffuse()->GetSourceObject()->GetObjectName();
