@@ -26,7 +26,7 @@ public:
 	MyDirectDrawSurface7* GetSurface();
 
 	/** Returns the actual usable texture of the renderer */
-	RTexture* GetTexture(){return m_Texture;}
+	RAPI::RTexture* GetTexture(){return m_Texture;}
 
 	/** Returns whether the underlaying texture-object is fully initialized */
 	bool IsFullyInitialized();
@@ -34,7 +34,7 @@ public:
 	/** Caches the texture or simply returns the cache-state if already in process or done */
 	zTResourceCacheState CacheIn(bool threaded=true);
 private:
-	RTexture* m_Texture;
+	RAPI::RTexture* m_Texture;
 
 	// Pointer to the surface that is currently representing this texture
 	// Note: Can be also retrieved through zCTexture, but it seems that pointer

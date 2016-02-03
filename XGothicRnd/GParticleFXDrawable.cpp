@@ -14,7 +14,7 @@ GParticleFXDrawable::~GParticleFXDrawable()
 
 /** Called when a cached state got reaquired from the visual. Use this
 method to fill in custom values like constant-buffers */
-void GParticleFXDrawable::OnReaquiredState(GConstants::ERenderStage stage, RPipelineState* state)
+void GParticleFXDrawable::OnReaquiredState(GConstants::ERenderStage stage,RAPI::RPipelineState* state)
 {
 
 }

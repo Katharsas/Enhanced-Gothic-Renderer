@@ -60,25 +60,25 @@ public:
 		XCALL(MemoryLocations::Gothic::zCCamera__Activate_void);
 	}
 
-	/** Recalculates the projectionmatrix */
+	/** Recalculates the projectionMatrix */
 	void UpdateProjectionMatrix()
 	{
 		XCALL(MemoryLocations::Gothic::zCCamera__UpdateProjectionMatrix_void);
 	}
 	
-	/** Returns the current view-matrix */
+	/** Returns the current view-Matrix */
 	const Matrix& GetViewMatrix()
 	{
 		return m_WorldViewMatrix;
 	}
 
-	/** Returns the world matrix of the camera */
+	/** Returns the world Matrix of the camera */
 	const Matrix& GetCameraWorldMatrix()
 	{
 		return m_CameraWorldMatrix;
 	}
 
-	/** Returns the inverse of the view-matrix */
+	/** Returns the inverse of the view-Matrix */
 	const Matrix& GetInverseViewMatrix()
 	{
 		return m_CameraWorldMatrix;
@@ -90,7 +90,7 @@ public:
 		return m_CameraWorldMatrix.Forward();
 	}
 
-	/** Returns the currently active projection matrix.
+	/** Returns the currently active projection Matrix.
 		You often need to transpose this! This and ViewMatrix 
 		have different formats... Only PB knows why. */
 	const Matrix& GetProjectionMatrix()
@@ -98,7 +98,7 @@ public:
 		return m_ProjectionMatrix;
 	}
 
-	/** Returns the combined view-proj matrix */
+	/** Returns the combined view-proj Matrix */
 	Matrix GetViewProjMatrix()
 	{
 		return m_ProjectionMatrix.Transpose() * m_ViewMatrix;
@@ -230,7 +230,7 @@ private:
 	zTViewport m_ActiveViewport;
 	class zCViewBase* m_TargetView;
 
-	// Matrices set for each vob. They put the vobs world-matrix
+	// Matrices set for each vob. They put the vobs world-Matrix
 	// in there for each drawcall for some reason. These shouldn't
 	// be used.
 	Matrix m_WorldViewMatrix;
@@ -242,8 +242,8 @@ private:
 
 	// Transformation matrices
 	Matrix m_ViewMatrix;
-	Matrix m_CameraWorldMatrix; // Same as inverse view-matrix
-	Matrix m_DrawCallWorldMatrix; // Worldmatrix of the currently drawn vob, in Gothics renderer at least
+	Matrix m_CameraWorldMatrix; // Same as inverse view-Matrix
+	Matrix m_DrawCallWorldMatrix; // WorldMatrix of the currently drawn vob, in Gothics renderer at least
 
 	zCMatrixStack<Matrix,8>	m_MatrixViewStack;
 	zCMatrixStack<Matrix,8>	m_MatrixWorldStack;

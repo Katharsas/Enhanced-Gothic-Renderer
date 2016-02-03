@@ -157,35 +157,35 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(DXSDK_DIR)\Include;..\RenderingAPI;..\MapHooks;..\RAPI\renderer\API;..\RAPI\renderer\utils;$(IncludePath)</IncludePath>
-    <LibraryPath>$(DXSDK_DIR)\Lib\x86;..\lib;..\RAPI\Build\lib\Release;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(DXSDK_DIR)\Include;..\MapHooks;..\RAPI\renderer\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(DXSDK_DIR)\Lib\x86;..\lib;..\RAPI\Build\lib\RelWithDebInfo;$(LibraryPath)</LibraryPath>
     <TargetName>EnhancedGothicRenderer</TargetName>
     <SourcePath>E:\Code\g2addon\work;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_NoOpt|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(DXSDK_DIR)\Include;..\RenderingAPI;..\MapHooks;..\RAPI\renderer\API;..\RAPI\renderer\utils;$(IncludePath)</IncludePath>
-    <LibraryPath>$(DXSDK_DIR)\Lib\x86;..\lib;..\RAPI\Build\lib\Release;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(DXSDK_DIR)\Include;..\MapHooks;..\RAPI\renderer\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(DXSDK_DIR)\Lib\x86;..\lib;..\RAPI\Build\lib\RelWithDebInfo;$(LibraryPath)</LibraryPath>
     <TargetName>EnhancedGothicRenderer</TargetName>
     <SourcePath>E:\Code\g2addon\work;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_NO_G18kmod|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(DXSDK_DIR)\Include;..\RenderingAPI;..\MapHooks;..\RAPI\renderer\API;..\RAPI\renderer\utils;$(IncludePath)</IncludePath>
+    <IncludePath>$(DXSDK_DIR)\Include;..\MapHooks;..\RAPI\renderer\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(DXSDK_DIR)\Lib\x86;..\lib;..\RAPI\Build\lib\Release;$(LibraryPath)</LibraryPath>
     <TargetName>EnhancedGothicRenderer</TargetName>
     <SourcePath>E:\Code\g2addon\work;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_NO_G112f|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(DXSDK_DIR)\Include;..\RenderingAPI;..\MapHooks;..\RAPI\renderer\API;..\RAPI\renderer\utils;$(IncludePath)</IncludePath>
+    <IncludePath>$(DXSDK_DIR)\Include;..\MapHooks;..\RAPI\renderer\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(DXSDK_DIR)\Lib\x86;..\lib;..\RAPI\Build\lib\Release;$(LibraryPath)</LibraryPath>
     <TargetName>EnhancedGothicRenderer</TargetName>
     <SourcePath>E:\Code\g2addon\work;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_CRT_NoOpt|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(DXSDK_DIR)\Include;..\RenderingAPI;..\MapHooks;..\RAPI\renderer\API;..\RAPI\renderer\utils;$(IncludePath)</IncludePath>
+    <IncludePath>$(DXSDK_DIR)\Include;..\MapHooks;..\RAPI\renderer\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(DXSDK_DIR)\Lib\x86;..\lib;..\RAPI\Build\lib\Release;$(LibraryPath)</LibraryPath>
     <TargetName>EnhancedGothicRenderer</TargetName>
     <SourcePath>E:\Code\g2addon\work;$(SourcePath)</SourcePath>
@@ -214,9 +214,10 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>PUBLIC_RELEASE;NOMINMAX;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;_USRDLL;XGOTHICRND_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <OpenMPSupport>true</OpenMPSupport>
+      <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -458,6 +459,7 @@ call "$(ProjectDir)\PatchSmartHeap.bat"</Command>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Shared\Toolbox.cpp" />
     <ClCompile Include="D3D7\FakeDirectDrawSurface7.cpp" />
     <ClCompile Include="D3D7\MyDirectDrawSurface7.cpp" />
     <ClCompile Include="dllmain.cpp">
@@ -518,6 +520,7 @@ call "$(ProjectDir)\PatchSmartHeap.bat"</Command>
   <ItemGroup>
     <ClInclude Include="..\RenderingAPI\IVisualChangedObserver.h" />
     <ClInclude Include="..\Shared\PluginInterface.h" />
+    <ClInclude Include="..\Shared\Toolbox.h" />
     <ClInclude Include="BasicTimer.h" />
     <ClInclude Include="D3D7\FakeDirectDrawSurface7.h" />
     <ClInclude Include="D3D7\MyClipper.h" />

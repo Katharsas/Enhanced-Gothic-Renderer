@@ -69,7 +69,7 @@ void GStaticMeshVisual::OnNotified(size_t id, void* userData)
 	for(auto& c : m_CreatedPipelineStates)
 	{
 		unsigned int i=0;
-		for(RPipelineState* s : c.second.PipelineStates)
+		for( RAPI::RPipelineState* s : c.second.PipelineStates)
 		{
 			s->StartIndexOffset = m_SubMeshes[i].m_SubMeshIndexStart + m_LogicalIndexBuffer->PageStart;
 			i++;
@@ -85,21 +85,21 @@ GVisual::StateCache* GStaticMeshVisual::UpdatePipelineStatesFor(GBaseDrawable* d
 	StateCache& cache = m_CreatedPipelineStates[drawable];
 
 	zCProgMeshProto* mesh = (zCProgMeshProto*)m_SourceObject;
-	RPipelineState* defState = nullptr;
-	RStateMachine& sm = REngine::RenderingDevice->GetStateMachine();
-	RPagedBuffer<ExTVertexStruct>* pagedVB = Engine::Game->GetMainResources()->GetExPagedVertexBuffer();
-	RPagedBuffer<unsigned int>* pagedIB = Engine::Game->GetMainResources()->GetExPagedIndexBuffer();
-	RBuffer* instanceBuffer = Engine::Game->GetMainResources()->GetVobInstanceBuffer();
+	 RAPI::RPipelineState* defState = nullptr;
+	RAPI::RStateMachine& sm = RAPI::REngine::RenderingDevice->GetStateMachine();
+	RAPI::RPagedBuffer<ExTVertexStruct>* pagedVB = Engine::Game->GetMainResources()->GetExPagedVertexBuffer();
+	RAPI::RPagedBuffer<unsigned int>* pagedIB = Engine::Game->GetMainResources()->GetExPagedIndexBuffer();
+	RAPI::RBuffer* instanceBuffer = Engine::Game->GetMainResources()->GetVobInstanceBuffer();
 
 	// Get the right state for the stage
 	switch(stage)
 	{
 	case GConstants::RS_WORLD:
-		defState = REngine::ResourceCache->GetCachedObject<RPipelineState>(GConstants::PipelineStates::BPS_INSTANCED_VOB);
+		defState = RAPI::REngine::ResourceCache->GetCachedObject<RAPI::RPipelineState>(GConstants::PipelineStates::BPS_INSTANCED_VOB);
 		break;
 
 	case GConstants::RS_INVENTORY:
-		defState = REngine::ResourceCache->GetCachedObject<RPipelineState>(GConstants::PipelineStates::BPS_INSTANCED_VOB_INVENTORY);
+		defState = RAPI::REngine::ResourceCache->GetCachedObject<RAPI::RPipelineState>(GConstants::PipelineStates::BPS_INSTANCED_VOB_INVENTORY);
 		break;
 	}
 
@@ -125,7 +125,7 @@ GVisual::StateCache* GStaticMeshVisual::UpdatePipelineStatesFor(GBaseDrawable* d
 	for(SubMesh& m : m_SubMeshes)
 	{
 		// Clear old states
-		REngine::ResourceCache->DeleteResource(cache.PipelineStates[i]);
+		RAPI::REngine::ResourceCache->DeleteResource(cache.PipelineStates[i]);
 
 		// Sanity
 		if(m.m_Material != GMaterial::QueryFromSource(*m.m_SourceMaterial))

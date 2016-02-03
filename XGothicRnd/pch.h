@@ -10,7 +10,7 @@
 #include <RDevice.h>
 #include <omp.h>
 
-#pragma comment(lib, "RenderingAPI.lib")
+#pragma comment(lib, "RAPI.lib")
 
 #define _USE_MATH_DEFINES
 #include <math.h>

@@ -8,6 +8,8 @@
 #undef max
 #undef min
 
+using namespace RAPI;
+
 FakeDirectDrawSurface7::FakeDirectDrawSurface7()
 {
 	RefCount = 1;
@@ -195,28 +197,28 @@ HRESULT FakeDirectDrawSurface7::Lock( LPRECT lpDestRect, LPDDSURFACEDESC2 lpDDSu
 	{
 		// Allocate some temporary data
 		unsigned int size = RBaseTexture::ComputeSizeInBytes(MipLevel,
-			INT2(OriginalDesc.dwWidth, OriginalDesc.dwHeight),
+			RAPI::RInt2(OriginalDesc.dwWidth, OriginalDesc.dwHeight),
 			Resource->GetInternalTextureFormat()) / 2;
 		DataLocal = new unsigned char[size];
 
 		// Give out data and pitch
 		lpDDSurfaceDesc->lpSurface = DataLocal;
-		lpDDSurfaceDesc->lPitch = RTexture::ComputeRowPitchBytes(MipLevel,
-			INT2(OriginalDesc.dwWidth, OriginalDesc.dwHeight),
+		lpDDSurfaceDesc->lPitch = RAPI::RTexture::ComputeRowPitchBytes(MipLevel,
+			RAPI::RInt2(OriginalDesc.dwWidth, OriginalDesc.dwHeight),
 			Resource->GetInternalTextureFormat()) / 2;
 	}
 	else
 	{
 		// Allocate some temporary data
 		unsigned int size = RBaseTexture::ComputeSizeInBytes(MipLevel,
-			INT2(OriginalDesc.dwWidth, OriginalDesc.dwHeight),
+			RAPI::RInt2(OriginalDesc.dwWidth, OriginalDesc.dwHeight),
 			Resource->GetInternalTextureFormat());
 		DataLocal = new unsigned char[size];
 
 		// Give out data and pitch
 		lpDDSurfaceDesc->lpSurface = DataLocal;
-		lpDDSurfaceDesc->lPitch = RTexture::ComputeRowPitchBytes(MipLevel,
-			INT2(OriginalDesc.dwWidth, OriginalDesc.dwHeight),
+		lpDDSurfaceDesc->lPitch = RAPI::RTexture::ComputeRowPitchBytes(MipLevel,
+			RAPI::RInt2(OriginalDesc.dwWidth, OriginalDesc.dwHeight),
 			Resource->GetInternalTextureFormat());
 	}
 

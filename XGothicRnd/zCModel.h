@@ -248,7 +248,7 @@ private:
 	// Fatness of the model					
 	float m_Fatness;
 
-	// Scale of the model. Actually not in the world-matrix for this...
+	// Scale of the model. Actually not in the world-Matrix for this...
 	float m_ModelScale;
 
 	// General stuff

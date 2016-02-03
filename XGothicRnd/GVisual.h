@@ -19,7 +19,7 @@ class GVisual : public GzObjectExtension<zCVisual, GVisual>
 public:
 	struct StateCache
 	{
-		std::vector<RPipelineState*> PipelineStates;
+		std::vector<RAPI::RPipelineState*> PipelineStates;
 	};
 
 	/** Creates an extension-object of the right visual type if none was created before */

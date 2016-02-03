@@ -46,13 +46,13 @@ namespace GPlugin
 		static HRESULT WINAPI hooked_DirectDrawCreateEx(GUID FAR * lpGuid, LPVOID  *lplpDD, REFIID  iid,IUnknown FAR *pUnkOuter) {
 
 			// Initialize main graphics engine, if we don't have one yet
-			if(!REngine::RenderingDevice)
+			if(!RAPI::REngine::RenderingDevice)
 			{
 				// Initialize rendering-engine
-				REngine::InitializeEngine();
+				RAPI::REngine::InitializeEngine();
 
 				// Create a rendering device
-				REngine::RenderingDevice->CreateDevice();
+				RAPI::REngine::RenderingDevice->CreateDevice();
 
 				// Initialize Gothic-dependent Engine
 				if(!Engine::Initialize())

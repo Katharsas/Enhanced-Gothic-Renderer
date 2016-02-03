@@ -9,13 +9,13 @@ public:
 
 	/** Called when a cached state got reaquired from the visual. Use this
 	method to fill in custom values like constant-buffers */
-	virtual void OnReaquiredState(GConstants::ERenderStage stage, RPipelineState* state);
+	virtual void OnReaquiredState(GConstants::ERenderStage stage,RAPI::RPipelineState* state);
 
 	/** Sets the constantbuffer containing the current bone-matrices */
-	void SetBoneMatricesBuffer(RBuffer* buffer);
+	void SetBoneMatricesBuffer(RAPI::RBuffer* buffer);
 
 protected:
 	// Currently used constantbuffer for the bone-matrices
-	RBuffer* m_BoneMatriesBuffer;
+	RAPI::RBuffer* m_BoneMatriesBuffer;
 };
 

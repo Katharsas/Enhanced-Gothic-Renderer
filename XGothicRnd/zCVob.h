@@ -50,7 +50,7 @@ public:
 #endif
 	};	
 
-	/** Returns the world-matrix of this vob */
+	/** Returns the world-Matrix of this vob */
 	const Matrix& GetWorldMatrix()
 	{
 		return m_WorldMatrix;
@@ -123,7 +123,7 @@ public:
 		// Set to something general if no groundpoly was found
 		if (!m_GroundPolygon)
 		{
-			m_StaticLightColor = RTools::float4ToDWORD(float4(160 / 255.0f, 160 / 255.0f, 160 / 255.0f, 1.0f));
+			m_StaticLightColor = float4::ToColor(float4(160 / 255.0f, 160 / 255.0f, 160 / 255.0f, 1.0f));
 			m_VobFlags.LightColorStatDirty = 0;
 			return;
 		}
@@ -154,7 +154,7 @@ public:
 			c = 0.8f * c + float3(0.2f);
 		}
 
-		m_StaticLightColor = RTools::float4ToDWORD(float4(c.x, c.y, c.z, 1.0f));
+		m_StaticLightColor = float4::ToColor(float4(c.x, c.y, c.z, 1.0f));
 		m_VobFlags.LightColorStatDirty = 0;
 
 	}
@@ -173,7 +173,7 @@ protected:
 	unsigned int m_LastTimeCollected;
 	zCArray<struct zCBspLeaf*> m_VobLeafList;
 
-	// The worldmatrix for this vob. Can directly be used for rendering!
+	// The worldMatrix for this vob. Can directly be used for rendering!
 	Matrix m_WorldMatrix;
 
 	// Bounding primitives

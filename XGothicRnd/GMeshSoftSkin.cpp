@@ -67,7 +67,7 @@ void GMeshSoftSkin::OnNotified(size_t id, void* userData)
 	for (auto& c : m_CreatedPipelineStates)
 	{
 		unsigned int i = 0;
-		for (RPipelineState* s : c.second.PipelineStates)
+		for (RAPI::RPipelineState* s : c.second.PipelineStates)
 		{
 			s->StartIndexOffset = m_SubMeshes[i].m_SubMeshIndexStart + m_LogicalIndexBuffer->PageStart;
 			i++;
@@ -84,11 +84,11 @@ GVisual::StateCache* GMeshSoftSkin::UpdatePipelineStatesFor(GBaseDrawable* drawa
 	zCMeshSoftSkin* softSkin = (zCMeshSoftSkin*)m_SourceObject;
 	StateCache& cache = m_CreatedPipelineStates[drawable];
 
-	RPipelineState* defState = REngine::ResourceCache->GetCachedObject<RPipelineState>(GConstants::PipelineStates::BPS_SKEL_MESH);
-	RStateMachine& sm = REngine::RenderingDevice->GetStateMachine();
-	RPagedBuffer<ExTSkelVertexStruct>* pagedVB = Engine::Game->GetMainResources()->GetExSkelPagedVertexBuffer();
-	RPagedBuffer<unsigned int>* pagedIB = Engine::Game->GetMainResources()->GetExSkelPagedIndexBuffer();
-	RBuffer* instanceBuffer = Engine::Game->GetMainResources()->GetVobInstanceBuffer();
+	RAPI::RPipelineState* defState = RAPI::REngine::ResourceCache->GetCachedObject<RAPI::RPipelineState>(GConstants::PipelineStates::BPS_SKEL_MESH);
+	RAPI::RStateMachine& sm = RAPI::REngine::RenderingDevice->GetStateMachine();
+	RAPI::RPagedBuffer<ExTSkelVertexStruct>* pagedVB = Engine::Game->GetMainResources()->GetExSkelPagedVertexBuffer();
+	RAPI::RPagedBuffer<unsigned int>* pagedIB = Engine::Game->GetMainResources()->GetExSkelPagedIndexBuffer();
+	RAPI::RBuffer* instanceBuffer = Engine::Game->GetMainResources()->GetVobInstanceBuffer();
 
 	sm.SetFromPipelineState(defState);
 
@@ -116,7 +116,7 @@ GVisual::StateCache* GMeshSoftSkin::UpdatePipelineStatesFor(GBaseDrawable* drawa
 	for (SubMesh& m : m_SubMeshes)
 	{
 		// Clear old states
-		REngine::ResourceCache->DeleteResource(cache.PipelineStates[i]);
+		RAPI::REngine::ResourceCache->DeleteResource(cache.PipelineStates[i]);
 
 		// Apply textures and other parameters
 		//if(m.m_SourceMaterial != softSkin->GetSubmesh(i).m_Material)
@@ -166,16 +166,16 @@ void GMeshSoftSkin::UpdateTextures()
 			SubMesh& m = m_SubMeshes[i];
 
 			m.m_Material->CacheTextures();
-			RTexture* stored = s->Textures[EShaderType::ST_PIXEL].empty() ? nullptr : s->Textures[EShaderType::ST_PIXEL][0];
-			RTexture* actual = m.m_Material->GetDiffuse() ? m.m_Material->GetDiffuse()->GetTexture() : nullptr;
+			RAPI::RTexture* stored = s->Textures[RAPI::EShaderType::ST_PIXEL].empty() ? nullptr : s->Textures[RAPI::EShaderType::ST_PIXEL][0];
+			RAPI::RTexture* actual = m.m_Material->GetDiffuse() ? m.m_Material->GetDiffuse()->GetTexture() : nullptr;
 
 			// Switched to nullptr?
 			if(!actual)
 			{
-				s->Textures[EShaderType::ST_PIXEL].clear();
+				s->Textures[RAPI::EShaderType::ST_PIXEL].clear();
 			}else if(stored != actual)
 			{
-				RStateMachine& sm = REngine::RenderingDevice->GetStateMachine();
+				RAPI::RStateMachine& sm = RAPI::REngine::RenderingDevice->GetStateMachine();
 				sm.SetFromPipelineState(s);
 
 				// Assign textures

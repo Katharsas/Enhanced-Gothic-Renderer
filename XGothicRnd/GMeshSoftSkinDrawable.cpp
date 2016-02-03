@@ -16,17 +16,17 @@ GMeshSoftSkinDrawable::~GMeshSoftSkinDrawable()
 
 /** Called when a cached state got reaquired from the visual. Use this
 method to fill in custom values like constant-buffers */
-void GMeshSoftSkinDrawable::OnReaquiredState(GConstants::ERenderStage stage, RPipelineState* state)
+void GMeshSoftSkinDrawable::OnReaquiredState(GConstants::ERenderStage stage,RAPI::RPipelineState* state)
 {
 	// Apply the bone-matrices buffer to all states
-	if(state->ConstantBuffers[EShaderType::ST_VERTEX].size() < 2)
-		state->ConstantBuffers[EShaderType::ST_VERTEX].resize(2);
+	if(state->ConstantBuffers[RAPI::EShaderType::ST_VERTEX].size() < 2)
+		state->ConstantBuffers[RAPI::EShaderType::ST_VERTEX].resize(2);
 
-	state->ConstantBuffers[EShaderType::ST_VERTEX][1] = m_BoneMatriesBuffer;
+	state->ConstantBuffers[RAPI::EShaderType::ST_VERTEX][1] = m_BoneMatriesBuffer;
 }
 
 /** Sets the constantbuffer containing the current bone-matrices */
-void GMeshSoftSkinDrawable::SetBoneMatricesBuffer(RBuffer* buffer)
+void GMeshSoftSkinDrawable::SetBoneMatricesBuffer(RAPI::RBuffer* buffer)
 {
 	m_BoneMatriesBuffer = buffer;
 

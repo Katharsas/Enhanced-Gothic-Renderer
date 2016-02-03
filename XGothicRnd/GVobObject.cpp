@@ -91,7 +91,7 @@ void GVobObject::UpdateVob()
 	m_InstanceInfo.m_Position = position;
 	m_InstanceInfo.m_Rotation = rotation;
 
-	// Store worldmatrix as well, as we need a way to tell if the transforms changed
+	// Store worldMatrix as well, as we need a way to tell if the transforms changed
 	m_WorldMatrix = m;
 
 	// Set new instanceinfo for all drawables

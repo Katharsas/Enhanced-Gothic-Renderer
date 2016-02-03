@@ -41,8 +41,8 @@ public:
 	/** Removes this object from the caches holding a reference from the source-object to this. Use with caution. */
 	void RemoveFromCaches()
 	{
-		REngine::ResourceCache->RemoveFromCache<S>(Toolbox::HashObject(m_SourceObject));
-		REngine::ResourceCache->RemoveFromCache<GObject>(Toolbox::HashObject(m_SourceObject));
+		RAPI::REngine::ResourceCache->RemoveFromCache<S>(Toolbox::HashObject(m_SourceObject));
+		RAPI::REngine::ResourceCache->RemoveFromCache<GObject>(Toolbox::HashObject(m_SourceObject));
 	}
 
 	/** Returns the extension-object only if it was created before and won't
@@ -53,7 +53,7 @@ public:
 			return nullptr;
 
 		// Check if we already got this in cache
-		return REngine::ResourceCache->GetCachedObject<S>(Toolbox::HashObject(source));
+		return RAPI::REngine::ResourceCache->GetCachedObject<S>(Toolbox::HashObject(source));
 	}
 
 	/** Returns the GMaterial-Instance for the given source-material. Will create a new object
@@ -70,10 +70,10 @@ public:
 		if(!obj)
 		{
 			obj = new S(source);
-			REngine::ResourceCache->AddToCache<S>(Toolbox::HashObject(source), obj);
+			RAPI::REngine::ResourceCache->AddToCache<S>(Toolbox::HashObject(source), obj);
 
 			// Add to this type as well to have general access
-			REngine::ResourceCache->AddToCache<GObject>(Toolbox::HashObject(source), (GObject*)obj);
+			RAPI::REngine::ResourceCache->AddToCache<GObject>(Toolbox::HashObject(source), (GObject*)obj);
 		}
 
 		return obj;
@@ -85,7 +85,7 @@ public:
 	static const std::unordered_map<size_t, S*>& GetFullCacheMap()
 	{
 		// Unsafe cast here, but this is the only way to modify the pointer type and won't make problems.
-		return *(std::unordered_map<size_t, S*>*)&REngine::ResourceCache->GetCacheMap<S>();
+		return *(std::unordered_map<size_t, S*>*)&RAPI::REngine::ResourceCache->GetCacheMap<S>();
 	}
 
 	/**

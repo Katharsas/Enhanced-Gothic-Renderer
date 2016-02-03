@@ -55,21 +55,21 @@ GBspTree::GBspTree(zCBspTree* sourceTree) : GzObjectExtension<zCBspTree, GBspTre
 
 	LogInfo() << "Indexing worldmesh...";
 	// Create indexed mesh
-	RTools::IndexVertices<ExTVertexStruct, ExTVertexStruct, unsigned int>(&vertices[0], vertices.size(), indicedVertices, indices);
-	//RTools::IndexVertices<ExTVertexStruct, ExTVertexStruct, unsigned int>(&verticesFull[0], verticesFull.size(), indicedVertices, indices);
+	RAPI::RTools::IndexVertices<ExTVertexStruct, ExTVertexStruct, unsigned int>(&vertices[0], vertices.size(), indicedVertices, indices);
+	//RAPI::RTools::IndexVertices<ExTVertexStruct, ExTVertexStruct, unsigned int>(&verticesFull[0], verticesFull.size(), indicedVertices, indices);
 
 	// Create buffers
-	m_WorldMeshBuffer = REngine::ResourceCache->CreateResource<RBuffer>();
-	m_WorldIndexBuffer = REngine::ResourceCache->CreateResource<RBufferCollection<unsigned int>>();
+	m_WorldMeshBuffer = RAPI::REngine::ResourceCache->CreateResource<RAPI::RBuffer>();
+	m_WorldIndexBuffer = RAPI::REngine::ResourceCache->CreateResource<RAPI::RBufferCollection<unsigned int>>();
 
 	LogInfo() << "Moving meshdata to the GPU...";
 	// Copy vertices to the GPU
 	m_WorldMeshBuffer->Init(&indicedVertices[0], 
 		indicedVertices.size() * sizeof(ExTVertexStruct), 
 		sizeof(ExTVertexStruct),
-		EBindFlags::B_VERTEXBUFFER,
-		EUsageFlags::U_IMMUTABLE,
-		ECPUAccessFlags::CA_NONE,
+		RAPI::EBindFlags::B_VERTEXBUFFER,
+		RAPI::EUsageFlags::U_IMMUTABLE,
+		RAPI::ECPUAccessFlags::CA_NONE,
 		"WorldMesh");
 
 	//LogInfo() << "Generating indexded meshes for BSP-Nodes...";
@@ -84,14 +84,14 @@ GBspTree::GBspTree(zCBspTree* sourceTree) : GzObjectExtension<zCBspTree, GBspTre
 	BuildQuadTreeVertexData(indicedVertices, indices, trianglePolys);
 
 	LogInfo() << "Constructing collected indexbuffer...";
-	m_WorldIndexBuffer->Construct(EBindFlags::B_INDEXBUFFER);
+	m_WorldIndexBuffer->Construct(RAPI::EBindFlags::B_INDEXBUFFER);
 }
 
 
 GBspTree::~GBspTree(void)
 {
-	REngine::ResourceCache->DeleteResource(m_WorldMeshBuffer);
-	REngine::ResourceCache->DeleteResource(m_WorldIndexBuffer);
+	RAPI::REngine::ResourceCache->DeleteResource(m_WorldMeshBuffer);
+	RAPI::REngine::ResourceCache->DeleteResource(m_WorldIndexBuffer);
 	delete m_QuadTree;
 }
 
@@ -122,7 +122,7 @@ void GBspTree::BuildQuadTreeVertexData(const std::vector<ExTVertexStruct>& verti
 			zCPolygon* poly = trianglePolys[i / 3];
 
 			
-			RTexture* lightmap = nullptr;
+			RAPI::RTexture* lightmap = nullptr;
 			
 			// Get lightmap atlas if needed
 			// TODO: This should be rather slow, here, in an inner loop. Profile and optimize!
@@ -186,11 +186,11 @@ void GBspTree::BuildQuadTreeVertexData(const std::vector<ExTVertexStruct>& verti
 void GBspTree::UpdateMeshPartPipelineState(WorldMeshPart& part)
 {
 	// Delete old state, in case this is a recreation
-	REngine::ResourceCache->DeleteResource(part.m_PipelineState);
+	RAPI::REngine::ResourceCache->DeleteResource(part.m_PipelineState);
 
 	// Get base-state for worldmeshes. This contains objects like the needed shaders.
-	RPipelineState* defState = REngine::ResourceCache->GetCachedObject<RPipelineState>(GConstants::PipelineStates::BPS_WORLDMESH);
-	RStateMachine& sm = REngine::RenderingDevice->GetStateMachine();
+	 RAPI::RPipelineState* defState = RAPI::REngine::ResourceCache->GetCachedObject<RAPI::RPipelineState>(GConstants::PipelineStates::BPS_WORLDMESH);
+	RAPI::RStateMachine& sm = RAPI::REngine::RenderingDevice->GetStateMachine();
 
 	// Assign default values
 	sm.SetFromPipelineState(defState);
@@ -200,19 +200,19 @@ void GBspTree::UpdateMeshPartPipelineState(WorldMeshPart& part)
 	sm.SetVertexBuffer(0, msh->GetMeshVertexBuffer());
 	sm.SetIndexBuffer(msh->GetMeshIndexBuffer());
 
-	RRasterizerState* twosidedRS = REngine::ResourceCache->GetCachedObject<RRasterizerState>("twosided");
-	RRasterizerState* defaultRS = REngine::ResourceCache->GetCachedObject<RRasterizerState>("default");
+	RAPI::RRasterizerState* twosidedRS = RAPI::REngine::ResourceCache->GetCachedObject<RAPI::RRasterizerState>("twosided");
+	RAPI::RRasterizerState* defaultRS = RAPI::REngine::ResourceCache->GetCachedObject<RAPI::RRasterizerState>("default");
 
 	if (part.m_Material->GetDiffuse())
 	{
 		UINT mFlags = MPS_NONE;
 
-		sm.SetTexture(0, part.m_Material->GetDiffuse()->GetTexture(), EShaderType::ST_PIXEL);
+		sm.SetTexture(0, part.m_Material->GetDiffuse()->GetTexture(), RAPI::EShaderType::ST_PIXEL);
 
 		// Set lightmap if we have one
 		if(part.m_Lightmap)
 		{
-			sm.SetTexture(1, part.m_Lightmap, EShaderType::ST_PIXEL);
+			sm.SetTexture(1, part.m_Lightmap, RAPI::EShaderType::ST_PIXEL);
 
 			mFlags |= MPS_LIGHTMAPPED;
 		}
@@ -228,7 +228,7 @@ void GBspTree::UpdateMeshPartPipelineState(WorldMeshPart& part)
 		//	LogInfo() << "Alphatest on: " << part.m_Material->GetDiffuse()->GetSourceObject()->GetObjectName();
 
 		// Get the right pixelshader for the mesh-part
-		RPixelShader* ps = part.m_Material->GetMaterialPixelShader(GConstants::RS_WORLD, mFlags);
+		RAPI::RPixelShader* ps = part.m_Material->GetMaterialPixelShader(GConstants::RS_WORLD, mFlags);
 		sm.SetPixelShader(ps);
 	}
 
@@ -241,7 +241,7 @@ void GBspTree::UpdateMeshPartPipelineState(WorldMeshPart& part)
 /**
  * Renders everyting inside this BSP-Tree from the current frustum
  */
-void GBspTree::Draw(RRenderQueueID queue, std::vector<GVobObject*>& visibleVobs, float objectFarplane)
+void GBspTree::Draw(RAPI::RRenderQueueID queue, std::vector<GVobObject*>& visibleVobs, float objectFarplane)
 {
 	// Extract information about the camera so we have it all on stack. Better cache locality.
 	BSPRenderInfo info;
@@ -265,7 +265,7 @@ void GBspTree::Draw(RRenderQueueID queue, std::vector<GVobObject*>& visibleVobs,
 	// Draw everything connected to the sector we are currently inside of
 	if(startSector)
 	{
-		startSector->AddSectorVobsRec(info.CameraPostion, visibleVobs, REngine::RenderingDevice->GetFrameCounter(), nullptr);
+		startSector->AddSectorVobsRec(info.CameraPostion, visibleVobs, RAPI::REngine::RenderingDevice->GetFrameCounter(), nullptr);
 		Engine::Game->AddFrameDebugLine("SECTOR: " + std::string(startSector->m_SectorName.ToChar()) + " #" + std::to_string(startSector->m_SectorIndex));
 	}
 
@@ -274,7 +274,7 @@ void GBspTree::Draw(RRenderQueueID queue, std::vector<GVobObject*>& visibleVobs,
 }
 
 /** Draws a world-mesh-part */
-void GBspTree::DrawWorldMeshPart(WorldMeshPart& part, RRenderQueueID queue)
+void GBspTree::DrawWorldMeshPart(WorldMeshPart& part, RAPI::RRenderQueueID queue)
 {
 	// Make sure we have textures
 	if(part.m_Material->CacheTextures())
@@ -289,13 +289,13 @@ void GBspTree::DrawWorldMeshPart(WorldMeshPart& part, RRenderQueueID queue)
 
 		if(part.m_PipelineState) // Catch failed states
 		{
-			REngine::RenderingDevice->QueuePipelineState(part.m_PipelineState, queue);
+			RAPI::REngine::RenderingDevice->QueuePipelineState(part.m_PipelineState, queue);
 		}
 	}
 }
 
 /** Draws the pipeline-states from the visible quad-tree nodes */
-void GBspTree::DrawQuadTreeNodes(BSPRenderInfo& info, RRenderQueueID queue)
+void GBspTree::DrawQuadTreeNodes(BSPRenderInfo& info, RAPI::RRenderQueueID queue)
 {
 	info.ClipFlags = CLIP_FLAGS_FULL;
 
@@ -307,7 +307,7 @@ void GBspTree::DrawQuadTreeNodes(BSPRenderInfo& info, RRenderQueueID queue)
 
 		if(n->IsLeaf())
 		{
-			//RTools::LineRenderer.AddAABBMinMax(n->GetBBox().m_Min, n->GetBBox().m_Max, float4(0,1,0,1));
+			//RAPI::RTools::LineRenderer.AddAABBMinMax(n->GetBBox().m_Min, n->GetBBox().m_Max, float4(0,1,0,1));
 
 			// Decide whether to use lightmapping
 			/*bool lightmapping = (float2(info.CameraPostion.x,info.CameraPostion.z)
@@ -347,7 +347,7 @@ void GBspTree::DrawQuadTreeNodes(BSPRenderInfo& info, RRenderQueueID queue)
 
 		if(clip == ZTCAM_CLIPTYPE_OUT)
 		{
-			//RTools::LineRenderer.AddAABBMinMax(n->GetBBox().m_Min, n->GetBBox().m_Max, float4(1,0,0,1));
+			//RAPI::RTools::LineRenderer.AddAABBMinMax(n->GetBBox().m_Min, n->GetBBox().m_Max, float4(1,0,0,1));
 			return; // Don't go futher into the tree, entire node is invisible
 		}
 		
@@ -362,7 +362,7 @@ void GBspTree::DrawQuadTreeNodes(BSPRenderInfo& info, RRenderQueueID queue)
 		if(n->NodeEmpty())
 			return;
 
-		RTools::LineRenderer.AddAABBMinMax(n->GetBBox().m_Min, n->GetBBox().m_Max, float4(1,0,0,1));
+		RAPI::RTools::LineRenderer.AddAABBMinMax(*(RAPI::RFloat3*)&n->GetBBox().m_Min, *(RAPI::RFloat3*)&n->GetBBox().m_Max, RAPI::RFloat4(1,0,0,1));
 
 		n->WalkSubs(fnDebug);
 	};

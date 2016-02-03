@@ -1,6 +1,6 @@
 #pragma once
 
-/** Generic stack. Not sure why they called it matrix-stack. */
+/** Generic stack. Not sure why they called it Matrix-stack. */
 template <typename T, int SIZE> 
 class zCMatrixStack {
     int		m_StackPosition;

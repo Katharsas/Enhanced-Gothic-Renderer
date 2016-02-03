@@ -37,8 +37,8 @@ public:
 	virtual void CacheTextures(bool force = false);
 private:
 	// Logical buffers for rendering
-	RBuffer* m_VertexBuffer;
-	RBuffer* m_IndexBuffer;
+	RAPI::RBuffer* m_VertexBuffer;
+	RAPI::RBuffer* m_IndexBuffer;
 
 	std::vector<SubMesh> m_SubMeshes;
 };

@@ -203,10 +203,10 @@ public:
 		case D3DRENDERSTATE_ZWRITEENABLE			: DepthStencilState.DepthWriteEnabled = Value != 0; break;
 		case D3DRENDERSTATE_ZENABLE            		: DepthStencilState.DepthBufferEnabled = Value != 0; break;
 		case D3DRENDERSTATE_ALPHATESTENABLE    		: FixedFunctionStageInfo.SetGraphicsSwitch(GSWITCH_ALPHAREF, Value != 0);	break;
-		case D3DRENDERSTATE_SRCBLEND           		: BlendState.SrcBlend = (RBlendStateInfo::EBlendFunc)Value; break;
-		case D3DRENDERSTATE_DESTBLEND          		: BlendState.DestBlend = (RBlendStateInfo::EBlendFunc)Value; break;
-		case D3DRENDERSTATE_CULLMODE           		: RasterizerState.CullMode = (RRasterizerStateInfo::ECullMode)Value; break;
-		case D3DRENDERSTATE_ZFUNC              		: DepthStencilState.DepthBufferCompareFunc = (RDepthStencilStateInfo::ECompareFunc)Value; break;
+		case D3DRENDERSTATE_SRCBLEND           		: BlendState.SrcBlend = (RAPI::RBlendStateInfo::EBlendFunc)Value; break;
+		case D3DRENDERSTATE_DESTBLEND          		: BlendState.DestBlend = (RAPI::RBlendStateInfo::EBlendFunc)Value; break;
+		case D3DRENDERSTATE_CULLMODE           		: RasterizerState.CullMode = (RAPI::RRasterizerStateInfo::ECullMode)Value; break;
+		case D3DRENDERSTATE_ZFUNC              		: DepthStencilState.DepthBufferCompareFunc = (RAPI::RDepthStencilStateInfo::ECompareFunc)Value; break;
 		case D3DRENDERSTATE_ALPHAREF           		: FixedFunctionStageInfo.FF_AlphaRef = (float)Value / 255.0f; break; // Ref for masked
 		case D3DRENDERSTATE_ALPHABLENDENABLE   		: BlendState.BlendEnabled = Value != 0; break;	
 		case D3DRENDERSTATE_ZBIAS              		: RasterizerState.ZBias = Value; break;
@@ -301,16 +301,16 @@ public:
 				break;
 
 			case D3DTSS_ADDRESS: 
-				SamplerState.AddressU = (ETextureAddress)Value;
-				SamplerState.AddressV = (ETextureAddress)Value;
+				SamplerState.AddressU = (RAPI::ETextureAddress)Value;
+				SamplerState.AddressV = (RAPI::ETextureAddress)Value;
 				break;
 
 			case D3DTSS_ADDRESSU:   
-				SamplerState.AddressU = (ETextureAddress)Value; 
+				SamplerState.AddressU = (RAPI::ETextureAddress)Value; 
 				break;	   
 
 			case D3DTSS_ADDRESSV:   
-				SamplerState.AddressV = (ETextureAddress)Value; 
+				SamplerState.AddressV = (RAPI::ETextureAddress)Value; 
 				break;   
 
 			case D3DTSS_BORDERCOLOR: break;   
@@ -332,28 +332,28 @@ public:
         return S_OK; //return this->direct3DDevice7->GetTransform(State, pMatrix);
     }
 
-    HRESULT STDMETHODCALLTYPE SetTransform(D3DTRANSFORMSTATETYPE dtstTransformStateType, LPD3DMATRIX lpD3DMatrix) {
+    HRESULT STDMETHODCALLTYPE SetTransform(D3DTRANSFORMSTATETYPE dtstTransformStateType, LPD3DMATRIX lpD3DMATRIX) {
 		//LogInfo() << "SetTransform: " << dtstTransformStateType;
 
 		switch(dtstTransformStateType)
 		{
 		case D3DTRANSFORMSTATE_WORLD:
-			FixedFunctionStageInfo.WorldMatrix = ((Matrix*)lpD3DMatrix)->Transpose();
+			FixedFunctionStageInfo.WorldMatrix = ((Matrix*)lpD3DMATRIX)->Transpose();
 			break;
 
 		case D3DTRANSFORMSTATE_VIEW:
-			FixedFunctionStageInfo.ViewMatrix = ((Matrix*)lpD3DMatrix)->Transpose();
+			FixedFunctionStageInfo.ViewMatrix = ((Matrix*)lpD3DMATRIX)->Transpose();
 			break;
 
 		case D3DTRANSFORMSTATE_PROJECTION:
-			FixedFunctionStageInfo.ProjMatrix = ((Matrix*)lpD3DMatrix)->Transpose();
+			FixedFunctionStageInfo.ProjMatrix = ((Matrix*)lpD3DMATRIX)->Transpose();
 			break;
 		}
 
 		FixedFunctionStageInfo.WorldViewProj = (FixedFunctionStageInfo.ProjMatrix * FixedFunctionStageInfo.ViewMatrix * FixedFunctionStageInfo.WorldMatrix);
 		//FixedFunctionStageInfo.WorldViewProj = (FixedFunctionStageInfo.ViewMatrix * FixedFunctionStageInfo.ProjMatrix);
 
-		return S_OK; //return this->direct3DDevice7->SetTransform(dtstTransformStateType, lpD3DMatrix);
+		return S_OK; //return this->direct3DDevice7->SetTransform(dtstTransformStateType, lpD3DMATRIX);
     }
 
     HRESULT STDMETHODCALLTYPE GetViewport(LPD3DVIEWPORT7 lpViewport) {
@@ -361,7 +361,7 @@ public:
     }
 
     HRESULT STDMETHODCALLTYPE SetViewport(LPD3DVIEWPORT7 lpViewport) {
-		ViewportInfo vpinfo;
+		RAPI::ViewportInfo vpinfo;
 		vpinfo.TopLeftX = (float)(lpViewport->dwX);
 		vpinfo.TopLeftY = (float)(lpViewport->dwY);
 		vpinfo.Height = (float)(lpViewport->dwHeight);
@@ -370,14 +370,14 @@ public:
 		vpinfo.MaxZ = lpViewport->dvMaxZ;
 
 		// Try to get this from cache
-		RViewport* vp = REngine::ResourceCache->GetCachedObject<RViewport>(Toolbox::HashObject(vpinfo));
+		RAPI::RViewport* vp = RAPI::REngine::ResourceCache->GetCachedObject<RAPI::RViewport>(Toolbox::HashObject(vpinfo));
 		
 		// Create new object if needed
 		if(!vp)
 		{
-			vp = REngine::ResourceCache->CreateResource<RViewport>();
+			vp = RAPI::REngine::ResourceCache->CreateResource<RAPI::RViewport>();
 			vp->CreateViewport(vpinfo);
-			REngine::ResourceCache->AddToCache(Toolbox::HashObject(vpinfo), vp);
+			RAPI::REngine::ResourceCache->AddToCache(Toolbox::HashObject(vpinfo), vp);
 		}
 
 		// Apply this to ff-state
@@ -397,7 +397,7 @@ public:
 
     HRESULT STDMETHODCALLTYPE BeginScene() {
 		SetRenderQueueName("D3D7");
-		REngine::RenderingDevice->OnFrameStart();
+		RAPI::REngine::RenderingDevice->OnFrameStart();
         return S_OK; 
     }
 
@@ -461,7 +461,7 @@ public:
 		if(!Engine::Game->GetRenderSettings().m_AllowD3D7Proxy)
 			return S_OK;
 
-		RStateMachine& sm = REngine::RenderingDevice->GetStateMachine();
+		RAPI::RStateMachine& sm = RAPI::REngine::RenderingDevice->GetStateMachine();
 
 		//sm.Invalidate();
 
@@ -496,17 +496,17 @@ public:
 		}
 
 		// Make drawcall. (x - 2)*3 because that is how many vertices a fan has as a triangle list.
-		RPipelineState* drawcall = sm.MakeDrawCall((dwVertexCount - 2) * 3, offset);
+		 RAPI::RPipelineState* drawcall = sm.MakeDrawCall((dwVertexCount - 2) * 3, offset);
 		FramePipelineStates.push_back(drawcall);
 
 		sm.Invalidate();
 
 		// Get a new queue for each of these, since it's critical that the original code draws in order
-		RRenderQueueID q = REngine::RenderingDevice->AcquireRenderQueue(false, RenderQueueName + " #" + std::to_string(RenderQueueIndex));
+		RAPI::RRenderQueueID q = RAPI::REngine::RenderingDevice->AcquireRenderQueue(false, RenderQueueName + " #" + std::to_string(RenderQueueIndex));
 		RenderQueueIndex++;
 
-		REngine::RenderingDevice->QueuePipelineState(drawcall, q);
-		REngine::RenderingDevice->ProcessRenderQueue(q);
+		RAPI::REngine::RenderingDevice->QueuePipelineState(drawcall, q);
+		RAPI::REngine::RenderingDevice->ProcessRenderQueue(q);
 
        return S_OK;
     }
@@ -529,7 +529,7 @@ public:
 			LogWarn() << "DP-VB: Unimplemented primitive type: " << d3dptPrimitiveType;
 		//return S_OK;
 
-		RStateMachine& sm = REngine::RenderingDevice->GetStateMachine();
+		RAPI::RStateMachine& sm = RAPI::REngine::RenderingDevice->GetStateMachine();
 		MyDirect3DVertexBuffer7* buffer = (MyDirect3DVertexBuffer7*)lpd3dVertexBuffer;
 		D3DVERTEXBUFFERDESC desc;
 		buffer->GetVertexBufferDesc(&desc);
@@ -561,16 +561,16 @@ public:
 		}
 
 		// Make drawcall
-		RPipelineState* drawcall = sm.MakeDrawCall(dwNumVertices, dwStartVertex);
+		 RAPI::RPipelineState* drawcall = sm.MakeDrawCall(dwNumVertices, dwStartVertex);
 		FramePipelineStates.push_back(drawcall);
 
 		sm.Invalidate();
 
 		// Get a new queue for each of these, since it's critical that the original code draws in order
-		RRenderQueueID q = REngine::RenderingDevice->AcquireRenderQueue(false, RenderQueueName + " #" + std::to_string(RenderQueueIndex));
+		RAPI::RRenderQueueID q = RAPI::REngine::RenderingDevice->AcquireRenderQueue(false, RenderQueueName + " #" + std::to_string(RenderQueueIndex));
 		RenderQueueIndex++;
-		REngine::RenderingDevice->QueuePipelineState(drawcall, q);
-		REngine::RenderingDevice->ProcessRenderQueue(q);
+		RAPI::REngine::RenderingDevice->QueuePipelineState(drawcall, q);
+		RAPI::REngine::RenderingDevice->ProcessRenderQueue(q);
 
         return S_OK;
     }
@@ -578,26 +578,26 @@ public:
     HRESULT STDMETHODCALLTYPE EndScene() {
 
 		// Construct immediate buffer
-		ImmediateBufferCollection_XYZRHW_DIF_T1.Construct(EBindFlags::B_VERTEXBUFFER, EUsageFlags::U_DYNAMIC);
-		ImmediateBufferCollection_XYZRHW_DIF_SPEC_T1.Construct(EBindFlags::B_VERTEXBUFFER, EUsageFlags::U_DYNAMIC);
+		ImmediateBufferCollection_XYZRHW_DIF_T1.Construct(RAPI::EBindFlags::B_VERTEXBUFFER, RAPI::EUsageFlags::U_DYNAMIC);
+		ImmediateBufferCollection_XYZRHW_DIF_SPEC_T1.Construct(RAPI::EBindFlags::B_VERTEXBUFFER, RAPI::EUsageFlags::U_DYNAMIC);
 
 		Engine::Game->OnFrameEnd();
-		REngine::RenderingDevice->OnFrameEnd();
-		REngine::RenderingDevice->Present();
+		RAPI::REngine::RenderingDevice->OnFrameEnd();
+		RAPI::REngine::RenderingDevice->Present();
 
-		for each (RPipelineState* ps in FramePipelineStates)
+		for each ( RAPI::RPipelineState* ps in FramePipelineStates)
 		{
-			REngine::ResourceCache->DeleteResource(ps);
+			RAPI::REngine::ResourceCache->DeleteResource(ps);
 		}
 		FramePipelineStates.clear();
 
 		for(auto b : FFConstantBufferByHash)
 		{
-			REngine::ResourceCache->DeleteResource<RBuffer>(b.second);
+			RAPI::REngine::ResourceCache->DeleteResource<RAPI::RBuffer>(b.second);
 		}
 		FFConstantBufferByHash.clear();
 
-		REngine::DynamicBufferCache->OnFrameEnded();
+		RAPI::REngine::DynamicBufferCache->OnFrameEnded();
 	
 	return S_OK;
     }
@@ -651,7 +651,7 @@ public:
         return S_OK; 
     }
 
-    HRESULT STDMETHODCALLTYPE MultiplyTransform(D3DTRANSFORMSTATETYPE dtstTransformStateType, LPD3DMATRIX lpD3DMatrix) {
+    HRESULT STDMETHODCALLTYPE MultiplyTransform(D3DTRANSFORMSTATETYPE dtstTransformStateType, LPD3DMATRIX lpD3DMATRIX) {
         return S_OK; 
     }
 
@@ -684,43 +684,43 @@ public:
 	 */
 	void AssignState()
 	{
-		RStateMachine& sm = REngine::RenderingDevice->GetStateMachine();
-		RResourceCache& cache = *REngine::ResourceCache;
+		RAPI::RStateMachine& sm = RAPI::REngine::RenderingDevice->GetStateMachine();
+		RAPI::RResourceCache& cache = *RAPI::REngine::ResourceCache;
 
 		// Force backface-culling to off to get around a bug with the sky when looking into the sun
-		RasterizerState.CullMode = RRasterizerStateInfo::CM_CULL_NONE;
+		RasterizerState.CullMode = RAPI::RRasterizerStateInfo::CM_CULL_NONE;
 
 		// Try to get some from cache
-		RDepthStencilState* dss = cache.GetCachedObject<RDepthStencilState>(Toolbox::HashObject(DepthStencilState));
-		RSamplerState* ss = cache.GetCachedObject<RSamplerState>(Toolbox::HashObject(SamplerState));
-		RBlendState* bs = cache.GetCachedObject<RBlendState>(Toolbox::HashObject(BlendState));
-		RRasterizerState* rs = cache.GetCachedObject<RRasterizerState>(Toolbox::HashObject(RasterizerState));
+		RAPI::RDepthStencilState* dss = cache.GetCachedObject<RAPI::RDepthStencilState>(Toolbox::HashObject(DepthStencilState));
+		RAPI::RSamplerState* ss = cache.GetCachedObject<RAPI::RSamplerState>(Toolbox::HashObject(SamplerState));
+		RAPI::RBlendState* bs = cache.GetCachedObject<RAPI::RBlendState>(Toolbox::HashObject(BlendState));
+		RAPI::RRasterizerState* rs = cache.GetCachedObject<RAPI::RRasterizerState>(Toolbox::HashObject(RasterizerState));
 
 		// Create states if missing
 		if(!dss)
 		{
-			dss = cache.CreateResource<RDepthStencilState>();
+			dss = cache.CreateResource<RAPI::RDepthStencilState>();
 			dss->CreateState(DepthStencilState);
 			cache.AddToCache(Toolbox::HashObject(DepthStencilState), dss);
 		}
 
 		if(!ss)
 		{
-			ss = cache.CreateResource<RSamplerState>();
+			ss = cache.CreateResource<RAPI::RSamplerState>();
 			ss->CreateState(SamplerState);
 			cache.AddToCache(Toolbox::HashObject(SamplerState), ss);
 		}
 
 		if(!bs)
 		{
-			bs = cache.CreateResource<RBlendState>();
+			bs = cache.CreateResource<RAPI::RBlendState>();
 			bs->CreateState(BlendState);
 			cache.AddToCache(Toolbox::HashObject(BlendState), bs);
 		}
 
 		if(!rs)
 		{
-			rs = cache.CreateResource<RRasterizerState>();
+			rs = cache.CreateResource<RAPI::RRasterizerState>();
 			rs->CreateState(RasterizerState);
 			cache.AddToCache(Toolbox::HashObject(RasterizerState), rs);
 		}
@@ -737,9 +737,9 @@ public:
 			if(BoundSurfaces[i] 
 				&& BoundSurfaces[i]->GetEngineTexture()
 				&& BoundSurfaces[i]->GetEngineTexture()->GetTexture()->IsInitialized())
-				sm.SetTexture(i, BoundSurfaces[i]->GetEngineTexture()->GetTexture(), EShaderType::ST_PIXEL);
+				sm.SetTexture(i, BoundSurfaces[i]->GetEngineTexture()->GetTexture(), RAPI::EShaderType::ST_PIXEL);
 			else if(BoundSurfaces[i])
-				sm.SetTexture(i, nullptr, EShaderType::ST_PIXEL);
+				sm.SetTexture(i, nullptr, RAPI::EShaderType::ST_PIXEL);
 		}
 
 		// If we have an active camera, set the inverse-view-distance into the state as well
@@ -760,8 +760,8 @@ public:
 			if(it == FFConstantBufferByHash.end())
 			{
 				// Create a new cached state
-				RBuffer* b =REngine::ResourceCache->CreateResource<RBuffer>();
-				b->Init(&FixedFunctionStageInfo, sizeof(FixedFunctionGraphicsState), sizeof(FixedFunctionGraphicsState), EBindFlags::B_CONSTANTBUFFER);
+				RAPI::RBuffer* b =RAPI::REngine::ResourceCache->CreateResource<RAPI::RBuffer>();
+				b->Init(&FixedFunctionStageInfo, sizeof(FixedFunctionGraphicsState), sizeof(FixedFunctionGraphicsState), RAPI::EBindFlags::B_CONSTANTBUFFER);
 
 				FFConstantBufferByHash[ffStateHash] = b;
 				LastBoundFFStateCB = b;
@@ -774,61 +774,61 @@ public:
 		}
 
 		// Set FF-State
-		sm.SetConstantBuffer(0, LastBoundFFStateCB, EShaderType::ST_VERTEX);
-		sm.SetConstantBuffer(0, LastBoundFFStateCB, EShaderType::ST_PIXEL);
+		sm.SetConstantBuffer(0, LastBoundFFStateCB, RAPI::EShaderType::ST_VERTEX);
+		sm.SetConstantBuffer(0, LastBoundFFStateCB, RAPI::EShaderType::ST_PIXEL);
 
 		sm.SetPixelShader(PS_FixedFunctionEmulator);
 
 		sm.SetViewport(Viewport);
-		sm.SetPrimitiveTopology(EPrimitiveType::PT_TRIANGLE_LIST);
+		sm.SetPrimitiveTopology(RAPI::EPrimitiveType::PT_TRIANGLE_LIST);
 	}
 
 	/** Initializes resources needed by the renderer */
 	HRESULT InitFixedFunctionEmulator()
 	{
-		InputLayout_XYZ_DIF_T1 = REngine::ResourceCache->CreateResource<RInputLayout>();
-		InputLayout_XYZRHW_DIF_T1 = REngine::ResourceCache->CreateResource<RInputLayout>();
-		InputLayout_XYZRHW_DIF_SPEC_T1 = REngine::ResourceCache->CreateResource<RInputLayout>();
-		InputLayout_XYZ_NRM_T1 = REngine::ResourceCache->CreateResource<RInputLayout>();
+		InputLayout_XYZ_DIF_T1 = RAPI::REngine::ResourceCache->CreateResource<RAPI::RInputLayout>();
+		InputLayout_XYZRHW_DIF_T1 = RAPI::REngine::ResourceCache->CreateResource<RAPI::RInputLayout>();
+		InputLayout_XYZRHW_DIF_SPEC_T1 = RAPI::REngine::ResourceCache->CreateResource<RAPI::RInputLayout>();
+		InputLayout_XYZ_NRM_T1 = RAPI::REngine::ResourceCache->CreateResource<RAPI::RInputLayout>();
 
 		char path[MAX_PATH];
 		GetCurrentDirectory(MAX_PATH, path);
 
 		
-		VS_XYZ_DIF_T1 = RTools::LoadShader<RVertexShader>("system\\GD3D11\\Shaders\\VS_XYZ_DIF_T1.hlsl", "VS_XYZ_DIF_T1");
-		VS_XYZRHW_DIF_T1 = RTools::LoadShader<RVertexShader>("system\\GD3D11\\Shaders\\VS_XYZRHW_DIF_T1.hlsl", "VS_XYZRHW_DIF_T1");
-		VS_XYZRHW_DIF_SPEC_T1 = RTools::LoadShader<RVertexShader>("system\\GD3D11\\Shaders\\VS_XYZRHW_DIF_SPEC_T1.hlsl", "VS_XYZRHW_DIF_SPEC_T1");
-		VS_XYZ_NRM_T1 = RTools::LoadShader<RVertexShader>("system\\GD3D11\\Shaders\\VS_XYZ_NRM_T1.hlsl", "VS_XYZ_NRM_T1");
-		PS_FixedFunctionEmulator = RTools::LoadShader<RPixelShader>("system\\GD3D11\\Shaders\\PS_FixedFunctionPipe.hlsl", "PS_FixedFunctionEmulator");
+		VS_XYZ_DIF_T1 = RAPI::RTools::LoadShader<RAPI::RVertexShader>("system\\GD3D11\\Shaders\\VS_XYZ_DIF_T1.hlsl", "VS_XYZ_DIF_T1");
+		VS_XYZRHW_DIF_T1 = RAPI::RTools::LoadShader<RAPI::RVertexShader>("system\\GD3D11\\Shaders\\VS_XYZRHW_DIF_T1.hlsl", "VS_XYZRHW_DIF_T1");
+		VS_XYZRHW_DIF_SPEC_T1 = RAPI::RTools::LoadShader<RAPI::RVertexShader>("system\\GD3D11\\Shaders\\VS_XYZRHW_DIF_SPEC_T1.hlsl", "VS_XYZRHW_DIF_SPEC_T1");
+		VS_XYZ_NRM_T1 = RAPI::RTools::LoadShader<RAPI::RVertexShader>("system\\GD3D11\\Shaders\\VS_XYZ_NRM_T1.hlsl", "VS_XYZ_NRM_T1");
+		PS_FixedFunctionEmulator = RAPI::RTools::LoadShader<RAPI::RPixelShader>("system\\GD3D11\\Shaders\\PS_FixedFunctionPipe.hlsl", "PS_FixedFunctionEmulator");
 
-		const INPUT_ELEMENT_DESC layout_XYZ_DIF_T1[] =
+		const RAPI::INPUT_ELEMENT_DESC layout_XYZ_DIF_T1[] =
 		{
-			{ "POSITION", 0, FORMAT_R32G32B32_FLOAT, 0, 0xFFFFFFFF, INPUT_PER_VERTEX_DATA, 0 },
-			{ "DIFFUSE", 0, FORMAT_R8G8B8A8_UNORM, 0, 0xFFFFFFFF, INPUT_PER_VERTEX_DATA, 0 },
-			{ "TEXCOORD", 0, FORMAT_R32G32_FLOAT, 0, 0xFFFFFFFF, INPUT_PER_VERTEX_DATA, 0 },
+			{ "POSITION", 0, RAPI::FORMAT_R32G32B32_FLOAT, 0, 0xFFFFFFFF, RAPI::INPUT_PER_VERTEX_DATA, 0 },
+			{ "DIFFUSE", 0, RAPI::FORMAT_R8G8B8A8_UNORM, 0, 0xFFFFFFFF, RAPI::INPUT_PER_VERTEX_DATA, 0 },
+			{ "TEXCOORD", 0, RAPI::FORMAT_R32G32_FLOAT, 0, 0xFFFFFFFF, RAPI::INPUT_PER_VERTEX_DATA, 0 },
 		};
 
-		const INPUT_ELEMENT_DESC layout_XYZRHW_DIF_T1[] =
+		const RAPI::INPUT_ELEMENT_DESC layout_XYZRHW_DIF_T1[] =
 		{
-			{ "POSITION", 0, FORMAT_R32G32B32A32_FLOAT, 0, 0xFFFFFFFF, INPUT_PER_VERTEX_DATA, 0 },
-			{ "DIFFUSE", 0, FORMAT_R8G8B8A8_UNORM, 0, 0xFFFFFFFF, INPUT_PER_VERTEX_DATA, 0 },
-			{ "TEXCOORD", 0, FORMAT_R32G32_FLOAT, 0, 0xFFFFFFFF, INPUT_PER_VERTEX_DATA, 0 },
+			{ "POSITION", 0, RAPI::FORMAT_R32G32B32A32_FLOAT, 0, 0xFFFFFFFF, RAPI::INPUT_PER_VERTEX_DATA, 0 },
+			{ "DIFFUSE", 0, RAPI::FORMAT_R8G8B8A8_UNORM, 0, 0xFFFFFFFF, RAPI::INPUT_PER_VERTEX_DATA, 0 },
+			{ "TEXCOORD", 0, RAPI::FORMAT_R32G32_FLOAT, 0, 0xFFFFFFFF, RAPI::INPUT_PER_VERTEX_DATA, 0 },
 		};
 
-		const INPUT_ELEMENT_DESC layout_XYZRHW_DIF_SPEC_T1[] =
+		const RAPI::INPUT_ELEMENT_DESC layout_XYZRHW_DIF_SPEC_T1[] =
 		{
-			{ "POSITION", 0, FORMAT_R32G32B32A32_FLOAT, 0, 0xFFFFFFFF, INPUT_PER_VERTEX_DATA, 0 },
-			{ "DIFFUSE", 0, FORMAT_R8G8B8A8_UNORM, 0, 0xFFFFFFFF, INPUT_PER_VERTEX_DATA, 0 },
-			{ "SPECULAR", 0, FORMAT_R8G8B8A8_UNORM, 0, 0xFFFFFFFF, INPUT_PER_VERTEX_DATA, 0 },
-			{ "TEXCOORD", 0, FORMAT_R32G32_FLOAT, 0, 0xFFFFFFFF, INPUT_PER_VERTEX_DATA, 0 },
+			{ "POSITION", 0, RAPI::FORMAT_R32G32B32A32_FLOAT, 0, 0xFFFFFFFF, RAPI::INPUT_PER_VERTEX_DATA, 0 },
+			{ "DIFFUSE", 0, RAPI::FORMAT_R8G8B8A8_UNORM, 0, 0xFFFFFFFF, RAPI::INPUT_PER_VERTEX_DATA, 0 },
+			{ "SPECULAR", 0, RAPI::FORMAT_R8G8B8A8_UNORM, 0, 0xFFFFFFFF, RAPI::INPUT_PER_VERTEX_DATA, 0 },
+			{ "TEXCOORD", 0, RAPI::FORMAT_R32G32_FLOAT, 0, 0xFFFFFFFF, RAPI::INPUT_PER_VERTEX_DATA, 0 },
 		
 		};
 
-		const INPUT_ELEMENT_DESC layout_XYZ_NRM_T1[] =
+		const RAPI::INPUT_ELEMENT_DESC layout_XYZ_NRM_T1[] =
 		{
-			{ "POSITION", 0, FORMAT_R32G32B32_FLOAT, 0, 0xFFFFFFFF, INPUT_PER_VERTEX_DATA, 0 },
-			{ "NORMAL", 0, FORMAT_R32G32B32_FLOAT, 0, 0xFFFFFFFF, INPUT_PER_VERTEX_DATA, 0 },
-			{ "TEXCOORD", 0, FORMAT_R32G32_FLOAT, 0, 0xFFFFFFFF, INPUT_PER_VERTEX_DATA, 0 },
+			{ "POSITION", 0, RAPI::FORMAT_R32G32B32_FLOAT, 0, 0xFFFFFFFF, RAPI::INPUT_PER_VERTEX_DATA, 0 },
+			{ "NORMAL", 0, RAPI::FORMAT_R32G32B32_FLOAT, 0, 0xFFFFFFFF, RAPI::INPUT_PER_VERTEX_DATA, 0 },
+			{ "TEXCOORD", 0, RAPI::FORMAT_R32G32_FLOAT, 0, 0xFFFFFFFF, RAPI::INPUT_PER_VERTEX_DATA, 0 },
 		};
 
 		InputLayout_XYZ_DIF_T1->CreateInputLayout(VS_XYZ_DIF_T1, layout_XYZ_DIF_T1, ARRAYSIZE(layout_XYZ_DIF_T1));
@@ -836,7 +836,7 @@ public:
 		InputLayout_XYZRHW_DIF_SPEC_T1->CreateInputLayout(VS_XYZRHW_DIF_SPEC_T1, layout_XYZRHW_DIF_SPEC_T1, ARRAYSIZE(layout_XYZRHW_DIF_SPEC_T1));
 		//InputLayout_XYZ_NRM_T1->CreateInputLayout(VS_XYZ_DIF_T1, layout_XYZ_NRM_T1, ARRAYSIZE(layout_XYZ_NRM_T1));
 		
-		//DrawPrimVertexBuffer = REngine::DynamicBufferCache->GetDataBuffer(EBindFlags::B_VERTEXBUFFER, DRAW_PRIM_VERTEX_BUFFER_SIZE, 1);
+		//DrawPrimVertexBuffer = RAPI::REngine::DynamicBufferCache->GetDataBuffer(RAPI::EBindFlags::B_VERTEXBUFFER, DRAW_PRIM_VERTEX_BUFFER_SIZE, 1);
 
 		LastBoundFFStateCB = nullptr;
 		LastBoundFFStateHash = 0;
@@ -846,40 +846,40 @@ public:
 
 	void ClearFixedFunctionEmulatorResources()
 	{
-		REngine::ResourceCache->DeleteResource(InputLayout_XYZRHW_DIF_SPEC_T1);
-		REngine::ResourceCache->DeleteResource(InputLayout_XYZRHW_DIF_T1);
-		REngine::ResourceCache->DeleteResource(InputLayout_XYZ_DIF_T1);
-		REngine::ResourceCache->DeleteResource(InputLayout_XYZ_NRM_T1);
+		RAPI::REngine::ResourceCache->DeleteResource(InputLayout_XYZRHW_DIF_SPEC_T1);
+		RAPI::REngine::ResourceCache->DeleteResource(InputLayout_XYZRHW_DIF_T1);
+		RAPI::REngine::ResourceCache->DeleteResource(InputLayout_XYZ_DIF_T1);
+		RAPI::REngine::ResourceCache->DeleteResource(InputLayout_XYZ_NRM_T1);
 
-		REngine::ResourceCache->DeleteResource(VS_XYZRHW_DIF_SPEC_T1);
-		REngine::ResourceCache->DeleteResource(VS_XYZRHW_DIF_T1);
-		REngine::ResourceCache->DeleteResource(VS_XYZ_DIF_T1);
-		REngine::ResourceCache->DeleteResource(VS_XYZ_NRM_T1);
-		REngine::ResourceCache->DeleteResource(PS_FixedFunctionEmulator);
+		RAPI::REngine::ResourceCache->DeleteResource(VS_XYZRHW_DIF_SPEC_T1);
+		RAPI::REngine::ResourceCache->DeleteResource(VS_XYZRHW_DIF_T1);
+		RAPI::REngine::ResourceCache->DeleteResource(VS_XYZ_DIF_T1);
+		RAPI::REngine::ResourceCache->DeleteResource(VS_XYZ_NRM_T1);
+		RAPI::REngine::ResourceCache->DeleteResource(PS_FixedFunctionEmulator);
 
 		for(auto b : FFConstantBufferByHash)
 		{
-			REngine::ResourceCache->DeleteResource<RBuffer>(b.second);
+			RAPI::REngine::ResourceCache->DeleteResource<RAPI::RBuffer>(b.second);
 		}
 	}
 
 	/** Processes a trianglefan of the given vertex-type for drawing. Returns offset to the immediate buffer */
 	template<typename T>
-	unsigned int PreprocessTriangleFan(T* vertices, unsigned int numVertices, RBufferCollection<T>& collection)
+	unsigned int PreprocessTriangleFan(T* vertices, unsigned int numVertices, RAPI::RBufferCollection<T>& collection)
 	{
 		// Convert the fan to a list
 		// Static to help with cache, since this has to be fast
 		static std::vector<T> list;
 		list.clear();
 
-		RTools::TriangleFanToList((T *)vertices, numVertices, list);
+		RAPI::RTools::TriangleFanToList((T *)vertices, numVertices, list);
 
 		// Put them into a buffer
 		return collection.AddData(&list[0], list.size());
 	}
 
 	/** Returns the active viewport, set in the FF-Pipe */
-	RViewport* GetViewport()
+	RAPI::RViewport* GetViewport()
 	{
 		return Viewport;
 	}
@@ -903,37 +903,37 @@ private:
 	int RefCount;
 
 	// State-values
-	RDepthStencilStateInfo DepthStencilState;
-	RSamplerStateInfo SamplerState;
-	RBlendStateInfo BlendState;
-	RRasterizerStateInfo RasterizerState;
+	RAPI::RDepthStencilStateInfo DepthStencilState;
+	RAPI::RSamplerStateInfo SamplerState;
+	RAPI::RBlendStateInfo BlendState;
+	RAPI::RRasterizerStateInfo RasterizerState;
 	FixedFunctionGraphicsState FixedFunctionStageInfo;
 	size_t LastBoundFFStateHash;
-	RBuffer* LastBoundFFStateCB;
-	RViewport* Viewport;
+	RAPI::RBuffer* LastBoundFFStateCB;
+	RAPI::RViewport* Viewport;
 	MyDirectDrawSurface7* BoundSurfaces[8];
-	std::map<size_t, RBuffer*> FFConstantBufferByHash;
-	RInputLayout* InputLayout_XYZ_DIF_T1;
-	RInputLayout* InputLayout_XYZRHW_DIF_T1;
-	RInputLayout* InputLayout_XYZRHW_DIF_SPEC_T1;
-	RInputLayout* InputLayout_XYZ_NRM_T1;
-	RVertexShader* VS_XYZ_DIF_T1;
-	RVertexShader* VS_XYZRHW_DIF_T1;
-	RVertexShader* VS_XYZRHW_DIF_SPEC_T1;
-	RVertexShader* VS_XYZ_NRM_T1;
-	RPixelShader* PS_FixedFunctionEmulator;
-	RBufferCollection<Gothic_XYZRHW_DIF_T1_Vertex> ImmediateBufferCollection_XYZRHW_DIF_T1;
-	RBufferCollection<Gothic_XYZRHW_DIF_SPEC_T1_Vertex> ImmediateBufferCollection_XYZRHW_DIF_SPEC_T1;
+	std::map<size_t, RAPI::RBuffer*> FFConstantBufferByHash;
+	RAPI::RInputLayout* InputLayout_XYZ_DIF_T1;
+	RAPI::RInputLayout* InputLayout_XYZRHW_DIF_T1;
+	RAPI::RInputLayout* InputLayout_XYZRHW_DIF_SPEC_T1;
+	RAPI::RInputLayout* InputLayout_XYZ_NRM_T1;
+	RAPI::RVertexShader* VS_XYZ_DIF_T1;
+	RAPI::RVertexShader* VS_XYZRHW_DIF_T1;
+	RAPI::RVertexShader* VS_XYZRHW_DIF_SPEC_T1;
+	RAPI::RVertexShader* VS_XYZ_NRM_T1;
+	RAPI::RPixelShader* PS_FixedFunctionEmulator;
+	RAPI::RBufferCollection<Gothic_XYZRHW_DIF_T1_Vertex> ImmediateBufferCollection_XYZRHW_DIF_T1;
+	RAPI::RBufferCollection<Gothic_XYZRHW_DIF_SPEC_T1_Vertex> ImmediateBufferCollection_XYZRHW_DIF_SPEC_T1;
 	
 	// Debug
-	//std::pair<unsigned int, RBuffer*> DrawPrimVertexBuffer;
+	//std::pair<unsigned int, RAPI::RBuffer*> DrawPrimVertexBuffer;
 
 	// Last clear-color we got. Gothic only clears one target, so we can simply grab it here
 	// before rendering
 	Vector4 ClearColor;
 
 	// List of all rendered pipelinestates. Cleared at frame-end.
-	std::vector<RPipelineState*> FramePipelineStates;
+	std::vector<RAPI::RPipelineState*> FramePipelineStates;
 
 	// Name to use for current RenderingQueues. These will get an index appended for each new queue
 	std::string RenderQueueName;

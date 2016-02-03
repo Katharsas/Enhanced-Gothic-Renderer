@@ -103,7 +103,7 @@ public:
 	UINT ComputeBitsPerPixel();
 
 	/** Returns the internal texture-format, as in: The one we ACTUALLY use. */
-	ETextureFormat GetInternalTextureFormat(){return TextureFormat;}
+	RAPI::ETextureFormat GetInternalTextureFormat(){return TextureFormat;}
 
 	/** Returns the internal texture-object */
 	GTexture* GetEngineTexture(){return EngineTexture;}
@@ -129,7 +129,7 @@ private:
 	/** Number of mipmaps in GPU queue */
 	unsigned int QueuedMipMaps;
 
-	ETextureFormat TextureFormat;
+	RAPI::ETextureFormat TextureFormat;
 	
 	// Our own texture-object
 	GTexture* EngineTexture;

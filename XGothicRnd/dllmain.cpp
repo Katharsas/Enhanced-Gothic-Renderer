@@ -57,13 +57,13 @@ extern "C" HRESULT WINAPI HookedDirectDrawCreateEx(GUID FAR * lpGuid, LPVOID  *l
 	return oProc(lpGuid, lplpDD, iid, pUnkOuter);	
 
 	// Initialize main graphics engine, if we don't have one yet
-	if(!REngine::RenderingDevice)
+	if(!RAPI::REngine::RenderingDevice)
 	{
 		// Initialize rendering-engine
-		REngine::InitializeEngine();
+		RAPI::REngine::InitializeEngine();
 
 		// Create a rendering device
-		REngine::RenderingDevice->CreateDevice();
+		RAPI::REngine::RenderingDevice->CreateDevice();
 
 		// Initialize Gothic-dependent Engine
 		if(!Engine::Initialize())
@@ -193,7 +193,7 @@ BOOL WINAPI DllMain(HINSTANCE hInst, DWORD reason, LPVOID lpvReserved) {
 		FreeLibrary(ddraw.dll);
 
 		if(!lpvReserved) // nullptr means simple detach. Otherwise the process was alredy exited
-		REngine::UninitializeEngine();
+		RAPI::REngine::UninitializeEngine();
 
 		LogInfo() << "DDRAW Proxy DLL signing off.\n";
 	}

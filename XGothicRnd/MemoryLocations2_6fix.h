@@ -12531,7 +12531,7 @@ namespace MemoryLocations
 		static const void* CD3duContext__GetDD_void = (void*)0x7b83f7;
 		static const void* CD3duContext__GetZBuffer_void = (void*)0x7b8473;
 		static const void* CD3duContext__GetFocusWindow_void = (void*)0x7b84d9;
-		static const void* D3DXMATRIX__D3DXMATRIX_void = (void*)0x7b855f;
+		static const void* D3DXMatrix__D3DXMatrix_void = (void*)0x7b855f;
 		static const void* CD3duContext__UpdateFrame_ulong = (void*)0x7b8562;
 		static const void* zSTRING_const_ZOPT_VID_GAMMA = (void*)0x8cd500;
 		static const void* CD3duContext__Clear_ulong = (void*)0x7b885c;
@@ -12542,7 +12542,7 @@ namespace MemoryLocations
 		static const void* CD3duContext___CreatePalette_void = (void*)0x7b8b0c;
 		static const void* CD3duContext___InitViewport_void = (void*)0x7b8c86;
 		static const void* filebuf__setmode_int = (void*)0x7cf6ce;
-		static const void* D3DXMATRIX__operator__D3DMATRIX_p_void = (void*)0x7b8d00;
+		static const void* D3DXMatrix__operator__D3DMatrix_p_void = (void*)0x7b8d00;
 		static const void* CD3duContext___CreateZBuffer_void = (void*)0x7b8f3e;
 		static const void* CD3duContext___DestroyDXBuffers_int = (void*)0x7b9057;
 		static const void* CD3duContext___EnumBackBuffers_IDirectDrawSurface7_p_ulong = (void*)0x7b9186;
@@ -12646,7 +12646,7 @@ namespace MemoryLocations
 		static const void* D3DXVec3LengthSq_D3DXVECTOR3_const_p = (void*)0x7c0b82;
 		static const void* D3DXVec3Dot_D3DXVECTOR3_const_p_D3DXVECTOR3_const_p = (void*)0x7c0ba5;
 		static const void* D3DXVec3Cross_D3DXVECTOR3_p_D3DXVECTOR3_const_p_D3DXVECTOR3_const_p = (void*)0x7c0c40;
-		static const void* D3DXMatrixIdentity_D3DXMATRIX_p = (void*)0x7c0e8d;
+		static const void* D3DXMatrixIdentity_D3DXMatrix_p = (void*)0x7c0e8d;
 		static const void* D3DXColorAdjustSaturation_x_x_x = (void*)0x7c0ee1;
 		static const void* const_oCMobFire__vftable = (void*)0x83d19c;
 		static const void* const_zCRndAlphaSortObject_Vob__vftable = (void*)0x831ba4;

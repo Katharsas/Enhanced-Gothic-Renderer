@@ -54,13 +54,13 @@ GModelVisual::GModelVisual(zCVisual* sourceObject) : GVisual(sourceObject)
 	unsigned int actualCBSize = sizeof(GModelConstantBuffer) - sizeof(Matrix) * (NUM_MAX_NODES - model->GetNumNodes());
 
 	// Create CB
-	m_ModelConstantBuffer = REngine::ResourceCache->CreateResource<RBuffer>();
+	m_ModelConstantBuffer = RAPI::REngine::ResourceCache->CreateResource<RAPI::RBuffer>();
 	m_ModelConstantBuffer->Init(nullptr,
 		actualCBSize,
 		actualCBSize,
-		EBindFlags::B_CONSTANTBUFFER,
-		EUsageFlags::U_DYNAMIC,
-		ECPUAccessFlags::CA_WRITE,
+		RAPI::EBindFlags::B_CONSTANTBUFFER,
+		RAPI::EUsageFlags::U_DYNAMIC,
+		RAPI::ECPUAccessFlags::CA_WRITE,
 		"Model CB");
 
 	// Sanity
@@ -77,7 +77,7 @@ GModelVisual::GModelVisual(zCVisual* sourceObject) : GVisual(sourceObject)
 
 GModelVisual::~GModelVisual(void)
 {
-	REngine::ResourceCache->DeleteResource(m_ModelConstantBuffer);
+	RAPI::REngine::ResourceCache->DeleteResource(m_ModelConstantBuffer);
 
 	GASSERT(GVisual::QueryFromSource((zCVisual*)m_SourceObject) == this, "Deleted zCModel had different pointer in cache!");
 
@@ -169,7 +169,7 @@ void GModelVisual::OnDrawableDrawn(GBaseDrawable* drawable)
 		return;
 	}
 
-	if(m_LastFrameDrawn != REngine::RenderingDevice->GetFrameCounter()/* && (!model->IsInIdle() || !m_UpdatedAfterIdle)*/)
+	if(m_LastFrameDrawn != RAPI::REngine::RenderingDevice->GetFrameCounter()/* && (!model->IsInIdle() || !m_UpdatedAfterIdle)*/)
 	{
 		// Get new model-state onto the GPU
 		UpdateModel();
@@ -180,7 +180,7 @@ void GModelVisual::OnDrawableDrawn(GBaseDrawable* drawable)
 		// TODO: Actual value
 		model->SetModelDistanceToCam(0.0f);
 
-		m_LastFrameDrawn = REngine::RenderingDevice->GetFrameCounter();
+		m_LastFrameDrawn = RAPI::REngine::RenderingDevice->GetFrameCounter();
 		m_UpdatedAfterIdle = model->IsInIdle();
 	}
 }

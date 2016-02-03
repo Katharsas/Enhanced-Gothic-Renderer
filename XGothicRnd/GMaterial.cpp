@@ -62,35 +62,46 @@ bool GMaterial::CacheTextures(bool checkOnly)
  */
 void GMaterial::ApplyStates()
 {
-	RStateMachine& sm = REngine::RenderingDevice->GetStateMachine();
+	RAPI::RStateMachine& sm = RAPI::REngine::RenderingDevice->GetStateMachine();
 
 	CacheTextures();
 
 	if(!m_Diffuse)
 		return; // TODO: Black texture or material-color instead!
 
-	sm.SetTexture(0, m_Diffuse->GetTexture(), EShaderType::ST_PIXEL);
+	sm.SetTexture(0, m_Diffuse->GetTexture(), RAPI::EShaderType::ST_PIXEL);
 
 	// Turn on two-sided rendering if this is masked or animated
 	if (IsMaterialUsingAlphaTest() || m_SourceObject->GetRootAniTexture()->GetTextureFlags().IsAnimated)
 	{
-		RRasterizerStateInfo info = sm.GetCurrentState().RasterizerState->GetStateInfo();
-		info.CullMode = RRasterizerStateInfo::CM_CULL_NONE;
-		sm.SetRasterizerState(RTools::GetState(info));
+		RAPI::RRasterizerStateInfo info = sm.GetCurrentState().RasterizerState->GetStateInfo();
+		info.CullMode = RAPI::RRasterizerStateInfo::CM_CULL_NONE;
+		sm.SetRasterizerState(RAPI::RTools::GetState(info));
 	}
 
 	// Alphablending
 	if(m_SourceObject->GetBlendFunc() == zTRnd_AlphaBlendFunc::zRND_ALPHA_FUNC_BLEND
 		|| m_SourceObject->GetBlendFunc() == zTRnd_AlphaBlendFunc::zRND_ALPHA_FUNC_BLEND_TEST)
 	{
-		RBlendStateInfo info = sm.GetCurrentState().BlendState->GetStateInfo();
+		RAPI::RBlendStateInfo info = sm.GetCurrentState().BlendState->GetStateInfo();
 		info.SetAlphaBlending();
-		sm.SetBlendState(RTools::GetState(info));
+		sm.SetBlendState(RAPI::RTools::GetState(info));
+
+		// Disable depth-writes
+		RAPI::RDepthStencilStateInfo dsInfo = sm.GetCurrentState().DepthStencilState->GetStateInfo();
+		dsInfo.DepthWriteEnabled = false;
+		sm.SetDepthStencilState(RAPI::RTools::GetState(dsInfo));
+
 	}else if(m_SourceObject->GetBlendFunc() == zTRnd_AlphaBlendFunc::zRND_ALPHA_FUNC_ADD)
 	{
-		RBlendStateInfo info = sm.GetCurrentState().BlendState->GetStateInfo();
+		RAPI::RBlendStateInfo info = sm.GetCurrentState().BlendState->GetStateInfo();
 		info.SetAdditiveBlending();
-		sm.SetBlendState(RTools::GetState(info));
+		sm.SetBlendState(RAPI::RTools::GetState(info));
+
+		// Disable depth-writes
+		RAPI::RDepthStencilStateInfo dsInfo = sm.GetCurrentState().DepthStencilState->GetStateInfo();
+		dsInfo.DepthWriteEnabled = false;
+		sm.SetDepthStencilState(RAPI::RTools::GetState(dsInfo));
 	}
 
 	// TODO: Other blendstates
@@ -122,7 +133,7 @@ bool GMaterial::IsMaterialUsingAlphaTest()
 /**
 * Returns the right pixelshader for this material and the given rendering stage
 */
-RPixelShader* GMaterial::GetMaterialPixelShader(GConstants::ERenderStage stage, UINT flags)
+RAPI::RPixelShader* GMaterial::GetMaterialPixelShader(GConstants::ERenderStage stage, UINT flags)
 {
 	switch (stage)
 	{
@@ -130,12 +141,12 @@ RPixelShader* GMaterial::GetMaterialPixelShader(GConstants::ERenderStage stage, 
 	case RS_SHADOW_SUN:
 	case RS_INVENTORY:
 		if((flags & MPS_LIGHTMAPPED) != 0)
-			return REngine::ResourceCache->GetCachedObject<RPixelShader>(ShaderAliases::PS_DEFAULT_WORLD_LIGHTMAPPED);
+			return RAPI::REngine::ResourceCache->GetCachedObject<RAPI::RPixelShader>(ShaderAliases::PS_DEFAULT_WORLD_LIGHTMAPPED);
 
 		if(!IsMaterialUsingAlphaTest() && (flags & MPS_FORCE_ALPHA_TEST) == 0)
-			return REngine::ResourceCache->GetCachedObject<RPixelShader>(ShaderAliases::PS_DEFAULT_WORLD);
+			return RAPI::REngine::ResourceCache->GetCachedObject<RAPI::RPixelShader>(ShaderAliases::PS_DEFAULT_WORLD);
 		else
-			return REngine::ResourceCache->GetCachedObject<RPixelShader>(ShaderAliases::PS_MASKED_WORLD);
+			return RAPI::REngine::ResourceCache->GetCachedObject<RAPI::RPixelShader>(ShaderAliases::PS_MASKED_WORLD);
 
 	break;
 	}

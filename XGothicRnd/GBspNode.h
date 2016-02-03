@@ -26,7 +26,7 @@ public:
 	void Init(zCBspBase* sourceNode, GBspTree* sourceTree);
 
 	/** Does frustumculling and draws this node if it is the lowest acceptable */
-	void DrawNodeRecursive(float minNodeSizeXZ, RRenderQueueID queue, GBspTree::BSPRenderInfo info, std::vector<GVobObject*>& visibleVobs);
+	void DrawNodeRecursive(float minNodeSizeXZ, RAPI::RRenderQueueID queue, GBspTree::BSPRenderInfo info, std::vector<GVobObject*>& visibleVobs);
 
 	/** Generates the mesh-information of this and all child-nodes.
 		For each triangle (That is, 3 vertices), the polygon is put into the given vector. */
@@ -34,7 +34,7 @@ public:
 
 	/** Should be called right after BuildTriangleLists to generate an indexed mesh for 
 		all nodes, as well as initializing the buffers */
-	void GenerateIndexedMesh(const std::vector<unsigned int>& indices, RBuffer* vertexBuffer, RBufferCollection<unsigned int>* indexBufferCollection);
+	void GenerateIndexedMesh(const std::vector<unsigned int>& indices, RAPI::RBuffer* vertexBuffer, RAPI::RBufferCollection<unsigned int>* indexBufferCollection);
 
 	/** (Re)builds the pipeline-state cache for this node */
 	void BuildPipelineStateCache();

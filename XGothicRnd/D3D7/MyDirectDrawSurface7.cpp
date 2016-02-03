@@ -201,8 +201,8 @@ HRESULT MyDirectDrawSurface7::Lock( LPRECT lpDestRect, LPDDSURFACEDESC2 lpDDSurf
 	
 
 	// rowPitchBytes of the ACTUAL texture
-	unsigned int rowPitchBytes = RTexture::ComputeRowPitchBytes(0, INT2(OriginalSurfaceDesc.dwWidth, OriginalSurfaceDesc.dwHeight), TextureFormat);
-	unsigned int sizeInBytes = RTexture::ComputeSizeInBytes(0,  INT2(OriginalSurfaceDesc.dwWidth, OriginalSurfaceDesc.dwHeight), TextureFormat);
+	unsigned int rowPitchBytes = RAPI::RTexture::ComputeRowPitchBytes(0, RAPI::RInt2(OriginalSurfaceDesc.dwWidth, OriginalSurfaceDesc.dwHeight), TextureFormat);
+	unsigned int sizeInBytes = RAPI::RTexture::ComputeSizeInBytes(0,  RAPI::RInt2(OriginalSurfaceDesc.dwWidth, OriginalSurfaceDesc.dwHeight), TextureFormat);
 	unsigned int bpp = ComputeBitsPerPixel();
 
 	// Modify the size to match the data we give out, since we convert it afterwards
@@ -226,7 +226,7 @@ HRESULT MyDirectDrawSurface7::Lock( LPRECT lpDestRect, LPDDSURFACEDESC2 lpDDSurf
 
 HRESULT MyDirectDrawSurface7::Unlock( LPRECT lpRect )
 {
-	INT2 resolution = INT2(OriginalSurfaceDesc.dwWidth, OriginalSurfaceDesc.dwHeight);
+	RAPI::RInt2 resolution = RAPI::RInt2(OriginalSurfaceDesc.dwWidth, OriginalSurfaceDesc.dwHeight);
 
 	// Only save data on Write-Unlock
 	if((LockFlags & DDLOCK_WRITEONLY) != 0)				 // Hack, we need to know if the texture was initialized here.
@@ -240,7 +240,7 @@ HRESULT MyDirectDrawSurface7::Unlock( LPRECT lpRect )
 
 		if(bpp == 16)
 		{		
-			UINT size = RTexture::ComputeSizeInBytes(0, resolution, TextureFormat);
+			UINT size = RAPI::RTexture::ComputeSizeInBytes(0, resolution, TextureFormat);
 
 			//byte s = Toolbox::SumBytes(LockedData, size / 2);
 			// Convert
@@ -283,8 +283,8 @@ HRESULT MyDirectDrawSurface7::Unlock( LPRECT lpRect )
 /** Pushes all loaded data of this mip-chain to the gpu */
 void MyDirectDrawSurface7::FinalizeTexture()
 {
-	INT2 resolution = INT2(OriginalSurfaceDesc.dwWidth, OriginalSurfaceDesc.dwHeight);
-	UINT size = RTexture::ComputeSizeInBytes(0, resolution, TextureFormat);
+	RAPI::RInt2 resolution = RAPI::RInt2(OriginalSurfaceDesc.dwWidth, OriginalSurfaceDesc.dwHeight);
+	UINT size = RAPI::RTexture::ComputeSizeInBytes(0, resolution, TextureFormat);
 
 	// Fill a vector of pointers to mipdata
 	std::vector<void*> mipData;
@@ -335,7 +335,7 @@ HRESULT MyDirectDrawSurface7::SetClipper( LPDIRECTDRAWCLIPPER lpDDClipper )
 	HWND hWnd;
 	lpDDClipper->GetHWnd(&hWnd);
 
-	REngine::RenderingDevice->SetWindow(hWnd);
+	RAPI::REngine::RenderingDevice->SetWindow(hWnd);
 	Engine::Game->Initialize();
 
 	return S_OK;
@@ -416,16 +416,16 @@ HRESULT MyDirectDrawSurface7::SetSurfaceDesc( LPDDSURFACEDESC2 lpDDSurfaceDesc, 
 	int bpp = redBits + greenBits + blueBits + alphaBits;
 
 	// Find out format
-	ETextureFormat format = ETextureFormat::TF_R8G8B8A8;
+	RAPI::ETextureFormat format = RAPI::ETextureFormat::TF_R8G8B8A8;
 	switch(bpp)
 	{
 	case 16:
-		format = ETextureFormat::TF_R8G8B8A8;
+		format = RAPI::ETextureFormat::TF_R8G8B8A8;
 		break;
 
 	case 24:
 	case 32:
-		format = ETextureFormat::TF_R8G8B8A8;
+		format = RAPI::ETextureFormat::TF_R8G8B8A8;
 
 	case 0:
 		{
@@ -435,17 +435,17 @@ HRESULT MyDirectDrawSurface7::SetSurfaceDesc( LPDDSURFACEDESC2 lpDDSurfaceDesc, 
 				switch(lpDDSurfaceDesc->ddpfPixelFormat.dwFourCC)
 				{
 				case FOURCC_DXT1:
-					format = ETextureFormat::TF_DXT1;
+					format = RAPI::ETextureFormat::TF_DXT1;
 					break;
 
 				case FOURCC_DXT2:
 				case FOURCC_DXT3:
-					format = ETextureFormat::TF_DXT3;
+					format = RAPI::ETextureFormat::TF_DXT3;
 					break;
 
 				case FOURCC_DXT4:
 				case FOURCC_DXT5:
-					format = ETextureFormat::TF_DXT5;
+					format = RAPI::ETextureFormat::TF_DXT5;
 					break;
 				}
 			}

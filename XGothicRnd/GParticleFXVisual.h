@@ -26,10 +26,10 @@ private:
 	unsigned int m_LastFrameUpdated;
 
 	// Position and other attributes of the particles
-	RBuffer* m_ParticleInfoBuffer;
+	RAPI::RBuffer* m_ParticleInfoBuffer;
 
 	// Pipelinestate of this visual
-	RPipelineState* m_PFXPipelineState;
+	RAPI::RPipelineState* m_PFXPipelineState;
 
 };
 

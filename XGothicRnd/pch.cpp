@@ -2,6 +2,7 @@
 #include <unordered_map>
 #include "Engine.h"
 #include <mutex>
+#include "../Shared/Logger.h"
 
 std::unordered_map<DWORD, size_t> AllocatedMemory;
 bool inCheck = false;

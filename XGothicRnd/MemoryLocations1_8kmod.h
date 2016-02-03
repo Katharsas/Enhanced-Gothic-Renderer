@@ -8597,7 +8597,7 @@ namespace MemoryLocations
 		static const void* zCTimer__SetFrameTime_float = (void*)0x5ce620;
 		static const void* zCTimer__FrameUpdate_void = (void*)0x5ce670;
 		static const void* zCVob__GetGroundShadowSize_void = (void*)0x5d5830;
-		static const void* ChooseTextureFormat_IDirect3DDevice7_p__D3DX_SURFACEFORMAT__D3DX_SURFACEFORMAT_p = (void*)0x76d274;
+		static const void* ChoosRAPI::ETextureFormat_IDirect3DDevice7_p__D3DX_SURFACEFORMAT__D3DX_SURFACEFORMAT_p = (void*)0x76d274;
 		static const void* zCTimer__LimitFPS_int = (void*)0x5ce6e0;
 		static const void* zCChecksum__EndChecksum_void = (void*)0x5ce860;
 		static const void* const_zCTexture__vftablefor_zCResource = (void*)0x7d4c24;
@@ -11921,7 +11921,7 @@ namespace MemoryLocations
 		static const void* CD3duContext__GetDD_void = (void*)0x75ed03;
 		static const void* CD3duContext__GetZBuffer_void = (void*)0x75ed7f;
 		static const void* CD3duContext__GetFocusWindow_void = (void*)0x75ede5;
-		static const void* D3DXMATRIX__D3DXMATRIX_void = (void*)0x75ee6b;
+		static const void* D3DXMatrix__D3DXMatrix_void = (void*)0x75ee6b;
 		static const void* CD3duContext__UpdateFrame_ulong = (void*)0x75ee6e;
 		static const void* zSTRING_const_ZOPT_VID_GAMMA = (void*)0x8692c0;
 		static const void* CD3duContext__Clear_ulong = (void*)0x75f168;
@@ -11931,7 +11931,7 @@ namespace MemoryLocations
 		static const void* CD3duContext___CreatePalette_void = (void*)0x75f418;
 		static const void* CD3duContext___InitViewport_void = (void*)0x75f592;
 		static const void* filebuf__setmode_int = (void*)0x775d24;
-		static const void* D3DXMATRIX__operator__D3DMATRIX_p_void = (void*)0x75f60c;
+		static const void* D3DXMatrix__operator__D3DMATRIX_p_void = (void*)0x75f60c;
 		static const void* CD3duContext___CreateZBuffer_void = (void*)0x75f84a;
 		static const void* CD3duContext___DestroyDXBuffers_int = (void*)0x75f963;
 		static const void* CD3duContext___EnumSurfacesCallback2_IDirectDrawSurface7_p__DDSURFACEDESC2_p_void_p = (void*)0x75fa7c;
@@ -12033,7 +12033,7 @@ namespace MemoryLocations
 		static const void* D3DXVec3LengthSq_D3DXVECTOR3_const_p = (void*)0x76748e;
 		static const void* D3DXVec3Dot_D3DXVECTOR3_const_p_D3DXVECTOR3_const_p = (void*)0x7674b1;
 		static const void* D3DXVec3Cross_D3DXVECTOR3_p_D3DXVECTOR3_const_p_D3DXVECTOR3_const_p = (void*)0x76754c;
-		static const void* D3DXMatrixIdentity_D3DXMATRIX_p = (void*)0x767799;
+		static const void* D3DXMatrixIdentity_D3DXMatrix_p = (void*)0x767799;
 		static const void* D3DXColorAdjustSaturation_x_x_x = (void*)0x7677ed;
 		static const void* const_oCMobFire__vftable = (void*)0x7dd9e4;
 		static const void* const_zCRndAlphaSortObject_Vob__vftable = (void*)0x7d3994;

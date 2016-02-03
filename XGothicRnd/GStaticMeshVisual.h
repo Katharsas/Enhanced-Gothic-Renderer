@@ -40,8 +40,8 @@ public:
 	virtual void CacheTextures(bool force = false);
 protected:
 	// Logical buffers for rendering
-	RLogicalBuffer<ExTVertexStruct>* m_LogicalVertexBuffer;
-	RLogicalBuffer<unsigned int>* m_LogicalIndexBuffer;
+	RAPI::RLogicalBuffer<ExTVertexStruct>* m_LogicalVertexBuffer;
+	RAPI::RLogicalBuffer<unsigned int>* m_LogicalIndexBuffer;
 
 	std::vector<SubMesh> m_SubMeshes;
 };

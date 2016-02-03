@@ -71,8 +71,8 @@ void GWorld::Render()
 	// Draw the first parts of the sky before getting the queues
 	DrawSkyPre();
 
-	RRenderQueueID worldMeshQueue = REngine::RenderingDevice->AcquireRenderQueue(true, "WorldMesh");
-	RRenderQueueID vobsQueue = REngine::RenderingDevice->AcquireRenderQueue(true, "Vobs");
+	RAPI::RRenderQueueID worldMeshQueue = RAPI::REngine::RenderingDevice->AcquireRenderQueue(true, "WorldMesh");
+	RAPI::RRenderQueueID vobsQueue = RAPI::REngine::RenderingDevice->AcquireRenderQueue(true, "Vobs");
 
 	// Push indices to the vobs and their sorting creterium into this list
 	// Faster than sorting the list of vobs
@@ -87,7 +87,7 @@ void GWorld::Render()
 		m_BspTree->Draw(worldMeshQueue, m_VobRenderList, fogFar);
 
 	// Done with this queue, process it asynchronously
-	REngine::RenderingDevice->ProcessRenderQueue(worldMeshQueue);
+	RAPI::REngine::RenderingDevice->ProcessRenderQueue(worldMeshQueue);
 
 
 
@@ -197,7 +197,7 @@ void GWorld::Render()
 
 
 	// Make sure the buffer is big enough
-	RBuffer* instanceDataBuffer = Engine::Game->GetMainResources()->GetVobInstanceBuffer();
+	RAPI::RBuffer* instanceDataBuffer = Engine::Game->GetMainResources()->GetVobInstanceBuffer();
 	if(instanceDataBuffer->GetSizeInBytes() < s_sortIndexList.size() * instanceDataBuffer->GetStructuredByteSize())
 		LEB(instanceDataBuffer->UpdateData(nullptr, s_sortIndexList.size() * instanceDataBuffer->GetStructuredByteSize()));
 	
@@ -236,13 +236,13 @@ void GWorld::Render()
 	LEB(instanceDataBuffer->Unmap());
 
 	// Done with this queue, process it asynchronously
-	REngine::RenderingDevice->ProcessRenderQueue(vobsQueue);
+	RAPI::REngine::RenderingDevice->ProcessRenderQueue(vobsQueue);
 	
 	// Then push the other parts of the sky into the following queues
 	DrawSkyPost();
 
-	Engine::Game->AddFrameDebugLine(std::string("Queues: ") + std::to_string(REngine::RenderingDevice->GetNumQueuesInUse()));
-	Engine::Game->AddFrameDebugLine(std::string("DrawCalls: ") + std::to_string(REngine::RenderingDevice->GetNumRegisteredDrawCalls()));
+	Engine::Game->AddFrameDebugLine(std::string("Queues: ") + std::to_string(RAPI::REngine::RenderingDevice->GetNumQueuesInUse()));
+	Engine::Game->AddFrameDebugLine(std::string("DrawCalls: ") + std::to_string(RAPI::REngine::RenderingDevice->GetNumRegisteredDrawCalls()));
 
 
 	Engine::Game->AddFrameDebugLine(Engine::Game->FormatProfilerData());
@@ -263,7 +263,8 @@ void GWorld::DrawSkyPre()
 
 	// Enter new clear-color for the main buffers
 	// TODO: Move this, when MRTs are needed
-	REngine::RenderingDevice->SetMainClearValues(RTools::DWORDToFloat4(sky->GetBackgroundColor()));
+	float4 clearCol = float4::FromColor(sky->GetBackgroundColor());
+	RAPI::REngine::RenderingDevice->SetMainClearValues(*(RAPI::RFloat4*)&clearCol);
 
 	// Debugging...
 	MyDirect3DDevice7::GetActiveDevice()->SetRenderQueueName("Sky");
@@ -315,7 +316,7 @@ void GWorld::AddVob(zCVob* vob)
 		if(!vis)
 			return; // Don't take vobs with unsupported visuals
 		
-		REngine::ResourceCache->AddToCache(Toolbox::HashObject(vob->GetVisual()), vis);		
+		RAPI::REngine::ResourceCache->AddToCache(Toolbox::HashObject(vob->GetVisual()), vis);		
 	}
 	else
 	{
@@ -421,10 +422,10 @@ void GWorld::RenderInventoryCell()
 	GASSERT(m_VobSet.size() == 1, "InventoryWorld contains a different number of vobs than 1!");
 
 	// Queue for this single vob
-	RRenderQueueID queue = REngine::RenderingDevice->AcquireRenderQueue(false, "Inventory Cell");
+	RAPI::RRenderQueueID queue = RAPI::REngine::RenderingDevice->AcquireRenderQueue(false, "Inventory Cell");
 
 	// Dynamic buffer for the frame information of this vob
-	RCachedDynamicBuffer frameBuffer = REngine::DynamicBufferCache->GetDataBuffer(EBindFlags::B_CONSTANTBUFFER, sizeof(ConstantBuffers::PerFrameConstantBuffer), sizeof(ConstantBuffers::PerFrameConstantBuffer));
+	RAPI::RCachedDynamicBuffer frameBuffer = RAPI::REngine::DynamicBufferCache->GetDataBuffer(RAPI::EBindFlags::B_CONSTANTBUFFER, sizeof(ConstantBuffers::PerFrameConstantBuffer), sizeof(ConstantBuffers::PerFrameConstantBuffer));
 	
 	ConstantBuffers::PerFrameConstantBuffer pfcb;
 	pfcb.M_View = zCCamera::GetActiveCamera()->GetViewMatrix();
@@ -436,8 +437,8 @@ void GWorld::RenderInventoryCell()
 	frameBuffer.Buffer->UpdateData(&pfcb);
 
 	// Modify default pipeline-state for this vob
-	RStateMachine& sm = REngine::RenderingDevice->GetStateMachine();
-	RPipelineState* state = REngine::ResourceCache->GetCachedObject<RPipelineState>(GConstants::PipelineStates::BPS_INSTANCED_VOB_INVENTORY);
+	RAPI::RStateMachine& sm = RAPI::REngine::RenderingDevice->GetStateMachine();
+	 RAPI::RPipelineState* state = RAPI::REngine::ResourceCache->GetCachedObject<RAPI::RPipelineState>(GConstants::PipelineStates::BPS_INSTANCED_VOB_INVENTORY);
 	
 	sm.SetFromPipelineState(state);
 
@@ -446,9 +447,9 @@ void GWorld::RenderInventoryCell()
 	sm.SetViewport(MyDirect3DDevice7::GetActiveDevice()->GetViewport());
 
 	// Update the state
-	REngine::ResourceCache->RemoveFromCache<RPipelineState>(GConstants::PipelineStates::BPS_INSTANCED_VOB_INVENTORY);
+	RAPI::REngine::ResourceCache->RemoveFromCache<RAPI::RPipelineState>(GConstants::PipelineStates::BPS_INSTANCED_VOB_INVENTORY);
 	state = sm.MakeDrawCall(0,0);
-	REngine::ResourceCache->AddToCache<RPipelineState>(GConstants::PipelineStates::BPS_INSTANCED_VOB_INVENTORY, state);
+	RAPI::REngine::ResourceCache->AddToCache<RAPI::RPipelineState>(GConstants::PipelineStates::BPS_INSTANCED_VOB_INVENTORY, state);
 
 	// Just draw everything in this world, it should only be one vob anyways!
 	for(GVobObject* vob : m_VobSet)
@@ -463,7 +464,7 @@ void GWorld::RenderInventoryCell()
 	}
 
 	// Mark as free for next frame
-	REngine::DynamicBufferCache->DoneWith(frameBuffer);
+	RAPI::REngine::DynamicBufferCache->DoneWith(frameBuffer);
 }
 
 /** Deletes all vobs of this world */

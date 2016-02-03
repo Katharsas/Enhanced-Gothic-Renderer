@@ -25,19 +25,19 @@ GMorphMesh::GMorphMesh(zCVisual* sourceObject) : GVisual(sourceObject)
 	mesh->PackVertices<ExTVertexStruct, unsigned int>(vertices, indices, 0, submeshIndexStarts);
 
 	// Create vertex and index-buffer for this mesh
-	m_VertexBuffer = REngine::ResourceCache->CreateResource<RBuffer>();
+	m_VertexBuffer = RAPI::REngine::ResourceCache->CreateResource<RAPI::RBuffer>();
 	m_VertexBuffer->Init(vertices.data(), 
 		vertices.size() * sizeof(ExTVertexStruct),
 		sizeof(ExTVertexStruct),
-		EBindFlags::B_VERTEXBUFFER,
-		EUsageFlags::U_DYNAMIC,
-		ECPUAccessFlags::CA_WRITE);
+		RAPI::EBindFlags::B_VERTEXBUFFER,
+		RAPI::EUsageFlags::U_DYNAMIC,
+		RAPI::ECPUAccessFlags::CA_WRITE);
 
-	m_IndexBuffer = REngine::ResourceCache->CreateResource<RBuffer>();
+	m_IndexBuffer = RAPI::REngine::ResourceCache->CreateResource<RAPI::RBuffer>();
 	m_IndexBuffer->Init(indices.data(), 
 		indices.size() * sizeof(unsigned int),
 		sizeof(unsigned int),
-		EBindFlags::B_INDEXBUFFER);
+		RAPI::EBindFlags::B_INDEXBUFFER);
 
 	// Create objects for all submeshes
 	for(unsigned int i=0;i<mesh->GetNumSubmeshes();i++)
@@ -65,9 +65,9 @@ GVisual::StateCache* GMorphMesh::UpdatePipelineStatesFor(GBaseDrawable* drawable
 
 	StateCache& cache = m_CreatedPipelineStates[drawable];
 
-	RPipelineState* defState = REngine::ResourceCache->GetCachedObject<RPipelineState>(GConstants::PipelineStates::BPS_INSTANCED_VOB);
-	RStateMachine& sm = REngine::RenderingDevice->GetStateMachine();
-	RBuffer* instanceBuffer = Engine::Game->GetMainResources()->GetVobInstanceBuffer();
+	 RAPI::RPipelineState* defState = RAPI::REngine::ResourceCache->GetCachedObject<RAPI::RPipelineState>(GConstants::PipelineStates::BPS_INSTANCED_VOB);
+	RAPI::RStateMachine& sm = RAPI::REngine::RenderingDevice->GetStateMachine();
+	RAPI::RBuffer* instanceBuffer = Engine::Game->GetMainResources()->GetVobInstanceBuffer();
 
 	sm.SetFromPipelineState(defState);
 
@@ -86,7 +86,7 @@ GVisual::StateCache* GMorphMesh::UpdatePipelineStatesFor(GBaseDrawable* drawable
 	for(SubMesh& m : m_SubMeshes)
 	{
 		// Clear old states
-		REngine::ResourceCache->DeleteResource(cache.PipelineStates[i]);
+		RAPI::REngine::ResourceCache->DeleteResource(cache.PipelineStates[i]);
 
 		// Sanity
 		if(m.m_Material != GMaterial::QueryFromSource(*m.m_SourceMaterial))
@@ -155,16 +155,16 @@ void GMorphMesh::UpdateTextures()
 				continue;
 
 			m.m_Material->CacheTextures();
-			RTexture* stored = s->Textures[EShaderType::ST_PIXEL].empty() ? nullptr : s->Textures[EShaderType::ST_PIXEL][0];
-			RTexture* actual = m.m_Material->GetDiffuse() ? m.m_Material->GetDiffuse()->GetTexture() : nullptr;
+			RAPI::RTexture* stored = s->Textures[RAPI::EShaderType::ST_PIXEL].empty() ? nullptr : s->Textures[RAPI::EShaderType::ST_PIXEL][0];
+			RAPI::RTexture* actual = m.m_Material->GetDiffuse() ? m.m_Material->GetDiffuse()->GetTexture() : nullptr;
 
 			// Switched to nullptr?
 			if(!actual)
 			{
-				s->Textures[EShaderType::ST_PIXEL].clear();
+				s->Textures[RAPI::EShaderType::ST_PIXEL].clear();
 			}else if(stored != actual)
 			{
-				RStateMachine& sm = REngine::RenderingDevice->GetStateMachine();
+				RAPI::RStateMachine& sm = RAPI::REngine::RenderingDevice->GetStateMachine();
 				sm.SetFromPipelineState(s);
 
 				// Assign textures

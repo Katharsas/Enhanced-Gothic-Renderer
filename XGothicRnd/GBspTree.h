@@ -13,14 +13,19 @@ class GBspNode;
 class GVobObject;
 class GTexture;
 class GMaterial;
-struct RPipelineState;
+
 class zCLightmap;
 class zCMaterial;
 class zCPolygon;
-class RTextureAtlas;
 
-template<typename T>
-class RBufferCollection;
+namespace RAPI
+{
+	template<typename T>
+	class RBufferCollection;
+	struct RPipelineState;
+	class RTextureAtlas;
+}
+
 class GBspTree : public GzObjectExtension<zCBspTree, GBspTree>
 {
 public:
@@ -49,13 +54,13 @@ public:
 		{
 			// Delete allocated memory from part
 			delete m_Mesh;
-			REngine::ResourceCache->DeleteResource(m_PipelineState);		
+			RAPI::REngine::ResourceCache->DeleteResource(m_PipelineState);		
 		}
 
 		GMeshIndexed* m_Mesh;
 		GMaterial* m_Material;
-		RTexture* m_Lightmap;
-		RPipelineState* m_PipelineState;
+		RAPI::RTexture* m_Lightmap;
+		RAPI::RPipelineState* m_PipelineState;
 
 		// Indices of the full mesh
 		std::vector<unsigned int> m_Indices;
@@ -70,7 +75,7 @@ public:
 		}
 
 		// Map of lightmaps, material and vertex-data
-		std::map<std::pair<RTexture*, zCMaterial*>, WorldMeshPart> m_MeshParts;
+		std::map<std::pair<RAPI::RTexture*, zCMaterial*>, WorldMeshPart> m_MeshParts;
 		int m_FrustumTestCache;
 	};
 
@@ -80,7 +85,7 @@ public:
 	/**
 	 * Renders everyting inside this BSP-Tree from the current frustum
 	 */
-	void Draw(RRenderQueueID queue, std::vector<GVobObject*>& visibleVobs, float objectFarplane);
+	void Draw(RAPI::RRenderQueueID queue, std::vector<GVobObject*>& visibleVobs, float objectFarplane);
 
 	/**
 	 * Creates a new BSP-Node
@@ -95,7 +100,7 @@ public:
 
 private:
 	/** Draws the pipeline-states from the visible quad-tree nodes (The world mesh) */
-	void DrawQuadTreeNodes(BSPRenderInfo& info, RRenderQueueID queue);
+	void DrawQuadTreeNodes(BSPRenderInfo& info, RAPI::RRenderQueueID queue);
 
 	/** Generates the quad-trees vertex data */
 	void BuildQuadTreeVertexData(const std::vector<ExTVertexStruct>& vertices, const std::vector<unsigned int>& indices, const std::vector<zCPolygon*>& trianglePolys);
@@ -104,7 +109,7 @@ private:
 	void UpdateMeshPartPipelineState(WorldMeshPart& part);
 
 	/** Draws a world-mesh-part */
-	void DrawWorldMeshPart(WorldMeshPart& part, RRenderQueueID queue);
+	void DrawWorldMeshPart(WorldMeshPart& part, RAPI::RRenderQueueID queue);
 
 	// My own quad-tree for rendering the game.
 	// Gothics own BSP-Tree is too much of a mess.
@@ -121,8 +126,8 @@ private:
 	std::vector<GBspNode> m_TreeNodes;
 
 	// World mesh stored in a buffer
-	RBuffer* m_WorldMeshBuffer;
-	RBufferCollection<unsigned int>* m_WorldIndexBuffer;
+	RAPI::RBuffer* m_WorldMeshBuffer;
+	RAPI::RBufferCollection<unsigned int>* m_WorldIndexBuffer;
 
 	// World this tree contains
 	GWorld* m_ContainedWorld;

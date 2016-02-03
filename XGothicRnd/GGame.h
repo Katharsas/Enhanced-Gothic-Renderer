@@ -22,11 +22,11 @@ struct GameRenderSettings
 
 	void Register()
 	{
-		RTools::TweakBar.AddBoolRW("Game", &m_DrawSky, "Draw Sky");	
-		RTools::TweakBar.AddBoolRW("Game", &m_EnableFog, "Fog");
-		RTools::TweakBar.AddBoolRW("Game", &m_RenderWorld, "Render World");
-		RTools::TweakBar.AddBoolRW("Game", &m_AllowD3D7Proxy, "AllowD3D7Proxy");
-		RTools::TweakBar.AddBoolRW("Game", &m_ProcessVobs, "ProcessVobs");
+		RAPI::RTools::TweakBar.AddBoolRW("Game", &m_DrawSky, "Draw Sky");	
+		RAPI::RTools::TweakBar.AddBoolRW("Game", &m_EnableFog, "Fog");
+		RAPI::RTools::TweakBar.AddBoolRW("Game", &m_RenderWorld, "Render World");
+		RAPI::RTools::TweakBar.AddBoolRW("Game", &m_AllowD3D7Proxy, "AllowD3D7Proxy");
+		RAPI::RTools::TweakBar.AddBoolRW("Game", &m_ProcessVobs, "ProcessVobs");
 	}
 
 	/** Whether to allow drawcalls and updates from the original D3D7-Device */

@@ -20,15 +20,15 @@ public:
 		// Start with 1 reference
 		RefCount = 1;
 
-		EngineBuffer = REngine::ResourceCache->CreateResource<RBuffer>();
-		EngineBuffer->Init(nullptr, originalDesc.dwNumVertices * ComputeFVFSize(originalDesc.dwFVF), ComputeFVFSize(originalDesc.dwFVF), EBindFlags::B_VERTEXBUFFER, EUsageFlags::U_DYNAMIC, ECPUAccessFlags::CA_WRITE);
+		EngineBuffer = RAPI::REngine::ResourceCache->CreateResource<RAPI::RBuffer>();
+		EngineBuffer->Init(nullptr, originalDesc.dwNumVertices * ComputeFVFSize(originalDesc.dwFVF), ComputeFVFSize(originalDesc.dwFVF), RAPI::EBindFlags::B_VERTEXBUFFER, RAPI::EUsageFlags::U_DYNAMIC, RAPI::ECPUAccessFlags::CA_WRITE);
     }
 
 	~MyDirect3DVertexBuffer7()
 	{
-		REngine::ResourceCache->DeleteResource(EngineBuffer);
+		RAPI::REngine::ResourceCache->DeleteResource(EngineBuffer);
 		//if(EngineBuffer)
-		//	REngine::ResourceCache->DeleteResource(EngineBuffer);
+		//	RAPI::REngine::ResourceCache->DeleteResource(EngineBuffer);
 	}
 
 	
@@ -231,7 +231,7 @@ public:
 	}
 
 	/** Returns the real engine-buffer */
-	virtual RBuffer* GetEngineBuffer()
+	virtual RAPI::RBuffer* GetEngineBuffer()
 	{
 		return EngineBuffer;
 	}
@@ -245,7 +245,7 @@ protected:
 	int RefCount;
 
 	/** Real buffer */
-	RBuffer* EngineBuffer;
+	RAPI::RBuffer* EngineBuffer;
 
 	// TEMP
 	std::vector<Gothic_XYZRHW_DIF_T1_Vertex> Vertices;

@@ -115,8 +115,8 @@ void GBspNode::BuildTriangleList(std::vector<ExTVertexStruct>& vertices, std::ve
 			poly->SetLastTimeDrawn(12345);
 
 			// Check for lightmap and the it's atlas if present
-			RTextureAtlas* atlas = nullptr;
-			std::pair<float2, float2> lightmapUVMod;
+			RAPI::RTextureAtlas* atlas = nullptr;
+			std::pair<RAPI::RFloat2, RAPI::RFloat2> lightmapUVMod;
 
 			// Make sure the lightmap is loaded...
 			if(poly->GetLightmap() && poly->GetLightmap()->GetTexture())
@@ -163,7 +163,8 @@ void GBspNode::BuildTriangleList(std::vector<ExTVertexStruct>& vertices, std::ve
 					{
 						vx.TexCoord2.x /= lightmapUVMod.second.x;
 						vx.TexCoord2.y /= lightmapUVMod.second.y;
-						vx.TexCoord2 += lightmapUVMod.first;
+						vx.TexCoord2.x += lightmapUVMod.first.x;
+						vx.TexCoord2.y += lightmapUVMod.first.y;
 					}
 					packed.push_back(vx);
 				}
@@ -185,7 +186,8 @@ void GBspNode::BuildTriangleList(std::vector<ExTVertexStruct>& vertices, std::ve
 					{
 						vx.TexCoord2.x /= lightmapUVMod.second.x;
 						vx.TexCoord2.y /= lightmapUVMod.second.y;
-						vx.TexCoord2 += lightmapUVMod.first;
+						vx.TexCoord2.x += lightmapUVMod.first.x;
+						vx.TexCoord2.y += lightmapUVMod.first.y;
 					}
 
 					packed.push_back(vx);
@@ -194,7 +196,7 @@ void GBspNode::BuildTriangleList(std::vector<ExTVertexStruct>& vertices, std::ve
 				// Copy to temp-vector. These don't happen often.
 				std::vector<ExTVertexStruct> temp = packed;
 				packed.clear();
-				RTools::TriangleFanToList(&temp[0], temp.size(), packed);
+				RAPI::RTools::TriangleFanToList(&temp[0], temp.size(), packed);
 			}
 
 			// Now 'packed' contains a list of vertices, where 3 of them form a triangle.
@@ -202,9 +204,10 @@ void GBspNode::BuildTriangleList(std::vector<ExTVertexStruct>& vertices, std::ve
 			std::vector<ExTVertexStruct> validVertices;
 			for(unsigned int i=0;i<packed.size();i+=3)
 			{
-				float3 tangent = RTools::CalculateTangent(packed[i].Position, packed[i].TexCoord,
-														  packed[i+1].Position, packed[i+1].TexCoord,
-														  packed[i+2].Position, packed[i+2].TexCoord);
+				//float3 tangent = RAPI::RTools::CalculateTangent(packed[i].Position, packed[i].TexCoord,
+				//										  packed[i+1].Position, packed[i+1].TexCoord,
+				//										  packed[i+2].Position, packed[i+2].TexCoord);
+				float3 tangent = float3(0,0,0); // TODO
 
 				// Store in the vertices
 				for(int j=0;j<3;j++)
@@ -246,7 +249,7 @@ void GBspNode::BuildTriangleList(std::vector<ExTVertexStruct>& vertices, std::ve
 
 
 /** Does frustumculling and draws this node if it is the lowest acceptable */
-void GBspNode::DrawNodeRecursive(float minNodeSizeXZ, RRenderQueueID queue, GBspTree::BSPRenderInfo info, std::vector<GVobObject*>& visibleVobs)
+void GBspNode::DrawNodeRecursive(float minNodeSizeXZ, RAPI::RRenderQueueID queue, GBspTree::BSPRenderInfo info, std::vector<GVobObject*>& visibleVobs)
 {
 	// PB does something really weird with the tree. They are stacking Leafs?
 	// Anyways, they seem to do something with the nodes BBox.y here, so do as they do...
@@ -265,7 +268,7 @@ void GBspNode::DrawNodeRecursive(float minNodeSizeXZ, RRenderQueueID queue, GBsp
 	// Check if we can just draw this. Trivial in?
 	if(clip == ZTCAM_CLIPTYPE_IN || m_IsLeaf)
 	{
-		//RTools::LineRenderer.AddAABBMinMax(m_BBox.m_Min, m_BBox.m_Max, float4(1,0,0,1));
+		//RAPI::RTools::LineRenderer.AddAABBMinMax(m_BBox.m_Min, m_BBox.m_Max, float4(1,0,0,1));
 
 		CollectVobs(visibleVobs, info.CameraPostion, info.ObjectFarplane);
 		return;
@@ -287,7 +290,7 @@ void GBspNode::CollectVobs(std::vector<GVobObject*>& visibleVobs, const float3& 
 	{
 		zCBspLeaf* leaf = (zCBspLeaf*)m_SourceNode;
 
-		unsigned int frame = REngine::RenderingDevice->GetFrameCounter();
+		unsigned int frame = RAPI::REngine::RenderingDevice->GetFrameCounter();
 
 		// Copy all vobs currently in this leaf into the vector
 		for (unsigned int i = 0; i < leaf->LeafVobList.NumInArray; i++)

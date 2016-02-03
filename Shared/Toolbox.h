@@ -147,8 +147,6 @@ namespace Toolbox
 	/** Returns true if the given position is inside the box */
 	bool PositionInsideBox(const Vector3& p, const Vector3& min, const Vector3& max);
 
-	/** Converts an errorcode into a string */
-	std::string MakeErrorString(XRESULT code);
 
 	/** Returns the number of bits inside a bitmask */
 	WORD GetNumberOfBits( DWORD dwMask );

@@ -34,7 +34,7 @@ struct RenderInstance
 	GVobObject* m_SourceVob;
 };
 
-struct RPipelineState;
+namespace RAPI{ struct RPipelineState; }
 class GVisual;
 class GBaseDrawable
 {
@@ -48,10 +48,10 @@ public:
 
 	/** Called when a cached state got reaquired from the visual. Use this
 		method to fill in custom values like constant-buffers */
-	virtual void OnReaquiredState(GConstants::ERenderStage stage, RPipelineState* state) = 0;
+	virtual void OnReaquiredState(GConstants::ERenderStage stage,RAPI::RPipelineState* state) = 0;
 
 	/** Pushes the cached pipeline-states to the renderer */
-	void PushRenderStateCache(GConstants::ERenderStage stage, RRenderQueueID queue, unsigned int instanceIndex, unsigned int numInstances);
+	void PushRenderStateCache(GConstants::ERenderStage stage, RAPI::RRenderQueueID queue, unsigned int instanceIndex, unsigned int numInstances);
 
 	/** Returns the visual this was created from */
 	GVisual* GetVisual()const{return m_SourceVisual;}

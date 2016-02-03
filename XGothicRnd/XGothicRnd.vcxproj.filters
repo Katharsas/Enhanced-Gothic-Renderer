@@ -178,6 +178,9 @@
     <ClCompile Include="PluginInterface.cpp">
       <Filter>Plugin</Filter>
     </ClCompile>
+    <ClCompile Include="..\Shared\Toolbox.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="D3D7\MyDirectDrawSurface7.h">
@@ -467,6 +470,9 @@
     </ClInclude>
     <ClInclude Include="..\Shared\PluginInterface.h">
       <Filter>Plugin</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Shared\Toolbox.h">
+      <Filter>Base</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

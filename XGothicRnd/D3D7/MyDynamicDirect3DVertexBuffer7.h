@@ -24,11 +24,11 @@ public:
 		}*/
 
 		// Get new buffer
-		auto newBuffer = REngine::DynamicBufferCache->GetDataBuffer(EBindFlags::B_VERTEXBUFFER, ComputeFVFSize(OriginalDesc.dwFVF) * OriginalDesc.dwNumVertices, ComputeFVFSize(OriginalDesc.dwFVF));
+		auto newBuffer = RAPI::REngine::DynamicBufferCache->GetDataBuffer(RAPI::EBindFlags::B_VERTEXBUFFER, ComputeFVFSize(OriginalDesc.dwFVF) * OriginalDesc.dwNumVertices, ComputeFVFSize(OriginalDesc.dwFVF));
 
 		// Give back the old buffer
 		if(DynamicBuffer.Buffer)
-			REngine::DynamicBufferCache->DoneWith(DynamicBuffer);
+			RAPI::REngine::DynamicBufferCache->DoneWith(DynamicBuffer);
 
 		DynamicBuffer = newBuffer;
 
@@ -67,14 +67,14 @@ public:
     }
 
 	/** Returns the real engine-buffer */
-	RBuffer* GetEngineBuffer()
+	RAPI::RBuffer* GetEngineBuffer()
 	{
 		return DynamicBuffer.Buffer;
 	}
 
 private:
 	/** Current dynamic buffer. This is managed by the dynamic buffer-cache. */
-	RCachedDynamicBuffer DynamicBuffer;
+	RAPI::RCachedDynamicBuffer DynamicBuffer;
 
 	/** Only used when d3d7-proxy is disabled */
 	byte* ProxyLockedData;

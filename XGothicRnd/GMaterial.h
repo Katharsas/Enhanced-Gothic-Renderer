@@ -48,7 +48,7 @@ public:
 	 * Returns the right pixelshader for this material and the given rendering stage
 	 * Flags of type EMaterialPSFlags
 	 */
-	RPixelShader* GetMaterialPixelShader(GConstants::ERenderStage stage, UINT flags = MPS_NONE);
+	RAPI::RPixelShader* GetMaterialPixelShader(GConstants::ERenderStage stage, UINT flags = MPS_NONE);
 protected:
 	// Pointer to diffuse-texture
 	GTexture* m_Diffuse;

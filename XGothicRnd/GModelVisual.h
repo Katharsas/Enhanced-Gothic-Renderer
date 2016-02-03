@@ -83,7 +83,7 @@ protected:
 	std::vector<NodeAttachment> m_NodeAttachments;
 
 	// Constantbuffer for this single model. Constains general data and node-transforms
-	RBuffer* m_ModelConstantBuffer;
+	RAPI::RBuffer* m_ModelConstantBuffer;
 
 	// Last frame this was drawn
 	unsigned int m_LastFrameDrawn;

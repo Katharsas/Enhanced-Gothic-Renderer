@@ -60,110 +60,110 @@ bool GGame::Initialize()
 
 	// Load shaders:
 	// Default vertexshader for WorldMesh
-	RVertexShader* vs_ExWMM = RTools::LoadShader<RVertexShader>("system\\GD3D11\\Shaders\\VS_ExWorldMeshMain.hlsl", "VS_ExWorldMeshMain");
-	RVertexShader* vs_ExVobInst = RTools::LoadShader<RVertexShader>("system\\GD3D11\\Shaders\\VS_ExVobInstanced.hlsl", "VS_ExVobInstanced");
-	RVertexShader* vs_ExSkeletal = RTools::LoadShader<RVertexShader>("system\\GD3D11\\Shaders\\VS_ExSkelInstanced.hlsl", "VS_ExSkelInstanced");
-	RVertexShader* vs_Particles = RTools::LoadShader<RVertexShader>("system\\GD3D11\\Shaders\\VS_Particles.hlsl", "VS_Particles");
-	RInputLayout* ilExT = RTools::CreateInputLayoutFor<ExTVertexStruct>(vs_ExWMM);
-	RInputLayout* ilExTInst = RTools::CreateInputLayoutFor<ExTVertexStructInstanced>(vs_ExVobInst);
-	RInputLayout* ilExTSkel = RTools::CreateInputLayoutFor<ExTSkelVertexStruct>(vs_ExSkeletal);
+	RAPI::RVertexShader* vs_ExWMM = RAPI::RTools::LoadShader<RAPI::RVertexShader>("system\\GD3D11\\Shaders\\VS_ExWorldMeshMain.hlsl", "VS_ExWorldMeshMain");
+	RAPI::RVertexShader* vs_ExVobInst = RAPI::RTools::LoadShader<RAPI::RVertexShader>("system\\GD3D11\\Shaders\\VS_ExVobInstanced.hlsl", "VS_ExVobInstanced");
+	RAPI::RVertexShader* vs_ExSkeletal = RAPI::RTools::LoadShader<RAPI::RVertexShader>("system\\GD3D11\\Shaders\\VS_ExSkelInstanced.hlsl", "VS_ExSkelInstanced");
+	RAPI::RVertexShader* vs_Particles = RAPI::RTools::LoadShader<RAPI::RVertexShader>("system\\GD3D11\\Shaders\\VS_Particles.hlsl", "VS_Particles");
+	RAPI::RInputLayout* ilExT = RAPI::RTools::CreateInputLayoutFor<ExTVertexStruct>(vs_ExWMM);
+	RAPI::RInputLayout* ilExTInst = RAPI::RTools::CreateInputLayoutFor<ExTVertexStructInstanced>(vs_ExVobInst);
+	RAPI::RInputLayout* ilExTSkel = RAPI::RTools::CreateInputLayoutFor<ExTSkelVertexStruct>(vs_ExSkeletal);
 	
 	// Simple texturing pixelshader
-	RPixelShader* ps_Simple = RTools::LoadShader<RPixelShader>("system\\GD3D11\\Shaders\\PS_Simple.hlsl", "PS_Simple");
-	RPixelShader* ps_World = RTools::LoadShader<RPixelShader>("system\\GD3D11\\Shaders\\PS_World.hlsl", "PS_World");
-	RPixelShader* ps_Particle = RTools::LoadShader<RPixelShader>("system\\GD3D11\\Shaders\\PS_Particle.hlsl", "PS_Particle");
+	RAPI::RPixelShader* ps_Simple = RAPI::RTools::LoadShader<RAPI::RPixelShader>("system\\GD3D11\\Shaders\\PS_Simple.hlsl", "PS_Simple");
+	RAPI::RPixelShader* ps_World = RAPI::RTools::LoadShader<RAPI::RPixelShader>("system\\GD3D11\\Shaders\\PS_World.hlsl", "PS_World");
+	RAPI::RPixelShader* ps_Particle = RAPI::RTools::LoadShader<RAPI::RPixelShader>("system\\GD3D11\\Shaders\\PS_Particle.hlsl", "PS_Particle");
 	
 
 	// TODO: Use/implement definition-system
-	RPixelShader* ps_WorldMasked = RTools::LoadShader<RPixelShader>("system\\GD3D11\\Shaders\\PS_World.hlsl", 
+	RAPI::RPixelShader* ps_WorldMasked = RAPI::RTools::LoadShader<RAPI::RPixelShader>("system\\GD3D11\\Shaders\\PS_World.hlsl", 
 		"PS_World_Masked",
 		{ {"DO_ALPHATEST"} });
 
-	RPixelShader* ps_WorldLightmapped = RTools::LoadShader<RPixelShader>("system\\GD3D11\\Shaders\\PS_World.hlsl", 
+	RAPI::RPixelShader* ps_WorldLightmapped = RAPI::RTools::LoadShader<RAPI::RPixelShader>("system\\GD3D11\\Shaders\\PS_World.hlsl", 
 		"PS_World_Lightmapped",
 		{ {"LIGHTMAPPING"} });
 
 	// Make default per-frame constant buffer
-	RBuffer* perFrameCB = REngine::ResourceCache->CreateResource<RBuffer>();
-	REngine::ResourceCache->AddToCache(GConstants::ConstantBuffers::CB_WORLDPERFRAME, perFrameCB);
+	RAPI::RBuffer* perFrameCB = RAPI::REngine::ResourceCache->CreateResource<RAPI::RBuffer>();
+	RAPI::REngine::ResourceCache->AddToCache(GConstants::ConstantBuffers::CB_WORLDPERFRAME, perFrameCB);
 	perFrameCB->Init(nullptr, 
 		sizeof(ConstantBuffers::PerFrameConstantBuffer), 
 		sizeof(ConstantBuffers::PerFrameConstantBuffer), 
-		EBindFlags::B_CONSTANTBUFFER, 
-		EUsageFlags::U_DYNAMIC, 
-		ECPUAccessFlags::CA_WRITE);
+		RAPI::EBindFlags::B_CONSTANTBUFFER, 
+		RAPI::EUsageFlags::U_DYNAMIC, 
+		RAPI::ECPUAccessFlags::CA_WRITE);
 
 	// Create default states
-	RDepthStencilState* defaultDSS = nullptr;
-	RBlendState* defaultBS = nullptr;
-	RSamplerState* defaultSS = nullptr;
-	RRasterizerState* defaultRS = nullptr;
-	RTools::MakeDefaultStates(&defaultDSS, &defaultSS, &defaultBS, &defaultRS);
+	RAPI::RDepthStencilState* defaultDSS = nullptr;
+	RAPI::RBlendState* defaultBS = nullptr;
+	RAPI::RSamplerState* defaultSS = nullptr;
+	RAPI::RRasterizerState* defaultRS = nullptr;
+	RAPI::RTools::MakeDefaultStates(&defaultDSS, &defaultSS, &defaultBS, &defaultRS);
 
 	// Create default viewport
-	ViewportInfo vpinfo;
+	RAPI::ViewportInfo vpinfo;
 	vpinfo.TopLeftX = 0;
 	vpinfo.TopLeftY = 0;
-	vpinfo.Height = (float)REngine::RenderingDevice->GetOutputResolution().y;
-	vpinfo.Width = (float)REngine::RenderingDevice->GetOutputResolution().x;
+	vpinfo.Height = (float)RAPI::REngine::RenderingDevice->GetOutputResolution().y;
+	vpinfo.Width = (float)RAPI::REngine::RenderingDevice->GetOutputResolution().x;
 	vpinfo.MinZ = 0.0f;
 	vpinfo.MaxZ = 1.0f;
 
 	// Try to get this from cache
-	RViewport* vp = REngine::ResourceCache->GetCachedObject<RViewport>(Toolbox::HashObject(vpinfo));
+	RAPI::RViewport* vp = RAPI::REngine::ResourceCache->GetCachedObject<RAPI::RViewport>(Toolbox::HashObject(vpinfo));
 
 	// Create new object if needed
 	if(!vp)
 	{
-		vp = REngine::ResourceCache->CreateResource<RViewport>();
+		vp = RAPI::REngine::ResourceCache->CreateResource<RAPI::RViewport>();
 		vp->CreateViewport(vpinfo);
-		REngine::ResourceCache->AddToCache(Toolbox::HashObject(vpinfo), vp);
+		RAPI::REngine::ResourceCache->AddToCache(Toolbox::HashObject(vpinfo), vp);
 	}
 
 	// Create default pipeline states
-	RStateMachine& sm = REngine::RenderingDevice->GetStateMachine();
+	RAPI::RStateMachine& sm = RAPI::REngine::RenderingDevice->GetStateMachine();
 
-	sm.SetPrimitiveTopology(EPrimitiveType::PT_TRIANGLE_LIST);
+	sm.SetPrimitiveTopology(RAPI::EPrimitiveType::PT_TRIANGLE_LIST);
 	sm.SetBlendState(defaultBS);
 	sm.SetRasterizerState(defaultRS);
 	sm.SetSamplerState(defaultSS);
 	sm.SetDepthStencilState(defaultDSS);
 	sm.SetViewport(vp);
-	sm.SetConstantBuffer(0, perFrameCB, EShaderType::ST_VERTEX);
-	sm.SetConstantBuffer(0, perFrameCB, EShaderType::ST_PIXEL);
+	sm.SetConstantBuffer(0, perFrameCB, RAPI::EShaderType::ST_VERTEX);
+	sm.SetConstantBuffer(0, perFrameCB, RAPI::EShaderType::ST_PIXEL);
 	sm.SetInputLayout(ilExT);
 	sm.SetPixelShader(ps_World);
 	sm.SetVertexShader(vs_ExWMM);
 	
 	// Make default drawcall for a worldmesh
-	RPipelineState* worldDefState = sm.MakeDrawCall(0,0);
-	REngine::ResourceCache->AddToCache(GConstants::PipelineStates::BPS_WORLDMESH, worldDefState);
+	 RAPI::RPipelineState* worldDefState = sm.MakeDrawCall(0,0);
+	RAPI::REngine::ResourceCache->AddToCache(GConstants::PipelineStates::BPS_WORLDMESH, worldDefState);
 
 	// Set states for instanced vobs
 	sm.SetVertexShader(vs_ExVobInst);
 	sm.SetInputLayout(ilExTInst);
 	
 	// Make default drawcall for an instanced vob
-	RPipelineState* instVobDefState = sm.MakeDrawCallIndexedInstanced(0, 0);
-	REngine::ResourceCache->AddToCache(GConstants::PipelineStates::BPS_INSTANCED_VOB, instVobDefState);
+	 RAPI::RPipelineState* instVobDefState = sm.MakeDrawCallIndexedInstanced(0, 0);
+	RAPI::REngine::ResourceCache->AddToCache(GConstants::PipelineStates::BPS_INSTANCED_VOB, instVobDefState);
 
 	// Make default drawcall for skeletal meshes
 	sm.SetVertexShader(vs_ExSkeletal);
 	sm.SetInputLayout(ilExTSkel);
 
-	RPipelineState* skelDefState = sm.MakeDrawCallIndexedInstanced(0, 0);
-	REngine::ResourceCache->AddToCache(GConstants::PipelineStates::BPS_SKEL_MESH, skelDefState);
+	 RAPI::RPipelineState* skelDefState = sm.MakeDrawCallIndexedInstanced(0, 0);
+	RAPI::REngine::ResourceCache->AddToCache(GConstants::PipelineStates::BPS_SKEL_MESH, skelDefState);
 
 	// Make default drawcall for skeletal meshes
 	sm.SetVertexShader(vs_Particles);
 	sm.SetInputLayout(nullptr);
 	sm.SetPixelShader(ps_Particle);
 
-	RPipelineState* particleDefState = sm.MakeDrawCall(0, 0);
-	REngine::ResourceCache->AddToCache(GConstants::PipelineStates::BPS_PARTICLES, particleDefState);
+	 RAPI::RPipelineState* particleDefState = sm.MakeDrawCall(0, 0);
+	RAPI::REngine::ResourceCache->AddToCache(GConstants::PipelineStates::BPS_PARTICLES, particleDefState);
 
 	// This is called right after we got the games window. Hook the message-callback.
-	zGlobalHk::PlaceWndHook(REngine::RenderingDevice->GetOutputWindow());
+	zGlobalHk::PlaceWndHook(RAPI::REngine::RenderingDevice->GetOutputWindow());
 
 	// Init ant-tweakbar for debugging
 	m_RenderSettings.Register();
@@ -271,7 +271,7 @@ void GGame::OnFrameEnd()
 
 	// Draw lines
 	if(zCCamera::GetActiveCamera())
-		RTools::LineRenderer.Flush(zCCamera::GetActiveCamera()->GetViewProjMatrix());
+		RAPI::RTools::LineRenderer.Flush(*(RAPI::RMatrix*)&zCCamera::GetActiveCamera()->GetViewProjMatrix());
 
 	DrawStatistics();
 
@@ -287,7 +287,7 @@ void GGame::OnRender()
 	OnFrameStart();
 
 	// Update per-frame buffer
-	RBuffer* perFrameCB = REngine::ResourceCache->GetCachedObject<RBuffer>(GConstants::ConstantBuffers::CB_WORLDPERFRAME);
+	RAPI::RBuffer* perFrameCB = RAPI::REngine::ResourceCache->GetCachedObject<RAPI::RBuffer>(GConstants::ConstantBuffers::CB_WORLDPERFRAME);
 	GCamera* camera = GCamera::GetFromSource(zCCamera::GetActiveCamera());
 
 	// Can't render if we don't have a camera
@@ -415,14 +415,14 @@ void GGame::DrawStatistics()
 	return;
 	/*std::stringstream stat;
 	stat << "FPS: " << std::fixed << std::setprecision(2) << GetFramesPerSecond() << " (" << 1000.0f / GetFramesPerSecond() << "ms)" << "\n"
-		<< "Queues: " << REngine::RenderingDevice->GetNumQueuesInUse() << "\n"
-		<< "DrawCalls: " << REngine::RenderingDevice->GetNumRegisteredDrawCalls() << "\n";
+		<< "Queues: " << RAPI::REngine::RenderingDevice->GetNumQueuesInUse() << "\n"
+		<< "DrawCalls: " << RAPI::REngine::RenderingDevice->GetNumRegisteredDrawCalls() << "\n";
 	
 	if(m_ActiveWorld)
 		stat << "NumVobs: " << m_ActiveWorld->GetNumRegisteredVobs();
 
-	stat << REngine::RenderingDevice->GetStateMachine().GetChangesCounts().ProduceString();
-	memset(&REngine::RenderingDevice->GetStateMachine().GetChangesCounts(), 0, sizeof(RStateMachine::ChangesCountStruct));
+	stat << RAPI::REngine::RenderingDevice->GetStateMachine().GetChangesCounts().ProduceString();
+	memset(&RAPI::REngine::RenderingDevice->GetStateMachine().GetChangesCounts(), 0, sizeof(RAPI::RStateMachine::ChangesCountStruct));
 
 	if (zCView::GetSessionView())
 		zCView::GetSessionView()->Print(INT2(0,0), stat.str());*/
@@ -434,7 +434,7 @@ void GGame::UpdateWindowCaptionStatistics()
 	std::stringstream stat;
 	stat << "FPS: " << std::fixed << std::setprecision(2) << GetFramesPerSecond() << " (" << 1000.0f / GetFramesPerSecond() << "ms)"
 		<< " - LastLog: '" << m_LastLogString << "'";
-	SetWindowText(REngine::RenderingDevice->GetOutputWindow(), stat.str().c_str());
+	SetWindowText(RAPI::REngine::RenderingDevice->GetOutputWindow(), stat.str().c_str());
 }
 
 /**
@@ -453,7 +453,7 @@ void GGame::OnWindowMessage(HWND hwnd, DWORD msg, WPARAM wParam, LPARAM lParam)
 		break;
 	}
 
-	RTools::TweakBar.OnWindowMessage(hwnd, msg, wParam, lParam);
+	RAPI::RTools::TweakBar.OnWindowMessage(hwnd, msg, wParam, lParam);
 }
 
 /**
@@ -521,13 +521,13 @@ void GGame::ExecuteSaveFunctions()
 /** Gets the current profiler-data and formats it into a string */
 std::string GGame::FormatProfilerData()
 {
-	std::vector<std::pair<std::string, RProfiler::RProfileResult>> l = REngine::RenderingDevice->GetProfilerResults();
+	std::vector<std::pair<std::string, RAPI::RProfiler::RProfileResult>> l = RAPI::REngine::RenderingDevice->GetProfilerResults();
 
 	std::stringstream ss;
 	ss << "Profiler results:\n";
 
 	// Sort after GPU time
-	std::sort(l.begin(),l.end(), [](const std::pair<std::string, RProfiler::RProfileResult>& a, const std::pair<std::string, RProfiler::RProfileResult>& b)
+	std::sort(l.begin(),l.end(), [](const std::pair<std::string, RAPI::RProfiler::RProfileResult>& a, const std::pair<std::string, RAPI::RProfiler::RProfileResult>& b)
 		{return a.second.GPUTime > b.second.GPUTime;}
 	);
 

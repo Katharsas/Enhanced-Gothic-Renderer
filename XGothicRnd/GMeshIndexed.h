@@ -8,8 +8,8 @@
 class GMeshIndexed
 {
 public:
-	GMeshIndexed(RBuffer* meshVertexBuffer, 
-				 RBuffer* meshIndexBuffer,
+	GMeshIndexed(RAPI::RBuffer* meshVertexBuffer, 
+				 RAPI::RBuffer* meshIndexBuffer,
 				 unsigned int numIndices,
 				 unsigned int meshVertexStart,
 				 unsigned int meshIndexStart);
@@ -21,8 +21,8 @@ public:
 	/**
 	 * Getters
 	 */
-	RBuffer* GetMeshVertexBuffer()const{return m_MeshVertexBuffer;} 
-	RBuffer* GetMeshIndexBuffer()const{return m_MeshIndexBuffer;}
+	RAPI::RBuffer* GetMeshVertexBuffer()const{return m_MeshVertexBuffer;} 
+	RAPI::RBuffer* GetMeshIndexBuffer()const{return m_MeshIndexBuffer;}
 	unsigned int GetMeshVertexStart()const{return m_MeshVertexStart;}
 	unsigned int GetMeshIndexStart()const{return m_MeshIndexStart;}
 	unsigned int  GetNumIndices()const{return m_NumIndices;}
@@ -30,14 +30,14 @@ public:
 	/**
 	 * Setters
 	 */
-	void SetMeshVertexBuffer(RBuffer* buffer){m_MeshVertexBuffer = buffer;}
-	void SetMeshIndexBuffer(RBuffer* buffer){m_MeshIndexBuffer = buffer;}
+	void SetMeshVertexBuffer(RAPI::RBuffer* buffer){m_MeshVertexBuffer = buffer;}
+	void SetMeshIndexBuffer(RAPI::RBuffer* buffer){m_MeshIndexBuffer = buffer;}
 	void SetMeshVertexStart(unsigned int meshVertexStart){m_MeshVertexStart = meshVertexStart;}
 	void SetMeshIndexStart(unsigned int meshIndexStart){m_MeshIndexStart = meshIndexStart;}
 	void SetNumIndices(unsigned int numIndices){m_NumIndices = numIndices;}
 private:
-	RBuffer* m_MeshVertexBuffer;
-	RBuffer* m_MeshIndexBuffer;
+	RAPI::RBuffer* m_MeshVertexBuffer;
+	RAPI::RBuffer* m_MeshIndexBuffer;
 	unsigned int m_MeshVertexStart;
 	unsigned int m_MeshIndexStart;
 	unsigned int m_NumIndices;

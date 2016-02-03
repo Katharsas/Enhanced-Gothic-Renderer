@@ -40,7 +40,7 @@ public:
 		return m_LastTimeCollected != 0;
 	}
 
-	/** Returns the last known world-matrix */
+	/** Returns the last known world-Matrix */
 	const Matrix& GetWorldMatrix() { return m_WorldMatrix; }
 
 	/** Returns the last instance info passed to the drawables of this vob */

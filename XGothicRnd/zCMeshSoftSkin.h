@@ -7,7 +7,7 @@
 struct zTWeightEntry 
 {
 	// Weight and position of the vertex.
-	// This vertexposition is in the local space of the joint-matrix!
+	// This vertexposition is in the local space of the joint-Matrix!
 	float m_Weight;
 	float3 m_LocalVertexPosition;
 

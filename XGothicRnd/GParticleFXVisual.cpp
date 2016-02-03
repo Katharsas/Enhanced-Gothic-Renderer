@@ -23,8 +23,8 @@ struct ParticleInfo
 
 GParticleFXVisual::GParticleFXVisual(zCVisual* sourceVisual) : GVisual(sourceVisual)
 {
-	m_ParticleInfoBuffer = REngine::ResourceCache->CreateResource<RBuffer>();
-	m_ParticleInfoBuffer->Init(nullptr, sizeof(ParticleInfo), sizeof(ParticleInfo), B_SHADER_RESOURCE, U_DYNAMIC, CA_WRITE, "PFX-Buffer");
+	m_ParticleInfoBuffer = RAPI::REngine::ResourceCache->CreateResource<RAPI::RBuffer>();
+	m_ParticleInfoBuffer->Init(nullptr, sizeof(ParticleInfo), sizeof(ParticleInfo), RAPI::EBindFlags::B_SHADER_RESOURCE, RAPI::EUsageFlags::U_DYNAMIC, RAPI::ECPUAccessFlags::CA_WRITE, "PFX-Buffer");
 	m_PFXPipelineState = nullptr;
 }
 
@@ -42,17 +42,17 @@ GVisual::StateCache* GParticleFXVisual::UpdatePipelineStatesFor(GBaseDrawable* d
 	StateCache& cache = m_CreatedPipelineStates[drawable];
 
 	// Don't update twice for other passes
-	if(m_LastFrameUpdated == REngine::RenderingDevice->GetFrameCounter())
+	if(m_LastFrameUpdated == RAPI::REngine::RenderingDevice->GetFrameCounter())
 		return &cache;
 
-	m_LastFrameUpdated = REngine::RenderingDevice->GetFrameCounter();
+	m_LastFrameUpdated = RAPI::REngine::RenderingDevice->GetFrameCounter();
 
 	zCParticleFX* pfx = (zCParticleFX*)m_SourceObject;
 	zCParticleEmitter* emt = pfx->GetEmitter();
 	
 
-	RPipelineState* defState = REngine::ResourceCache->GetCachedObject<RPipelineState>(GConstants::PipelineStates::BPS_PARTICLES);
-	RStateMachine& sm = REngine::RenderingDevice->GetStateMachine();
+	 RAPI::RPipelineState* defState = RAPI::REngine::ResourceCache->GetCachedObject<RAPI::RPipelineState>(GConstants::PipelineStates::BPS_PARTICLES);
+	RAPI::RStateMachine& sm = RAPI::REngine::RenderingDevice->GetStateMachine();
 	GTexture* visTexture = GTexture::GetFromSource(emt->visTexture);
 
 	sm.SetFromPipelineState(defState);
@@ -60,21 +60,21 @@ GVisual::StateCache* GParticleFXVisual::UpdatePipelineStatesFor(GBaseDrawable* d
 	// Set the paged buffers to the state machine
 	sm.SetVertexBuffer(0, nullptr);
 	sm.SetIndexBuffer(nullptr);
-	sm.SetStructuredBuffer(0, m_ParticleInfoBuffer, EShaderType::ST_VERTEX);
+	sm.SetStructuredBuffer(0, m_ParticleInfoBuffer, RAPI::EShaderType::ST_VERTEX);
 
 	// Make sure we have enough space
 	cache.PipelineStates.resize(1);
 
 	
 	// Clear old state
-	REngine::ResourceCache->DeleteResource(cache.PipelineStates[0]);
+	RAPI::REngine::ResourceCache->DeleteResource(cache.PipelineStates[0]);
 
 	// Apply texture
 	if(visTexture)
-		sm.SetTexture(0, visTexture->GetTexture(), EShaderType::ST_PIXEL);
+		sm.SetTexture(0, visTexture->GetTexture(), RAPI::EShaderType::ST_PIXEL);
 
 	// Apply blending
-	RBlendStateInfo bsi;
+	RAPI::RBlendStateInfo bsi;
 	switch (emt->visAlphaFunc)
 	{
 	case zTRnd_AlphaBlendFunc::zRND_ALPHA_FUNC_ADD:
@@ -91,25 +91,25 @@ GVisual::StateCache* GParticleFXVisual::UpdatePipelineStatesFor(GBaseDrawable* d
 	}
 
 	// Turn off depth-writes
-	RDepthStencilStateInfo dssi;
+	RAPI::RDepthStencilStateInfo dssi;
 	dssi.DepthWriteEnabled = false;
 
 	// Get the blendstate
-	RBlendState* bs = REngine::ResourceCache->GetCachedObject<RBlendState>(Toolbox::HashObject(bsi));
+	RAPI::RBlendState* bs = RAPI::REngine::ResourceCache->GetCachedObject<RAPI::RBlendState>(Toolbox::HashObject(bsi));
 	if (!bs)
 	{
-		bs = REngine::ResourceCache->CreateResource<RBlendState>();
+		bs = RAPI::REngine::ResourceCache->CreateResource<RAPI::RBlendState>();
 		bs->CreateState(bsi);
-		REngine::ResourceCache->AddToCache(Toolbox::HashObject(bsi), bs);
+		RAPI::REngine::ResourceCache->AddToCache(Toolbox::HashObject(bsi), bs);
 	}
 
 	// Get the depth-state
-	RDepthStencilState* dss = REngine::ResourceCache->GetCachedObject<RDepthStencilState>(Toolbox::HashObject(dssi));
+	RAPI::RDepthStencilState* dss = RAPI::REngine::ResourceCache->GetCachedObject<RAPI::RDepthStencilState>(Toolbox::HashObject(dssi));
 	if (!dss)
 	{
-		dss = REngine::ResourceCache->CreateResource<RDepthStencilState>();
+		dss = RAPI::REngine::ResourceCache->CreateResource<RAPI::RDepthStencilState>();
 		dss->CreateState(dssi);
-		REngine::ResourceCache->AddToCache(Toolbox::HashObject(dssi), dss);
+		RAPI::REngine::ResourceCache->AddToCache(Toolbox::HashObject(dssi), dss);
 	}
 
 	sm.SetBlendState(bs);
@@ -150,13 +150,13 @@ void GParticleFXVisual::UpdateEffect()
 		return; // TODO: Flag something so the drawcall won't be submitted with 0 particles
 
 	// Plug the texture into the state
-	m_PFXPipelineState->Textures[EShaderType::ST_PIXEL].resize(1);
+	m_PFXPipelineState->Textures[RAPI::EShaderType::ST_PIXEL].resize(1);
 	if(emt->visTexture 
 		&& emt->visTexture->GetSurface()
 		&& emt->visTexture->GetSurface()->GetEngineTexture())
-		m_PFXPipelineState->Textures[EShaderType::ST_PIXEL][0] = emt->visTexture->GetSurface()->GetEngineTexture()->GetTexture();
+		m_PFXPipelineState->Textures[RAPI::EShaderType::ST_PIXEL][0] = emt->visTexture->GetSurface()->GetEngineTexture()->GetTexture();
 	else
-		m_PFXPipelineState->Textures[EShaderType::ST_PIXEL].clear();
+		m_PFXPipelineState->Textures[RAPI::EShaderType::ST_PIXEL].clear();
 
 	// Process first particle
 	pfx->ProcessParticle(nullptr);

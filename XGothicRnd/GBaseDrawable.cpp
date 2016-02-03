@@ -56,7 +56,7 @@ void GBaseDrawable::ReaquireStateCache(GConstants::ERenderStage stage)
 }
 
 /** Pushes the cached pipeline-states to the renderer */
-void GBaseDrawable::PushRenderStateCache(GConstants::ERenderStage stage, RRenderQueueID queue, unsigned int instanceIndex, unsigned int numInstances)
+void GBaseDrawable::PushRenderStateCache(GConstants::ERenderStage stage, RAPI::RRenderQueueID queue, unsigned int instanceIndex, unsigned int numInstances)
 {
 	if (m_StateCaches[stage])
 	{
@@ -64,7 +64,7 @@ void GBaseDrawable::PushRenderStateCache(GConstants::ERenderStage stage, RRender
 		GVisual::StateCache& cache = *m_StateCaches[stage];
 
 		// Modify instance index
-		for (RPipelineState* s : cache.PipelineStates)
+		for (RAPI::RPipelineState* s : cache.PipelineStates)
 		{
 			s->StartInstanceOffset = instanceIndex;
 			s->NumInstances = numInstances;
@@ -73,13 +73,13 @@ void GBaseDrawable::PushRenderStateCache(GConstants::ERenderStage stage, RRender
 		// Push the states into the current renderqueue
 		for (unsigned int i = 0; i < cache.PipelineStates.size(); i++)
 		{
-			cache.PipelineStates[i]->source = this;
+			//cache.PipelineStates[i]->source = this;
 			cache.PipelineStates[i]->Locked = true;
-			REngine::RenderingDevice->QueuePipelineState(cache.PipelineStates[i], queue);
+			RAPI::REngine::RenderingDevice->QueuePipelineState(cache.PipelineStates[i], queue);
 
 #ifndef PUBLIC_RELASE
 			// Helps to find broken pipeline-states
-			//REngine::RenderingDevice->__GetRenderQueueByID(queue)->Sources.push_back(this);
+			//RAPI::REngine::RenderingDevice->__GetRenderQueueByID(queue)->Sources.push_back(this);
 #endif
 		}
 	}

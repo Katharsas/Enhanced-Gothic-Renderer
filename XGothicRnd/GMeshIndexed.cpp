@@ -2,8 +2,8 @@
 #include "GMeshIndexed.h"
 
 
-GMeshIndexed::GMeshIndexed(RBuffer* meshVertexBuffer, 
-						   RBuffer* meshIndexBuffer,
+GMeshIndexed::GMeshIndexed(RAPI::RBuffer* meshVertexBuffer, 
+						   RAPI::RBuffer* meshIndexBuffer,
 						   unsigned int numIndices,
 						   unsigned int meshVertexStart,
 						   unsigned int meshIndexStart)

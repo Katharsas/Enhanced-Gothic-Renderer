@@ -16,28 +16,28 @@
 const int DEFAULT_INSTANCE_BUFFER_SIZE = 1024 * sizeof(VobInstanceInfo);
 
 GMainResources::GMainResources(void) : 
-	m_ExPagedVertexBuffer(EBindFlags::B_VERTEXBUFFER),
-	m_ExSkelPagedVertexBuffer(EBindFlags::B_VERTEXBUFFER),
-	m_ExPagedIndexBuffer(EBindFlags::B_INDEXBUFFER),
-	m_ExSkelPagedIndexBuffer(EBindFlags::B_INDEXBUFFER)
+	m_ExPagedVertexBuffer(RAPI::EBindFlags::B_VERTEXBUFFER),
+	m_ExSkelPagedVertexBuffer(RAPI::EBindFlags::B_VERTEXBUFFER),
+	m_ExPagedIndexBuffer(RAPI::EBindFlags::B_INDEXBUFFER),
+	m_ExSkelPagedIndexBuffer(RAPI::EBindFlags::B_INDEXBUFFER)
 {
-	m_VobInstanceBuffer = REngine::ResourceCache->CreateResource<RBuffer>();
+	m_VobInstanceBuffer = RAPI::REngine::ResourceCache->CreateResource<RAPI::RBuffer>();
 	m_VobInstanceBuffer->Init(nullptr,
 		DEFAULT_INSTANCE_BUFFER_SIZE,
 		sizeof(VobInstanceInfo),
-		EBindFlags::B_VERTEXBUFFER,
-		EUsageFlags::U_DYNAMIC,
-		ECPUAccessFlags::CA_WRITE,
+		RAPI::EBindFlags::B_VERTEXBUFFER,
+		RAPI::EUsageFlags::U_DYNAMIC,
+		RAPI::ECPUAccessFlags::CA_WRITE,
 		"Vob Instance Buffer");
 }
 
 
 GMainResources::~GMainResources(void)
 {
-	REngine::ResourceCache->DeleteResource(m_VobInstanceBuffer);
+	RAPI::REngine::ResourceCache->DeleteResource(m_VobInstanceBuffer);
 }
 
-RTextureAtlas* GMainResources::GetLightmapAtlas(const INT2& singleTextureSize)
+RAPI::RTextureAtlas* GMainResources::GetLightmapAtlas(const INT2& singleTextureSize)
 {
 	GASSERT(singleTextureSize.x == singleTextureSize.y, "Lightmaps must have size x == y");
 
@@ -46,7 +46,7 @@ RTextureAtlas* GMainResources::GetLightmapAtlas(const INT2& singleTextureSize)
 	if(it == m_LightmapAtlasCache.end())
 	{
 		// Create new atlas
-		m_LightmapAtlasCache[p] = REngine::ResourceCache->CreateResource<RTextureAtlas>();
+		m_LightmapAtlasCache[p] = RAPI::REngine::ResourceCache->CreateResource<RAPI::RTextureAtlas>();
 	}
 
 	return m_LightmapAtlasCache[p];
@@ -57,7 +57,7 @@ void GMainResources::ConstructLightmapAtlases()
 {
 	for(auto p : m_LightmapAtlasCache)
 	{
-		p.second->Construct(INT2(p.first.first, p.first.second));
+		p.second->Construct(RAPI::RInt2(p.first.first, p.first.second));
 		p.second->GetTexture()->SaveToFileAPI("atlas_" + std::to_string(p.first.first) + "x" + std::to_string(p.first.second) + ".png");
 	}
 }
@@ -67,7 +67,7 @@ void GMainResources::ClearLightmapAtlases()
 {
 	for(auto p : m_LightmapAtlasCache)
 	{
-		REngine::ResourceCache->DeleteResource(p.second);
+		RAPI::REngine::ResourceCache->DeleteResource(p.second);
 	}
 	m_LightmapAtlasCache.clear();
 }

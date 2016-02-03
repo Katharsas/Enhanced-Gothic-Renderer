@@ -277,8 +277,8 @@ public:
 		info.originalFn = lpEnumModesCallback;
 		info.originalUserArg = lpContext;
 
-		std::vector<DisplayModeInfo> modes;
-		REngine::RenderingDevice->GetDisplayModeList(modes, false);
+		std::vector<RAPI::DisplayModeInfo> modes;
+		RAPI::REngine::RenderingDevice->GetDisplayModeList(modes, false);
 
 		for(unsigned int i=0;i<modes.size();i++)
 		{

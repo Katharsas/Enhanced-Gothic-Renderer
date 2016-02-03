@@ -8558,7 +8558,7 @@ namespace MemoryLocations
 		static const void* zCTimer__SetFrameTime_float = (void*)0x5ed3c0;
 		static const void* zCTimer__FrameUpdate_void = (void*)0x5ed410;
 		static const void* zCVob__GetGroundShadowSize_void = (void*)0x5f4cc0;
-		static const void* ChooseTextureFormat_IDirect3DDevice7_p__D3DX_SURFACEFORMAT__D3DX_SURFACEFORMAT_p = (void*)0x7b0feb;
+		static const void* ChoosRAPI::ETextureFormat_IDirect3DDevice7_p__D3DX_SURFACEFORMAT__D3DX_SURFACEFORMAT_p = (void*)0x7b0feb;
 		static const void* zCTimer__LimitFPS_int = (void*)0x5ed480;
 		static const void* zCChecksum__EndChecksum_void = (void*)0x5ed600;
 		static const void* const_zCTexture__vftablefor_zCResource = (void*)0x817bd0;
@@ -12014,7 +12014,7 @@ namespace MemoryLocations
 		static const void* D3DXPlaneIntersectLine_x_x_x_x = (void*)0x7afc2c;
 		static const void* SEH_40B140 = (void*)0x7ce978;
 		static const void* D3DXPlaneTransform_x_x_x = (void*)0x7afda5;
-		static const void* D3DXMatrixIdentity_D3DXMATRIX_p = (void*)0x7afe21;
+		static const void* D3DXMatrixIdentity_D3DXMatrix_p = (void*)0x7afe21;
 		static const void* D3DXColorAdjustSaturation_x_x_x = (void*)0x7afe75;
 		static const void* const_oCMobFire__vftable = (void*)0x820984;
 		static const void* const_zCRndAlphaSortObject_Vob__vftable = (void*)0x81694c;

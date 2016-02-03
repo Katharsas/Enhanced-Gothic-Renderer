@@ -1,4 +1,5 @@
 #pragma once
+#include "pch.h"
 #include "Toolbox.h"
 #include <algorithm>
 #include <DbgHelp.h>
@@ -230,26 +231,7 @@ namespace Toolbox
 	{
 		return (1.0f - w) * a + w * b;
 	}
-
-	/** Converts an errorcode into a string */
-	std::string MakeErrorString(XRESULT code)
-	{
-		switch(code)
-		{
-		case XRESULT::XR_FAILED:
-			return "General fail";
-
-		case XRESULT::XR_SUCCESS:
-			return "Success";
-
-		case XRESULT::XR_INVALID_ARG:
-			return "Invalid argument";
-
-		default:
-			return "Other error";
-		}
-	}
-
+	
 	/** Returns the number of bits inside a bitmask */
 	WORD GetNumberOfBits( DWORD dwMask )
 	{

@@ -13,7 +13,7 @@ int g_TotalSize = 0;
 
 GTexture::GTexture(zCTexture* sourceObject) : GzObjectExtension<zCTexture, GTexture>(sourceObject)	
 {
-	m_Texture = REngine::ResourceCache->CreateResource<RTexture>();
+	m_Texture = RAPI::REngine::ResourceCache->CreateResource<RAPI::RTexture>();
 	m_CurrentSurface = nullptr;
 }
 
@@ -26,14 +26,14 @@ GTexture::~GTexture(void)
 
 	if(!m_Texture)
 	{
-		LogWarn() << "Deleting GTexture without any RTexture created!";
+		LogWarn() << "Deleting GTexture without any RAPI::RTexture created!";
 		return;
 	}
 
 	if(m_Texture->IsInitialized())
-		LogWarn() << "Deleting GTexture with still initialized RTexture!";
+		LogWarn() << "Deleting GTexture with still initialized RAPI::RTexture!";
 
-	REngine::ResourceCache->DeleteResource(m_Texture);
+	RAPI::REngine::ResourceCache->DeleteResource(m_Texture);
 }
 
 /** Called just after the game created locked the underlaying surface. */
@@ -74,17 +74,17 @@ void GTexture::OnSurfaceUnlocked(void* imageData, unsigned int sizeInBytes, std:
 	// Create the texture on the GPU
 	LEB(m_Texture->CreateTexture(imageData, 
 		sizeInBytes, 
-		INT2(ddsd.dwWidth, ddsd.dwHeight), 
+		RAPI::RInt2(ddsd.dwWidth, ddsd.dwHeight), 
 		m_CurrentSurface->ComputeBitsPerPixel() != 16 ? ddsd.dwMipMapCount : 1, // Force mipcount to 1 on 16-bit
 		m_CurrentSurface->GetInternalTextureFormat(),
-		B_SHADER_RESOURCE,
-		U_DEFAULT,
+		RAPI::EBindFlags::B_SHADER_RESOURCE,
+		RAPI::EUsageFlags::U_DEFAULT,
 		1,
 		mipData));
 
 	// TODO: This is a hack, find a better way to figure out if this is a lightmap! | There is "IsLightmap" on zCTexture!
 	// If this is a lightmap, add to lightmap-atlas cache
-	if(ddsd.dwMipMapCount == 1 && ddsd.dwWidth == ddsd.dwHeight && m_CurrentSurface->GetInternalTextureFormat() == ETextureFormat::TF_R8G8B8A8)
+	if(ddsd.dwMipMapCount == 1 && ddsd.dwWidth == ddsd.dwHeight && m_CurrentSurface->GetInternalTextureFormat() == RAPI::ETextureFormat::TF_R8G8B8A8)
 	{
 		Engine::Game->GetMainResources()->GetLightmapAtlas(INT2(ddsd.dwWidth, ddsd.dwHeight))->StoreTexture((byte*)imageData, sizeInBytes, m_SourceObject);
 	}

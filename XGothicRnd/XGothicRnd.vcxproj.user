@@ -2,13 +2,13 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LocalDebuggerCommand>$(G2_SYSTEM_PATH)\Gothic2.exe</LocalDebuggerCommand>
-    <LocalDebuggerCommandArguments>-zWindow -ZNOEXHND -zres:1280,720</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-zWindow -ZNOEXHND</LocalDebuggerCommandArguments>
     <LocalDebuggerWorkingDirectory>$(G2_SYSTEM_PATH)</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_NoOpt|Win32'">
     <LocalDebuggerCommand>$(G2_SYSTEM_PATH)\Gothic2.exe</LocalDebuggerCommand>
-    <LocalDebuggerCommandArguments>-zWindow -ZNOEXHND -zres:1280,720</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-zWindow -ZNOEXHND</LocalDebuggerCommandArguments>
     <LocalDebuggerWorkingDirectory>$(G2_SYSTEM_PATH)</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>

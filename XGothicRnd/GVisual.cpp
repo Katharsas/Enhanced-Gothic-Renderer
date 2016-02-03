@@ -53,7 +53,7 @@ GVisual* GVisual::CreateExtensionVisual(zCVisual* visual)
 
 	// Add to global resource cache
 	if (vis)
-		REngine::ResourceCache->AddToCache(Toolbox::HashObject(visual), vis);
+		RAPI::REngine::ResourceCache->AddToCache(Toolbox::HashObject(visual), vis);
 
 	return vis;
 }
@@ -88,7 +88,7 @@ void GVisual::DestroyDrawableStates(GBaseDrawable* drawable)
 {
 	auto& set = m_CreatedPipelineStates[drawable];
 
-	for(RPipelineState* s : set.PipelineStates)
+	for( RAPI::RPipelineState* s : set.PipelineStates)
 	{
 		// Only delete when currently not in use
 		if(s->Locked)
